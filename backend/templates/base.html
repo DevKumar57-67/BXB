@@ -1,79 +1,200 @@
+```html
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}BitsXBytes{% endblock %}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f5f7fb;
-            color: #1f2937;
-        }
-        nav {
-            background: #111827;
-            color: #fff;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 1rem;
-            font-weight: 600;
-        }
-        nav .brand {
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-decoration: none;
-            color: #fff;
-        }
-        main {
-            max-width: 960px;
-            margin: 2rem auto;
-            padding: 0 1.25rem;
-        }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0.8rem 1rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <nav>
-        <a href="{% url 'home' %}" class="brand">BitsXBytes</a>
-        <div>
-            <a href="{% url 'home' %}">Home</a>
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'logout' %}">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register' %}">Register</a>
-            {% endif %}
-        </div>
-    </nav>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        BitsXBytes
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/style.css' %}"
+    >
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <a href="{% url 'feed' %}" class="brand">
+
+            <div class="brand-logo">
+                B
+            </div>
+
+            <span class="brand-name">
+                BitsXBytes
+            </span>
+
+        </a>
+
+
+        <!-- MAIN NAVIGATION -->
+
+        <nav class="nav">
+
+            <a
+                href="{% url 'feed' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">⌂</span>
+                <span>Feed</span>
+            </a>
+
+
+            {% if user.is_authenticated %}
+
+            <a
+                href="{% url 'my_profile' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">◉</span>
+                <span>Profile</span>
+            </a>
+
+            {% endif %}
+
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                <span class="nav-icon">⇄</span>
+                <span>Handshake</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                <span class="nav-icon">◷</span>
+                <span>Events</span>
+            </a>
+
+
+            <a
+                href="#"
+                class="nav-link"
+            >
+                <span class="nav-icon">★</span>
+                <span>Leaderboard</span>
+            </a>
+
+        </nav>
+
+
+        <!-- BOTTOM NAV -->
+
+        <div class="sidebar-bottom">
+
+            {% if user.is_authenticated %}
+
+            <a
+                href="{% url 'logout' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">↪</span>
+                <span>Logout</span>
+            </a>
+
+            {% else %}
+
+            <a
+                href="{% url 'login' %}"
+                class="nav-link"
+            >
+                <span class="nav-icon">→</span>
+                <span>Login</span>
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN APPLICATION -->
+
+    <div class="main-wrapper">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="search-box">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    placeholder="Search BxB..."
+                >
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                {% if user.is_authenticated %}
+
+                <button
+                    class="icon-button"
+                    title="Notifications"
+                >
+                    ♢
+                </button>
+
+
+                <a
+                    href="{% url 'my_profile' %}"
+                    class="icon-button"
+                    title="Profile"
+                >
+                    ◉
+                </a>
+
+                {% endif %}
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+
+        <main class="page-content">
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+    </div>
+
+</div>
+
 </body>
+
 </html>
+```
