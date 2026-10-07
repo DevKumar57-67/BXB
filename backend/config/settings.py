@@ -132,3 +132,21 @@ MAILERS = {
 }
 AUTH_USER_MODEL = 'users.User'
 
+
+
+MAILERS = {
+    'default': {
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': 'smtp.gmail.com',
+            'port': 587,
+            'username': 'devanshshukla957@gmail.com',
+            'password': 'uhvnymyfgquhwkbi',
+            'use_tls': True,
+        },
+    },
+}
+
+DEFAULT_FROM_EMAIL = 'devanshshukla957@gmail.com'
+
+

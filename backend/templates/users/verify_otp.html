@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}
+Verify Email | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<h1>Verify Your Email</h1>
+
+<p>
+    We've sent a 6-digit OTP to your email address.
+</p>
+
+{% if error %}
+    <p>
+        {{ error }}
+    </p>
+{% endif %}
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label for="otp">
+        Enter OTP
+    </label>
+
+    <input
+        type="text"
+        id="otp"
+        name="otp"
+        maxlength="6"
+        minlength="6"
+        required
+    >
+
+    <button type="submit">
+        Verify Email
+    </button>
+
+</form>
+
+{% endblock %}
