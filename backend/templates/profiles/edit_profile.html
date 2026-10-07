@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Edit Profile | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<h1>Edit Your BxB Profile</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Save Profile
+    </button>
+
+</form>
+
+{% endblock %}

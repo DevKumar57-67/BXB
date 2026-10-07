@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ profile_user.username }} | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ profile_user.username }}</h1>
+
+{% if profile.avatar %}
+    <img
+        src="{{ profile.avatar.url }}"
+        alt="Profile picture"
+        width="150"
+    >
+{% endif %}
+
+{% if profile.bio %}
+    <p>{{ profile.bio }}</p>
+{% endif %}
+
+<p>
+    <strong>College:</strong>
+    {{ profile.college }}
+</p>
+
+<p>
+    <strong>Course:</strong>
+    {{ profile.course }}
+</p>
+
+<p>
+    <strong>Year:</strong>
+    {{ profile.year }}
+</p>
+
+<p>
+    <strong>Skills:</strong>
+    {{ profile.skills }}
+</p>
+
+<p>
+    <strong>Interests:</strong>
+    {{ profile.interests }}
+</p>
+
+{% if profile.github %}
+    <p>
+        <a href="{{ profile.github }}" target="_blank">
+            GitHub
+        </a>
+    </p>
+{% endif %}
+
+{% if profile.linkedin %}
+    <p>
+        <a href="{{ profile.linkedin }}" target="_blank">
+            LinkedIn
+        </a>
+    </p>
+{% endif %}
+
+{% endblock %}

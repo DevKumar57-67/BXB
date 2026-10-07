@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Profile | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<h1>{{ profile.user.username }}</h1>
+
+{% if profile.avatar %}
+    <img
+        src="{{ profile.avatar.url }}"
+        alt="Profile picture"
+        width="150"
+    >
+{% endif %}
+
+<p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+<p><strong>College:</strong> {{ profile.college }}</p>
+
+<p><strong>Course:</strong> {{ profile.course }}</p>
+
+<p><strong>Year:</strong> {{ profile.year }}</p>
+
+<p><strong>Skills:</strong> {{ profile.skills }}</p>
+
+<p><strong>Interests:</strong> {{ profile.interests }}</p>
+
+{% if profile.github %}
+    <p>
+        <strong>GitHub:</strong>
+        <a href="{{ profile.github }}" target="_blank">
+            {{ profile.github }}
+        </a>
+    </p>
+{% endif %}
+
+{% if profile.linkedin %}
+    <p>
+        <strong>LinkedIn:</strong>
+        <a href="{{ profile.linkedin }}" target="_blank">
+            {{ profile.linkedin }}
+        </a>
+    </p>
+{% endif %}
+
+<a href="{% url 'edit_profile' %}">
+    Edit Profile
+</a>
+
+{% endblock %}
