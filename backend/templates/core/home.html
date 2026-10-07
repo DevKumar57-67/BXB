@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Home | BitsXBytes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Welcome to BitsXBytes 🚀</h1>
+    <p>The campus community platform.</p>
+
+    {% if request.user.is_authenticated %}
+        <p>Hi, {{ request.user.username }}! You're signed in.</p>
+    {% else %}
+        <p>Get started by <a href="{% url 'login' %}">logging in</a> or <a href="{% url 'register' %}">creating an account</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

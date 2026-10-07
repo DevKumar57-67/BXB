@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | BitsXBytes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Create your BxB account</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+</div>
+{% endblock %}

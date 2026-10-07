@@ -4,5 +4,5 @@ from django.shortcuts import render
 from django.shortcuts import render
 
 
-def bxb(request):
-    return render(request, 'core/bxb.html')
+def home(request):
+    return render(request, 'core/home.html')
