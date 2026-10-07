@@ -141,7 +141,7 @@ MAILERS = {
             'host': 'smtp.gmail.com',
             'port': 587,
             'username': 'devanshshukla957@gmail.com',
-            'password': 'uhvnymyfgquhwkbi',
+            'password': '',
             'use_tls': True,
         },
     },
