@@ -10,7 +10,7 @@ from .forms import RegistrationForm
 
 def register(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('feed')
 
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -18,7 +18,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('feed')
 
     else:
         form = RegistrationForm()
@@ -30,7 +30,7 @@ def register(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('feed')
 
     if request.method == 'POST':
         form = AuthenticationForm(
@@ -41,7 +41,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            return redirect('feed')
 
     else:
         form = AuthenticationForm()

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}
+BxB Feed | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<h1>BxB Feed</h1>
+
+
+<h2>Create a Post</h2>
+
+<form method="POST" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Post
+    </button>
+
+</form>
+
+
+<hr>
+
+
+<h2>Community Feed</h2>
+
+
+{% for post in posts %}
+
+    <article>
+
+        <h3>
+            {{ post.author.username }}
+        </h3>
+
+        <small>
+            {{ post.created_at }}
+        </small>
+
+        <p>
+            {{ post.content }}
+        </p>
+
+
+        {% if post.image %}
+
+            <img
+                src="{{ post.image.url }}"
+                alt="Post image"
+                width="400"
+            >
+
+        {% endif %}
+
+
+        {% if post.author == request.user %}
+
+            <form
+                method="POST"
+                action="{% url 'delete_post' post.id %}"
+            >
+
+                {% csrf_token %}
+
+                <button type="submit">
+                    Delete
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </article>
+
+    <hr>
+
+{% empty %}
+
+    <p>
+        No posts yet. Be the first to post on BxB!
+    </p>
+
+{% endfor %}
+
+{% endblock %}
