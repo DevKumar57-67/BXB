@@ -1,182 +1,1839 @@
-```html
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="theme-color" content="#070a12">
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        name="description"
+        content="BitsXBytes — Build. Connect. Grow."
     >
 
-    <title>
-        {% block title %}
-        BitsXBytes
-        {% endblock %}
-    </title>
+    <title>{% block title %}BitsXBytes{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
         rel="stylesheet"
-        href="{% static 'css/style.css' %}"
     >
+
+    <style>
+
+        /* =====================================================
+           BITSXBYTES — GLOBAL DESIGN SYSTEM
+        ===================================================== */
+
+        :root {
+
+            --bg-main: #070a12;
+            --bg-secondary: #0b0f19;
+            --bg-card: #101521;
+            --bg-card-hover: #141a29;
+
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(59, 130, 246, 0.35);
+
+            --blue: #3b82f6;
+            --blue-light: #60a5fa;
+            --blue-dark: #2563eb;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --success: #22c55e;
+            --danger: #ef4444;
+
+            --sidebar-width: 250px;
+            --topbar-height: 72px;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+
+            --shadow-card:
+                0 10px 30px rgba(0, 0, 0, 0.18);
+
+            --transition:
+                180ms ease;
+
+        }
+
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 80% 0%,
+                    rgba(37, 99, 235, 0.08),
+                    transparent 30%
+                ),
+                var(--bg-main);
+
+            color: var(--text-primary);
+
+            font-family: "Inter", sans-serif;
+
+            -webkit-font-smoothing: antialiased;
+
+        }
+
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+
+        /* =====================================================
+           APP SHELL
+        ===================================================== */
+
+        .app-shell {
+
+            display: flex;
+
+            min-height: 100vh;
+
+            width: 100%;
+
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: var(--sidebar-width);
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 24px 16px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(15, 23, 42, 0.96),
+                    rgba(7, 10, 18, 0.98)
+                );
+
+            border-right: 1px solid var(--border);
+
+            z-index: 100;
+
+        }
+
+
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding: 4px 10px 28px;
+
+        }
+
+
+        .brand-mark {
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue-light),
+                    var(--blue-dark)
+                );
+
+            box-shadow:
+                0 8px 24px rgba(37, 99, 235, 0.35);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .brand-mark::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 18px;
+            height: 18px;
+
+            top: -8px;
+            right: -8px;
+
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.2);
+
+        }
+
+
+        .brand-mark span {
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            color: white;
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+        .brand-text {
+
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+        .brand-name {
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            letter-spacing: -0.4px;
+
+        }
+
+
+        .brand-tagline {
+
+            margin-top: 2px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+            color: var(--text-muted);
+
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .sidebar-nav {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+        }
+
+
+        .nav-section {
+
+            margin-bottom: 28px;
+
+        }
+
+
+        .nav-section-title {
+
+            display: block;
+
+            padding: 0 12px 9px;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.2px;
+
+            color: var(--text-muted);
+
+        }
+
+
+        .nav-item {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            width: 100%;
+
+            min-height: 44px;
+
+            padding: 10px 12px;
+
+            margin-bottom: 4px;
+
+            border-radius: 10px;
+
+            color: var(--text-secondary);
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .nav-item:hover {
+
+            background: rgba(255,255,255,0.045);
+
+            color: var(--text-primary);
+
+            transform: translateX(2px);
+
+        }
+
+
+        .nav-item.active {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(59,130,246,0.18),
+                    rgba(59,130,246,0.06)
+                );
+
+        }
+
+
+        .nav-item.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: -16px;
+
+            width: 3px;
+            height: 24px;
+
+            border-radius: 0 4px 4px 0;
+
+            background: var(--blue);
+
+            box-shadow:
+                0 0 12px rgba(59,130,246,0.7);
+
+        }
+
+
+        .nav-item-icon {
+
+            width: 21px;
+
+            display: inline-flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 17px;
+
+            color: var(--text-muted);
+
+        }
+
+
+        .nav-item.active .nav-item-icon {
+
+            color: var(--blue-light);
+
+        }
+
+
+        .nav-badge {
+
+            margin-left: auto;
+
+            padding: 3px 7px;
+
+            border-radius: 20px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            color: var(--blue-light);
+
+            background: rgba(59,130,246,0.12);
+
+            border: 1px solid rgba(59,130,246,0.18);
+
+        }
+
+
+        /* =====================================================
+           SIDEBAR BOTTOM
+        ===================================================== */
+
+        .sidebar-bottom {
+
+            padding-top: 16px;
+
+            border-top: 1px solid var(--border);
+
+        }
+
+
+        .sidebar-user {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            margin-bottom: 7px;
+
+            border-radius: 12px;
+
+            transition: background var(--transition);
+
+        }
+
+
+        .sidebar-user:hover {
+
+            background: rgba(255,255,255,0.04);
+
+        }
+
+
+        .sidebar-user-info {
+
+            min-width: 0;
+
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+        .sidebar-user-info strong {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 13px;
+
+        }
+
+
+        .sidebar-user-info span {
+
+            margin-top: 2px;
+
+            color: var(--text-muted);
+
+            font-size: 10px;
+
+        }
+
+
+        .sidebar-user-arrow {
+
+            color: var(--text-muted);
+
+            font-size: 15px;
+
+        }
+
+
+        .logout-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 9px 12px;
+
+            border-radius: 9px;
+
+            color: var(--text-muted);
+
+            font-size: 12px;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .logout-link:hover {
+
+            color: #f87171;
+
+            background: rgba(239,68,68,0.07);
+
+        }
+
+
+        .login-sidebar-button {
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+
+            padding: 11px;
+
+            border-radius: 10px;
+
+            color: white;
+
+            background: var(--blue);
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .login-sidebar-button:hover {
+
+            background: var(--blue-dark);
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 8px 20px rgba(37,99,235,0.25);
+
+        }
+
+
+        /* =====================================================
+           MAIN AREA
+        ===================================================== */
+
+        .main-area {
+
+            width: calc(100% - var(--sidebar-width));
+
+            margin-left: var(--sidebar-width);
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 80;
+
+            height: var(--topbar-height);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 0 32px;
+
+            background:
+                rgba(7,10,18,0.82);
+
+            border-bottom: 1px solid var(--border);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+        }
+
+
+        .topbar-search {
+
+            width: min(520px, 60%);
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px 13px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 11px;
+
+            background: rgba(255,255,255,0.025);
+
+            transition: all var(--transition);
+
+        }
+
+
+        .topbar-search:focus-within {
+
+            border-color:
+                rgba(59,130,246,0.45);
+
+            background:
+                rgba(59,130,246,0.045);
+
+            box-shadow:
+                0 0 0 3px rgba(59,130,246,0.06);
+
+        }
+
+
+        .search-icon {
+
+            color: var(--text-muted);
+
+            font-size: 18px;
+
+        }
+
+
+        .topbar-search input {
+
+            width: 100%;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            color: var(--text-primary);
+
+            font-size: 13px;
+
+        }
+
+
+        .topbar-search input::placeholder {
+
+            color: var(--text-muted);
+
+        }
+
+
+        .search-shortcut {
+
+            min-width: 22px;
+
+            height: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 1px solid var(--border);
+
+            border-radius: 5px;
+
+            color: var(--text-muted);
+
+            font-size: 11px;
+
+        }
+
+
+        .topbar-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .topbar-icon-button {
+
+            position: relative;
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            color: var(--text-secondary);
+
+            background: transparent;
+
+            font-size: 19px;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .topbar-icon-button:hover {
+
+            color: white;
+
+            background: rgba(255,255,255,0.06);
+
+        }
+
+
+        .notification-dot {
+
+            position: absolute;
+
+            top: 8px;
+            right: 8px;
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--blue);
+
+            box-shadow:
+                0 0 8px rgba(59,130,246,0.8);
+
+        }
+
+
+        /* =====================================================
+           MOBILE BRAND
+        ===================================================== */
+
+        .mobile-brand {
+
+            display: none;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-weight: 700;
+
+        }
+
+
+        .brand-mark-small {
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 9px;
+
+        }
+
+
+        .brand-mark-small span {
+
+            font-size: 17px;
+
+        }
+
+
+        /* =====================================================
+           PAGE CONTENT
+        ===================================================== */
+
+        .page-content {
+
+            width: 100%;
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 34px 32px 80px;
+
+        }
+
+
+        /* =====================================================
+           AVATARS
+        ===================================================== */
+
+        .avatar {
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            border-radius: 50%;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue),
+                    #7c3aed
+                );
+
+            font-family: "Space Grotesk", sans-serif;
+
+            font-weight: 700;
+
+        }
+
+
+        .avatar img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+        .avatar-small {
+
+            width: 36px;
+            height: 36px;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .card {
+
+            padding: 24px;
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius-lg);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(17,24,39,0.95),
+                    rgba(11,15,25,0.95)
+                );
+
+            box-shadow: var(--shadow-card);
+
+        }
+
+
+        .card:hover {
+
+            border-color:
+                rgba(255,255,255,0.11);
+
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .btn {
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            padding: 11px 17px;
+
+            border-radius: 10px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .btn-primary {
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--blue-light),
+                    var(--blue-dark)
+                );
+
+            box-shadow:
+                0 7px 18px rgba(37,99,235,0.2);
+
+        }
+
+
+        .btn-primary:hover {
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 25px rgba(37,99,235,0.3);
+
+        }
+
+
+        .btn-secondary {
+
+            color: var(--text-primary);
+
+            background: rgba(255,255,255,0.05);
+
+            border: 1px solid var(--border);
+
+        }
+
+
+        .btn-secondary:hover {
+
+            background: rgba(255,255,255,0.08);
+
+            border-color: var(--border-hover);
+
+        }
+
+
+        .btn-small {
+
+            padding: 8px 13px;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =====================================================
+           FORMS
+        ===================================================== */
+
+        .form-group {
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .form-label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: var(--text-secondary);
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .form-input,
+        .form-textarea,
+        .form-select,
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        input[type="url"],
+        textarea,
+        select {
+
+            width: 100%;
+
+            padding: 12px 14px;
+
+            outline: none;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,0.035);
+
+            color: var(--text-primary);
+
+            font-size: 13px;
+
+            transition: all var(--transition);
+
+        }
+
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus,
+        input:focus,
+        textarea:focus,
+        select:focus {
+
+            border-color:
+                rgba(59,130,246,0.6);
+
+            background:
+                rgba(59,130,246,0.035);
+
+            box-shadow:
+                0 0 0 3px rgba(59,130,246,0.08);
+
+        }
+
+
+        textarea {
+
+            min-height: 120px;
+
+            resize: vertical;
+
+        }
+
+
+        select option {
+
+            background: #111827;
+
+            color: white;
+
+        }
+
+
+        /* =====================================================
+           ALERTS
+        ===================================================== */
+
+        .messages-container {
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .alert {
+
+            padding: 12px 15px;
+
+            margin-bottom: 10px;
+
+            border-radius: 10px;
+
+            border: 1px solid var(--border);
+
+            background: var(--bg-card);
+
+            font-size: 13px;
+
+        }
+
+
+        .alert-success {
+
+            border-color:
+                rgba(34,197,94,0.25);
+
+            color: #86efac;
+
+        }
+
+
+        .alert-error {
+
+            border-color:
+                rgba(239,68,68,0.25);
+
+            color: #fca5a5;
+
+        }
+
+
+        /* =====================================================
+           MOBILE BOTTOM NAV
+        ===================================================== */
+
+        .mobile-bottom-nav {
+
+            display: none;
+
+        }
+
+
+        /* =====================================================
+           SCROLLBAR
+        ===================================================== */
+
+        ::-webkit-scrollbar {
+
+            width: 7px;
+            height: 7px;
+
+        }
+
+
+        ::-webkit-scrollbar-track {
+
+            background: transparent;
+
+        }
+
+
+        ::-webkit-scrollbar-thumb {
+
+            background: #1e293b;
+
+            border-radius: 20px;
+
+        }
+
+
+        ::-webkit-scrollbar-thumb:hover {
+
+            background: #334155;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE — TABLET
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            :root {
+                --sidebar-width: 215px;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .page-content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .brand-text {
+                display: none;
+            }
+
+            .brand {
+                justify-content: center;
+            }
+
+            .nav-section-title {
+                font-size: 9px;
+            }
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE — MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            :root {
+                --topbar-height: 62px;
+            }
+
+
+            .sidebar {
+
+                display: none;
+
+            }
+
+
+            .main-area {
+
+                width: 100%;
+
+                margin-left: 0;
+
+                padding-bottom: 72px;
+
+            }
+
+
+            .topbar {
+
+                padding: 0 15px;
+
+                gap: 10px;
+
+            }
+
+
+            .mobile-brand {
+
+                display: flex;
+
+            }
+
+
+            .topbar-search {
+
+                display: none;
+
+            }
+
+
+            .topbar-actions {
+
+                margin-left: auto;
+
+            }
+
+
+            .page-content {
+
+                padding:
+                    22px 15px 40px;
+
+            }
+
+
+            .mobile-bottom-nav {
+
+                position: fixed;
+
+                left: 0;
+                right: 0;
+                bottom: 0;
+
+                height: 66px;
+
+                display: flex;
+
+                align-items: center;
+                justify-content: space-around;
+
+                background:
+                    rgba(8,11,18,0.95);
+
+                border-top: 1px solid var(--border);
+
+                backdrop-filter: blur(18px);
+
+                -webkit-backdrop-filter: blur(18px);
+
+                z-index: 200;
+
+            }
+
+
+            .mobile-bottom-nav a {
+
+                position: relative;
+
+                width: 52px;
+
+                display: flex;
+
+                flex-direction: column;
+
+                align-items: center;
+
+                justify-content: center;
+
+                gap: 3px;
+
+                color: var(--text-muted);
+
+                font-size: 19px;
+
+            }
+
+
+            .mobile-bottom-nav small {
+
+                font-size: 9px;
+
+                font-weight: 600;
+
+            }
+
+
+            .mobile-bottom-nav a.active {
+
+                color: var(--blue-light);
+
+            }
+
+
+            .mobile-create-button {
+
+                width: 44px !important;
+                height: 44px;
+
+                margin-top: -22px;
+
+                border-radius: 14px !important;
+
+                color: white !important;
+
+                background:
+                    linear-gradient(
+                        135deg,
+                        var(--blue-light),
+                        var(--blue-dark)
+                    );
+
+                box-shadow:
+                    0 8px 25px rgba(37,99,235,0.4);
+
+            }
+
+
+            .mobile-create-button span {
+
+                font-size: 25px;
+
+            }
+
+
+            .card {
+
+                padding: 18px;
+
+                border-radius: 14px;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           EXTRA SMALL DEVICES
+        ===================================================== */
+
+        @media (max-width: 400px) {
+
+            .mobile-brand span {
+                font-size: 14px;
+            }
+
+            .topbar-icon-button {
+                width: 35px;
+                height: 35px;
+            }
+
+            .page-content {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+        }
+
+    </style>
+
+    {% block extra_css %}{% endblock %}
 
 </head>
 
+
 <body>
 
-<div class="app">
+<div class="app-shell">
 
-    <!-- SIDEBAR -->
+
+    <!-- =====================================================
+         SIDEBAR
+    ===================================================== -->
 
     <aside class="sidebar">
 
+
+        <!-- Brand -->
+
         <a href="{% url 'feed' %}" class="brand">
 
-            <div class="brand-logo">
-                B
+            <div class="brand-mark">
+                <span>B</span>
             </div>
 
-            <span class="brand-name">
-                BitsXBytes
-            </span>
+            <div class="brand-text">
+
+                <span class="brand-name">
+                    BitsXBytes
+                </span>
+
+                <span class="brand-tagline">
+                    Build. Connect. Grow.
+                </span>
+
+            </div>
 
         </a>
 
 
-        <!-- MAIN NAVIGATION -->
+        <!-- Navigation -->
 
-        <nav class="nav">
-
-            <a
-                href="{% url 'feed' %}"
-                class="nav-link"
-            >
-                <span class="nav-icon">⌂</span>
-                <span>Feed</span>
-            </a>
+        <nav class="sidebar-nav">
 
 
-            {% if user.is_authenticated %}
+            <div class="nav-section">
 
-            <a
-                href="{% url 'my_profile' %}"
-                class="nav-link"
-            >
-                <span class="nav-icon">◉</span>
-                <span>Profile</span>
-            </a>
-
-            {% endif %}
+                <span class="nav-section-title">
+                    PLATFORM
+                </span>
 
 
-            <a
-                href="#"
-                class="nav-link"
-            >
-                <span class="nav-icon">⇄</span>
-                <span>Handshake</span>
-            </a>
+                <a
+                    href="{% url 'feed' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'feed' %}active{% endif %}"
+                >
+
+                    <span class="nav-item-icon">
+                        ⌂
+                    </span>
+
+                    <span>
+                        Feed
+                    </span>
+
+                </a>
 
 
-            <a
-                href="#"
-                class="nav-link"
-            >
-                <span class="nav-icon">◷</span>
-                <span>Events</span>
-            </a>
+                {% if user.is_authenticated %}
+
+                <a
+                    href="{% url 'my_profile' %}"
+                    class="nav-item {% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}"
+                >
+
+                    <span class="nav-item-icon">
+                        ◉
+                    </span>
+
+                    <span>
+                        Profile
+                    </span>
+
+                </a>
+
+                {% endif %}
 
 
-            <a
-                href="#"
-                class="nav-link"
-            >
-                <span class="nav-icon">★</span>
-                <span>Leaderboard</span>
-            </a>
+                <a href="#" class="nav-item">
+
+                    <span class="nav-item-icon">
+                        ⇄
+                    </span>
+
+                    <span>
+                        Handshake
+                    </span>
+
+                    <span class="nav-badge">
+                        Soon
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-item-icon">
+                        ◷
+                    </span>
+
+                    <span>
+                        Events
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-item-icon">
+                        ★
+                    </span>
+
+                    <span>
+                        Leaderboard
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div class="nav-section">
+
+                <span class="nav-section-title">
+                    DISCOVER
+                </span>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-item-icon">
+                        ⌕
+                    </span>
+
+                    <span>
+                        Explore
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="nav-item">
+
+                    <span class="nav-item-icon">
+                        ♢
+                    </span>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                </a>
+
+            </div>
+
 
         </nav>
 
 
-        <!-- BOTTOM NAV -->
+        <!-- Sidebar Bottom -->
 
         <div class="sidebar-bottom">
 
+
             {% if user.is_authenticated %}
+
+
+            <a
+                href="{% url 'my_profile' %}"
+                class="sidebar-user"
+            >
+
+                <div class="avatar avatar-small">
+
+                    {% if user.profile.avatar %}
+
+                        <img
+                            src="{{ user.profile.avatar.url }}"
+                            alt="{{ user.username }}"
+                        >
+
+                    {% else %}
+
+                        <span>
+                            {{ user.username|first|upper }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="sidebar-user-info">
+
+                    <strong>
+                        {{ user.username }}
+                    </strong>
+
+                    <span>
+                        View profile
+                    </span>
+
+                </div>
+
+
+                <span class="sidebar-user-arrow">
+                    →
+                </span>
+
+            </a>
+
 
             <a
                 href="{% url 'logout' %}"
-                class="nav-link"
+                class="logout-link"
             >
-                <span class="nav-icon">↪</span>
-                <span>Logout</span>
+
+                <span>
+                    ↪
+                </span>
+
+                Logout
+
             </a>
+
 
             {% else %}
 
+
             <a
                 href="{% url 'login' %}"
-                class="nav-link"
+                class="login-sidebar-button"
             >
-                <span class="nav-icon">→</span>
-                <span>Login</span>
+                Login
             </a>
+
 
             {% endif %}
 
+
         </div>
+
 
     </aside>
 
 
-    <!-- MAIN APPLICATION -->
+    <!-- =====================================================
+         MAIN AREA
+    ===================================================== -->
 
-    <div class="main-wrapper">
+    <div class="main-area">
 
 
         <!-- TOPBAR -->
 
         <header class="topbar">
 
-            <div class="search-box">
 
-                <span>⌕</span>
+            <div class="mobile-brand">
 
-                <input
-                    type="text"
-                    placeholder="Search BxB..."
-                >
+                <div class="brand-mark brand-mark-small">
+
+                    <span>
+                        B
+                    </span>
+
+                </div>
+
+                <span>
+                    BitsXBytes
+                </span>
 
             </div>
 
 
+            <!-- Search -->
+
+            <div class="topbar-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    type="text"
+                    placeholder="Search people, posts, events..."
+                >
+
+                <span class="search-shortcut">
+                    /
+                </span>
+
+            </div>
+
+
+            <!-- Actions -->
+
             <div class="topbar-actions">
+
 
                 {% if user.is_authenticated %}
 
+
                 <button
-                    class="icon-button"
+                    type="button"
+                    class="topbar-icon-button"
                     title="Notifications"
                 >
+
                     ♢
+
+                    <span class="notification-dot"></span>
+
                 </button>
 
 
                 <a
                     href="{% url 'my_profile' %}"
-                    class="icon-button"
+                    class="topbar-profile"
                     title="Profile"
                 >
-                    ◉
+
+                    <div class="avatar avatar-small">
+
+                        {% if user.profile.avatar %}
+
+                            <img
+                                src="{{ user.profile.avatar.url }}"
+                                alt="{{ user.username }}"
+                            >
+
+                        {% else %}
+
+                            <span>
+                                {{ user.username|first|upper }}
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
                 </a>
+
+
+                {% else %}
+
+
+                <a
+                    href="{% url 'login' %}"
+                    class="btn btn-small btn-primary"
+                >
+                    Login
+                </a>
+
 
                 {% endif %}
 
+
             </div>
+
 
         </header>
 
@@ -185,16 +1842,154 @@
 
         <main class="page-content">
 
+
+            {% if messages %}
+
+                <div class="messages-container">
+
+                    {% for message in messages %}
+
+                        <div class="alert alert-{{ message.tags }}">
+
+                            {{ message }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
             {% block content %}
+
             {% endblock %}
 
+
         </main>
+
+
+        <!-- =================================================
+             MOBILE NAVIGATION
+        ================================================== -->
+
+        {% if user.is_authenticated %}
+
+        <nav class="mobile-bottom-nav">
+
+
+            <a
+                href="{% url 'feed' %}"
+                class="{% if request.resolver_match.url_name == 'feed' %}active{% endif %}"
+            >
+
+                <span>
+                    ⌂
+                </span>
+
+                <small>
+                    Feed
+                </small>
+
+            </a>
+
+
+            <a href="#">
+
+                <span>
+                    ⌕
+                </span>
+
+                <small>
+                    Explore
+                </small>
+
+            </a>
+
+
+            <a
+                href="#"
+                class="mobile-create-button"
+            >
+
+                <span>
+                    +
+                </span>
+
+            </a>
+
+
+            <a href="#">
+
+                <span>
+                    ♢
+                </span>
+
+                <small>
+                    Alerts
+                </small>
+
+            </a>
+
+
+            <a
+                href="{% url 'my_profile' %}"
+                class="{% if request.resolver_match.url_name == 'my_profile' %}active{% endif %}"
+            >
+
+                <span>
+                    ◉
+                </span>
+
+                <small>
+                    Profile
+                </small>
+
+            </a>
+
+
+        </nav>
+
+        {% endif %}
+
 
     </div>
 
 </div>
 
-</body>
 
+<!-- =====================================================
+     SEARCH KEYBOARD SHORTCUT
+====================================================== -->
+
+<script>
+
+    document.addEventListener("keydown", function(event) {
+
+        if (
+            event.key === "/" &&
+            document.activeElement.tagName !== "INPUT" &&
+            document.activeElement.tagName !== "TEXTAREA"
+        ) {
+
+            event.preventDefault();
+
+            const search =
+                document.querySelector(".topbar-search input");
+
+            if (search) {
+                search.focus();
+            }
+
+        }
+
+    });
+
+</script>
+
+
+{% block extra_js %}{% endblock %}
+
+</body>
 </html>
-```
