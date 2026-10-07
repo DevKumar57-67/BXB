@@ -1,23 +1,1030 @@
 {% extends "base.html" %}
 
-{% block title %}
-Edit Profile | BitsXBytes
-{% endblock %}
+{% block title %}Edit Profile | BitsXBytes{% endblock %}
 
 {% block content %}
 
-<h1>Edit Your BxB Profile</h1>
+<style>
+    .profile-editor {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding-bottom: 40px;
+    }
 
-<form method="POST" enctype="multipart/form-data">
+    /* Header */
+    .editor-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
 
-    {% csrf_token %}
+    .editor-heading {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
 
-    {{ form.as_p }}
+    .back-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 19px;
+        transition: var(--transition);
+    }
 
-    <button type="submit">
-        Save Profile
-    </button>
+    .back-btn:hover {
+        color: var(--text-primary);
+        border-color: var(--border-hover);
+        background: var(--bg-card-hover);
+        transform: translateX(-2px);
+    }
 
-</form>
+    .editor-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .editor-subtitle {
+        margin: 4px 0 0;
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    /* Layout */
+    .editor-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .editor-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+        overflow: hidden;
+    }
+
+    .section {
+        padding: 25px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .section-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+    }
+
+    .section-title {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 17px;
+        color: var(--text-primary);
+    }
+
+    .section-description {
+        margin: 3px 0 0;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    /* Avatar */
+    .avatar-editor {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 5px 0;
+    }
+
+    .avatar-preview-wrapper {
+        position: relative;
+        flex-shrink: 0;
+    }
+
+    .avatar-preview {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(59, 130, 246, 0.35);
+        background: #151b28;
+    }
+
+    .avatar-placeholder {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: linear-gradient(
+            135deg,
+            rgba(59, 130, 246, 0.25),
+            rgba(37, 99, 235, 0.08)
+        );
+        border: 3px solid rgba(59, 130, 246, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--blue-light);
+    }
+
+    .avatar-info h4 {
+        margin: 0 0 5px;
+        color: var(--text-primary);
+        font-size: 15px;
+    }
+
+    .avatar-info p {
+        margin: 0 0 12px;
+        color: var(--text-muted);
+        font-size: 12px;
+    }
+
+    .avatar-input {
+        display: inline-block;
+        width: auto !important;
+        padding: 7px 10px !important;
+        font-size: 12px !important;
+        background: var(--bg-secondary) !important;
+        border: 1px solid var(--border) !important;
+        cursor: pointer;
+    }
+
+    /* Form */
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        color: var(--text-primary);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .form-help {
+        color: var(--text-muted);
+        font-size: 11px;
+        margin-top: -2px;
+    }
+
+    .profile-editor input,
+    .profile-editor textarea,
+    .profile-editor select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .profile-editor textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .profile-editor input[type="file"] {
+        width: auto;
+    }
+
+    .field-errors {
+        color: #f87171;
+        font-size: 12px;
+        margin-top: -2px;
+    }
+
+    .field-errors ul {
+        margin: 0;
+        padding-left: 17px;
+    }
+
+    .non-field-errors {
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        font-size: 13px;
+    }
+
+    /* Social fields */
+    .social-input {
+        position: relative;
+    }
+
+    .social-prefix {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 13px;
+        pointer-events: none;
+    }
+
+    .social-input input {
+        padding-left: 38px;
+    }
+
+    /* Sidebar */
+    .editor-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .tip-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-card);
+    }
+
+    .tip-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .tip-header-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: rgba(59, 130, 246, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tip-title {
+        margin: 0;
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--text-primary);
+        font-size: 15px;
+    }
+
+    .tip-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .tip-list li {
+        display: flex;
+        gap: 9px;
+        color: var(--text-secondary);
+        font-size: 12px;
+        line-height: 1.55;
+        margin-bottom: 12px;
+    }
+
+    .tip-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .tip-check {
+        color: var(--blue-light);
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .preview-card {
+        background: linear-gradient(
+            145deg,
+            rgba(37, 99, 235, 0.16),
+            rgba(15, 23, 42, 0.4)
+        );
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+    }
+
+    .preview-card h3 {
+        margin: 0 0 8px;
+        color: var(--text-primary);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 16px;
+    }
+
+    .preview-card p {
+        margin: 0 0 15px;
+        color: var(--text-secondary);
+        font-size: 12px;
+        line-height: 1.55;
+    }
+
+    .preview-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--blue-light);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .preview-link:hover {
+        color: white;
+    }
+
+    /* Bottom actions */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 20px 25px;
+        background: rgba(0, 0, 0, 0.12);
+        border-top: 1px solid var(--border);
+    }
+
+    .cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 17px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .cancel-btn:hover {
+        color: var(--text-primary);
+        background: var(--bg-card-hover);
+        border-color: var(--border-hover);
+    }
+
+    .save-btn {
+        border: none;
+        min-height: 40px;
+        padding: 0 20px;
+        border-radius: 9px;
+        background: linear-gradient(
+            135deg,
+            var(--blue),
+            var(--blue-dark)
+        );
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+        transition: var(--transition);
+    }
+
+    .save-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+        .editor-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .editor-sidebar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .profile-editor {
+            padding-bottom: 80px;
+        }
+
+        .editor-header {
+            align-items: flex-start;
+        }
+
+        .editor-title {
+            font-size: 22px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-group.full {
+            grid-column: auto;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .editor-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .avatar-editor {
+            align-items: flex-start;
+        }
+
+        .form-actions {
+            padding: 17px 20px;
+        }
+    }
+
+    @media (max-width: 430px) {
+        .editor-heading {
+            gap: 9px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+        }
+
+        .editor-title {
+            font-size: 19px;
+        }
+
+        .editor-subtitle {
+            font-size: 12px;
+        }
+
+        .avatar-preview,
+        .avatar-placeholder {
+            width: 72px;
+            height: 72px;
+        }
+    }
+</style>
+
+
+<div class="profile-editor">
+
+    <!-- Header -->
+    <div class="editor-header">
+
+        <div class="editor-heading">
+
+            <a href="{% url 'my_profile' %}" class="back-btn" title="Back to profile">
+                ←
+            </a>
+
+            <div>
+                <h1 class="editor-title">Edit Profile</h1>
+                <p class="editor-subtitle">
+                    Make your BxB profile stand out.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="editor-layout">
+
+        <!-- Main Editor -->
+        <div class="editor-card">
+
+            <form method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="section">
+                        <div class="non-field-errors">
+                            {{ form.non_field_errors }}
+                        </div>
+                    </div>
+                {% endif %}
+
+
+                <!-- Profile Picture -->
+                <div class="section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            👤
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">Profile Picture</h2>
+                            <p class="section-description">
+                                Choose a picture people can recognize you by.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="avatar-editor">
+
+                        <div class="avatar-preview-wrapper">
+
+                            {% if profile.avatar %}
+                                <img
+                                    src="{{ profile.avatar.url }}"
+                                    alt="{{ profile.user.username }}"
+                                    class="avatar-preview"
+                                    id="avatarPreview"
+                                >
+                            {% else %}
+                                <div class="avatar-placeholder" id="avatarPlaceholder">
+                                    {{ profile.user.username|first|upper }}
+                                </div>
+
+                                <img
+                                    src=""
+                                    alt="Avatar preview"
+                                    class="avatar-preview"
+                                    id="avatarPreview"
+                                    style="display: none;"
+                                >
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="avatar-info">
+
+                            <h4>Update your avatar</h4>
+
+                            <p>
+                                JPG, PNG or WEBP. Keep it clear and professional.
+                            </p>
+
+                            {{ form.avatar }}
+
+                            {% if form.avatar.errors %}
+                                <div class="field-errors">
+                                    {{ form.avatar.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Basic Information -->
+                <div class="section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            ✨
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">About You</h2>
+                            <p class="section-description">
+                                Tell the BxB community who you are.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+
+                            <label class="form-label">
+                                Bio
+                            </label>
+
+                            {{ form.bio }}
+
+                            <span class="form-help">
+                                A short introduction about yourself.
+                            </span>
+
+                            {% if form.bio.errors %}
+                                <div class="field-errors">
+                                    {{ form.bio.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Education -->
+                <div class="section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            🎓
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">Education</h2>
+                            <p class="section-description">
+                                Add your academic background.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                College / University
+                            </label>
+
+                            {{ form.college }}
+
+                            {% if form.college.errors %}
+                                <div class="field-errors">
+                                    {{ form.college.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                Course
+                            </label>
+
+                            {{ form.course }}
+
+                            {% if form.course.errors %}
+                                <div class="field-errors">
+                                    {{ form.course.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                Year
+                            </label>
+
+                            {{ form.year }}
+
+                            <span class="form-help">
+                                Example: 1, 2, 3 or 4
+                            </span>
+
+                            {% if form.year.errors %}
+                                <div class="field-errors">
+                                    {{ form.year.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Skills -->
+                <div class="section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            ⚡
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">Skills & Interests</h2>
+                            <p class="section-description">
+                                Help people discover what you are passionate about.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group full">
+
+                            <label class="form-label">
+                                Skills
+                            </label>
+
+                            {{ form.skills }}
+
+                            <span class="form-help">
+                                Separate multiple skills using commas.
+                                Example: Python, Django, C++, Machine Learning
+                            </span>
+
+                            {% if form.skills.errors %}
+                                <div class="field-errors">
+                                    {{ form.skills.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="form-group full">
+
+                            <label class="form-label">
+                                Interests
+                            </label>
+
+                            {{ form.interests }}
+
+                            <span class="form-help">
+                                Example: AI, Cybersecurity, Open Source, Startups
+                            </span>
+
+                            {% if form.interests.errors %}
+                                <div class="field-errors">
+                                    {{ form.interests.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Social Links -->
+                <div class="section">
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            🔗
+                        </div>
+
+                        <div>
+                            <h2 class="section-title">Social Links</h2>
+                            <p class="section-description">
+                                Connect your external developer profiles.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                GitHub
+                            </label>
+
+                            <div class="social-input">
+
+                                <span class="social-prefix">
+                                    GH
+                                </span>
+
+                                {{ form.github }}
+
+                            </div>
+
+                            {% if form.github.errors %}
+                                <div class="field-errors">
+                                    {{ form.github.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                LinkedIn
+                            </label>
+
+                            <div class="social-input">
+
+                                <span class="social-prefix">
+                                    in
+                                </span>
+
+                                {{ form.linkedin }}
+
+                            </div>
+
+                            {% if form.linkedin.errors %}
+                                <div class="field-errors">
+                                    {{ form.linkedin.errors }}
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="form-actions">
+
+                    <a
+                        href="{% url 'my_profile' %}"
+                        class="cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="save-btn"
+                    >
+                        ✓ Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- Sidebar -->
+        <aside class="editor-sidebar">
+
+            <div class="tip-card">
+
+                <div class="tip-header">
+
+                    <div class="tip-header-icon">
+                        💡
+                    </div>
+
+                    <h3 class="tip-title">
+                        Profile Tips
+                    </h3>
+
+                </div>
+
+
+                <ul class="tip-list">
+
+                    <li>
+                        <span class="tip-check">✓</span>
+                        <span>
+                            Use a clear profile picture so people can recognize you.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="tip-check">✓</span>
+                        <span>
+                            Write a short bio that explains what you build or learn.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="tip-check">✓</span>
+                        <span>
+                            Add your strongest technical skills.
+                        </span>
+                    </li>
+
+                    <li>
+                        <span class="tip-check">✓</span>
+                        <span>
+                            Connect GitHub and LinkedIn to showcase your work.
+                        </span>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="preview-card">
+
+                <h3>
+                    Your public profile
+                </h3>
+
+                <p>
+                    Everything you add here can become part of your BxB identity
+                    and help other students discover you.
+                </p>
+
+                <a
+                    href="{% url 'edit_profile' profile.user.username %}"
+                    class="preview-link"
+                >
+                    View public profile →
+                </a>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+<script>
+    const avatarInput = document.querySelector(
+        '.profile-editor input[type="file"]'
+    );
+
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                if (avatarPreview) {
+                    avatarPreview.src = event.target.result;
+                    avatarPreview.style.display = 'block';
+                }
+
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.style.display = 'none';
+                }
+
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
 
 {% endblock %}
