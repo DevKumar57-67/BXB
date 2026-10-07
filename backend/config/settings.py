@@ -140,13 +140,13 @@ MAILERS = {
         'OPTIONS': {
             'host': 'smtp.gmail.com',
             'port': 587,
-            'username': 'devanshshukla957@gmail.com',
-            'password': 'uhvnymyfgquhwkbi',
+            'username': 'bitsxbytesbxb@gmail.com',
+            'password': 'lgkblfqbychupurp',
             'use_tls': True,
         },
     },
 }
 
-DEFAULT_FROM_EMAIL = 'devanshshukla957@gmail.com'
+DEFAULT_FROM_EMAIL = 'bitsxbytesbxb@gmail.com'
 
 
