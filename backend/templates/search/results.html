@@ -1,0 +1,555 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Search{% if query %} - {{ query }}{% endif %} | BitsXBytes
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .search-page {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .search-header {
+        margin-bottom: 22px;
+    }
+
+    .search-header h1 {
+        margin: 0 0 7px;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    .search-header p {
+        margin: 0;
+        color: #8b93a7;
+    }
+
+    .search-query {
+        color: #4da3ff;
+    }
+
+    .search-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 6px;
+        margin-bottom: 28px;
+        width: fit-content;
+        background: #0d1320;
+        border: 1px solid #1d2638;
+        border-radius: 14px;
+    }
+
+    .search-tab {
+        padding: 9px 16px;
+        color: #8b93a7;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: 0.2s ease;
+    }
+
+    .search-tab:hover {
+        color: #ffffff;
+        background: #151d2d;
+    }
+
+    .search-tab.active {
+        color: #ffffff;
+        background: #1769d2;
+    }
+
+    .search-section {
+        margin-bottom: 36px;
+    }
+
+    .search-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .search-section-header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .result-count {
+        color: #7f879b;
+        font-size: 13px;
+    }
+
+    .people-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+    }
+
+    .person-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px;
+        color: inherit;
+        text-decoration: none;
+        background: #101522;
+        border: 1px solid #1d2638;
+        border-radius: 16px;
+        transition: 0.2s ease;
+    }
+
+    .person-card:hover {
+        transform: translateY(-2px);
+        border-color: #348fff;
+    }
+
+    .person-avatar,
+    .person-avatar-placeholder {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 50%;
+    }
+
+    .person-avatar {
+        object-fit: cover;
+        background: #1b2537;
+    }
+
+    .person-avatar-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #172033;
+        color: #4da3ff;
+        font-weight: 700;
+        font-size: 19px;
+    }
+
+    .person-info {
+        min-width: 0;
+    }
+
+    .person-name {
+        margin: 0 0 4px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .person-username {
+        margin: 0 0 5px;
+        color: #4da3ff;
+        font-size: 13px;
+    }
+
+    .person-meta {
+        margin: 0;
+        overflow: hidden;
+        color: #8b93a7;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .posts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .post-card {
+        padding: 20px;
+        background: #101522;
+        border: 1px solid #1d2638;
+        border-radius: 16px;
+    }
+
+    .post-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .post-author-avatar,
+    .post-author-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .post-author-avatar {
+        object-fit: cover;
+    }
+
+    .post-author-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #172033;
+        color: #4da3ff;
+        font-weight: 700;
+    }
+
+    .post-author-name {
+        font-weight: 600;
+    }
+
+    .post-author-username {
+        color: #7f879b;
+        font-size: 13px;
+    }
+
+    .post-content {
+        color: #e6e9ef;
+        line-height: 1.65;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .post-image {
+        width: 100%;
+        max-height: 450px;
+        margin-top: 16px;
+        object-fit: cover;
+        border: 1px solid #1d2638;
+        border-radius: 12px;
+    }
+
+    .post-date {
+        margin-top: 14px;
+        color: #727b90;
+        font-size: 12px;
+    }
+
+    .empty-state {
+        padding: 40px 20px;
+        text-align: center;
+        color: #7f879b;
+        background: #101522;
+        border: 1px dashed #293449;
+        border-radius: 16px;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: #dfe4ec;
+    }
+
+    .empty-state p {
+        margin: 0;
+    }
+
+    @media (max-width: 600px) {
+        .search-header h1 {
+            font-size: 26px;
+        }
+
+        .search-tabs {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .search-tab {
+            flex: 1;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .people-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .post-card {
+            padding: 16px;
+        }
+    }
+</style>
+
+<div class="search-page">
+
+    <div class="search-header">
+
+        {% if query %}
+            <h1>Search results</h1>
+
+            <p>
+                Results for
+                <span class="search-query">"{{ query }}"</span>
+            </p>
+        {% else %}
+            <h1>Search BitsXBytes</h1>
+
+            <p>
+                Find people and posts across the BxB community.
+            </p>
+        {% endif %}
+
+    </div>
+
+
+    {% if query %}
+
+        <!-- FILTER TABS -->
+
+        <div class="search-tabs">
+
+            <a
+                href="{% url 'search' %}?q={{ query|urlencode }}&type=all"
+                class="search-tab {% if search_type == 'all' %}active{% endif %}"
+            >
+                All
+            </a>
+
+            <a
+                href="{% url 'search' %}?q={{ query|urlencode }}&type=people"
+                class="search-tab {% if search_type == 'people' %}active{% endif %}"
+            >
+                People
+            </a>
+
+            <a
+                href="{% url 'search' %}?q={{ query|urlencode }}&type=posts"
+                class="search-tab {% if search_type == 'posts' %}active{% endif %}"
+            >
+                Posts
+            </a>
+
+        </div>
+
+
+        <!-- PEOPLE -->
+
+        {% if search_type == "all" or search_type == "people" %}
+
+            <section class="search-section">
+
+                <div class="search-section-header">
+
+                    <h2>People</h2>
+
+                    <span class="result-count">
+                        {{ people|length }}
+                        result{{ people|length|pluralize }}
+                    </span>
+
+                </div>
+
+                {% if people %}
+
+                    <div class="people-grid">
+
+                        {% for person in people %}
+
+                            <a
+                                href="{% url 'public_profile' person.username %}"
+                                class="person-card"
+                            >
+
+                                {% if person.profile.avatar %}
+
+                                    <img
+                                        src="{{ person.profile.avatar.url }}"
+                                        alt="{{ person.username }}"
+                                        class="person-avatar"
+                                    >
+
+                                {% else %}
+
+                                    <div class="person-avatar-placeholder">
+                                        {{ person.username|first|upper }}
+                                    </div>
+
+                                {% endif %}
+
+
+                                <div class="person-info">
+
+                                    <p class="person-name">
+
+                                        {% if person.get_full_name %}
+                                            {{ person.get_full_name }}
+                                        {% else %}
+                                            {{ person.username }}
+                                        {% endif %}
+
+                                    </p>
+
+                                    <p class="person-username">
+                                        @{{ person.username }}
+                                    </p>
+
+                                    {% if person.profile.college %}
+
+                                        <p class="person-meta">
+                                            {{ person.profile.college }}
+                                        </p>
+
+                                    {% elif person.profile.course %}
+
+                                        <p class="person-meta">
+                                            {{ person.profile.course }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <h3>No people found</h3>
+
+                        <p>
+                            Try a username, name, college, skill, or interest.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- POSTS -->
+
+        {% if search_type == "all" or search_type == "posts" %}
+
+            <section class="search-section">
+
+                <div class="search-section-header">
+
+                    <h2>Posts</h2>
+
+                    <span class="result-count">
+                        {{ posts|length }}
+                        result{{ posts|length|pluralize }}
+                    </span>
+
+                </div>
+
+                {% if posts %}
+
+                    <div class="posts-list">
+
+                        {% for post in posts %}
+
+                            <article class="post-card">
+
+                                <a
+                                    href="{% url 'public_profile' post.author.username %}"
+                                    class="post-author"
+                                >
+
+                                    {% if post.author.profile.avatar %}
+
+                                        <img
+                                            src="{{ post.author.profile.avatar.url }}"
+                                            alt="{{ post.author.username }}"
+                                            class="post-author-avatar"
+                                        >
+
+                                    {% else %}
+
+                                        <div class="post-author-placeholder">
+                                            {{ post.author.username|first|upper }}
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <div>
+
+                                        <div class="post-author-name">
+
+                                            {% if post.author.get_full_name %}
+                                                {{ post.author.get_full_name }}
+                                            {% else %}
+                                                {{ post.author.username }}
+                                            {% endif %}
+
+                                        </div>
+
+                                        <div class="post-author-username">
+                                            @{{ post.author.username }}
+                                        </div>
+
+                                    </div>
+
+                                </a>
+
+
+                                <div class="post-content">
+                                    {{ post.content }}
+                                </div>
+
+
+                                {% if post.image %}
+
+                                    <img
+                                        src="{{ post.image.url }}"
+                                        alt="Post image"
+                                        class="post-image"
+                                    >
+
+                                {% endif %}
+
+
+                                <div class="post-date">
+                                    {{ post.created_at|date:"M d, Y · g:i A" }}
+                                </div>
+
+                            </article>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <h3>No posts found</h3>
+
+                        <p>
+                            Try searching for another keyword.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <h3>Start searching</h3>
+
+            <p>
+                Search for a username, person, skill, college,
+                interest, or something posted by the community.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

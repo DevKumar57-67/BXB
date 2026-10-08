@@ -88,6 +88,8 @@ urlpatterns = [
     path('profile/', include('profiles.urls')),
 
     path('feed/', include('posts.urls')),
+
+     path('search/', include('search.urls')),
 ]
 
 
