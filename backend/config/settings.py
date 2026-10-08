@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'profiles',
     'posts',
     'search',
+    'handshake',
+    'notifications',
 ]
 
 MIDDLEWARE = [

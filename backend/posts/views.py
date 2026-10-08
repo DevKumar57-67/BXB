@@ -1,22 +1,39 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+
+from notifications.models import Notification
 
 from .forms import PostForm
-from .models import Post
+from .models import (
+    Comment,
+    Post,
+    PostLike,
+    PostSave,
+    Repost,
+)
 
 
 @login_required
 def feed(request):
 
-    posts = Post.objects.select_related(
-        'author',
-        'author__profile'
-    ).order_by('-created_at')
+    posts = (
+        Post.objects
+        .select_related(
+            "author",
+            "author__profile"
+        )
+        .prefetch_related(
+            "likes",
+            "comments__user",
+            "comments__user__profile",
+            "reposts",
+            "saves",
+        )
+        .order_by("-created_at")
+    )
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
         form = PostForm(
             request.POST,
@@ -26,20 +43,23 @@ def feed(request):
         if form.is_valid():
 
             post = form.save(commit=False)
+
             post.author = request.user
+
             post.save()
 
-            return redirect('feed')
+            return redirect("feed")
 
     else:
+
         form = PostForm()
 
     return render(
         request,
-        'posts/feed.html',
+        "posts/feed.html",
         {
-            'posts': posts,
-            'form': form,
+            "posts": posts,
+            "form": form,
         }
     )
 
@@ -53,9 +73,247 @@ def delete_post(request, post_id):
     )
 
     if post.author != request.user:
-        return redirect('feed')
+        return redirect("feed")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         post.delete()
 
-    return redirect('feed')
+    return redirect("feed")
+
+
+@login_required
+def like_post(request, post_id):
+
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "POST request required."
+            },
+            status=405
+        )
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    like, created = PostLike.objects.get_or_create(
+        user=request.user,
+        post=post
+    )
+
+    if not created:
+
+        like.delete()
+
+        is_liked = False
+
+    else:
+
+        is_liked = True
+
+        # Don't notify users about their own likes.
+        if post.author != request.user:
+
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                notification_type=Notification.NotificationType.LIKE,
+                post=post,
+                message="liked your post."
+            )
+
+    like_count = PostLike.objects.filter(
+        post=post
+    ).count()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "is_liked": is_liked,
+            "like_count": like_count,
+        }
+    )
+
+
+@login_required
+def save_post(request, post_id):
+
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "POST request required."
+            },
+            status=405
+        )
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    save, created = PostSave.objects.get_or_create(
+        user=request.user,
+        post=post
+    )
+
+    if not created:
+
+        save.delete()
+
+        is_saved = False
+
+    else:
+
+        is_saved = True
+
+    save_count = PostSave.objects.filter(
+        post=post
+    ).count()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "is_saved": is_saved,
+            "save_count": save_count,
+        }
+    )
+
+
+@login_required
+def comment_post(request, post_id):
+
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "POST request required."
+            },
+            status=405
+        )
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    content = request.POST.get(
+        "content",
+        ""
+    ).strip()
+
+    if not content:
+
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Comment cannot be empty."
+            },
+            status=400
+        )
+
+    if len(content) > 1000:
+
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Comment is too long."
+            },
+            status=400
+        )
+
+    comment = Comment.objects.create(
+        post=post,
+        user=request.user,
+        content=content
+    )
+
+    # Notify the post author.
+    # Don't notify someone about their own comment.
+    if post.author != request.user:
+
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            notification_type=Notification.NotificationType.COMMENT,
+            post=post,
+            comment=comment,
+            message="commented on your post."
+        )
+
+    comment_count = Comment.objects.filter(
+        post=post
+    ).count()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "comment_count": comment_count,
+            "comment": {
+                "id": comment.id,
+                "content": comment.content,
+                "username": comment.user.username,
+                "created_at": comment.created_at.strftime(
+                    "%b %d, %Y · %I:%M %p"
+                ),
+            }
+        }
+    )
+
+
+@login_required
+def repost_post(request, post_id):
+
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "POST request required."
+            },
+            status=405
+        )
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    repost, created = Repost.objects.get_or_create(
+        user=request.user,
+        original_post=post
+    )
+
+    if not created:
+
+        repost.delete()
+
+        is_reposted = False
+
+    else:
+
+        is_reposted = True
+
+        # Don't notify users about their own repost.
+        if post.author != request.user:
+
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                notification_type=Notification.NotificationType.REPOST,
+                post=post,
+                message="reposted your post."
+            )
+
+    repost_count = Repost.objects.filter(
+        original_post=post
+    ).count()
+
+    return JsonResponse(
+        {
+            "success": True,
+            "is_reposted": is_reposted,
+            "repost_count": repost_count,
+        }
+    )

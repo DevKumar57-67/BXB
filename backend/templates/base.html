@@ -26,9 +26,13 @@
         {% block title %}BitsXBytes{% endblock %}
     </title>
 
+
     <!-- Fonts -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
 
     <link
         rel="preconnect"
@@ -40,6 +44,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
         rel="stylesheet"
     >
+
 
     <style>
 
@@ -444,8 +449,7 @@
         }
 
 
-        .nav-item.active
-        .nav-item-icon {
+        .nav-item.active .nav-item-icon {
 
             color:
                 var(--blue-light);
@@ -473,6 +477,73 @@
 
             border:
                 1px solid rgba(59,130,246,0.18);
+        }
+
+
+        /* =====================================================
+           NOTIFICATION BADGES
+        ===================================================== */
+
+        .notification-count-badge {
+
+            min-width: 18px;
+
+            height: 18px;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-left: auto;
+
+            padding:
+                0 5px;
+
+            border-radius: 20px;
+
+            color: white;
+
+            background:
+                var(--danger);
+
+            border:
+                2px solid var(--bg-main);
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            line-height: 1;
+        }
+
+
+        .notification-count-badge.visible {
+
+            display: inline-flex;
+        }
+
+
+        .topbar-notification-link {
+
+            position: relative;
+        }
+
+
+        .topbar-notification-link
+        .notification-count-badge {
+
+            position: absolute;
+
+            top: 1px;
+
+            right: 0;
+
+            margin: 0;
+
+            border-color:
+                var(--bg-main);
         }
 
 
@@ -688,14 +759,15 @@
 
 
         /* =====================================================
-           GLOBAL SEARCH
+           DESKTOP GLOBAL SEARCH
         ===================================================== */
 
         .topbar-search {
 
             position: relative;
 
-            width: min(500px, 100%);
+            width:
+                min(500px, 100%);
 
             height: 42px;
 
@@ -797,7 +869,7 @@
 
 
         /* =====================================================
-           AUTOCOMPLETE DROPDOWN
+           DESKTOP AUTOCOMPLETE
         ===================================================== */
 
         .search-suggestions {
@@ -1107,6 +1179,16 @@
 
             box-shadow:
                 0 0 8px rgba(59,130,246,0.8);
+        }
+
+
+        /* =====================================================
+           MOBILE SEARCH BUTTON
+        ===================================================== */
+
+        .mobile-search-button {
+
+            display: none;
         }
 
 
@@ -1499,6 +1581,422 @@
 
 
         /* =====================================================
+           MOBILE SEARCH OVERLAY
+        ===================================================== */
+
+        .mobile-search-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            display: none;
+
+            flex-direction: column;
+
+            background:
+                rgba(7, 10, 18, 0.98);
+
+            z-index: 1000;
+
+            animation:
+                mobileSearchIn 180ms ease;
+        }
+
+
+        .mobile-search-overlay.visible {
+
+            display: flex;
+        }
+
+
+        @keyframes mobileSearchIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(-8px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+
+        }
+
+
+        .mobile-search-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            min-height: 62px;
+
+            padding:
+                0 15px;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+
+        .mobile-search-back {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            color:
+                var(--text-secondary);
+
+            background:
+                transparent;
+
+            font-size: 22px;
+
+            transition:
+                all var(--transition);
+        }
+
+
+        .mobile-search-back:hover {
+
+            color: white;
+
+            background:
+                rgba(255,255,255,0.06);
+        }
+
+
+        .mobile-search-title {
+
+            flex: 1;
+
+            font-family:
+                "Space Grotesk",
+                sans-serif;
+
+            font-size: 18px;
+
+            font-weight: 600;
+        }
+
+
+        .mobile-search-close {
+
+            padding: 8px;
+
+            color:
+                var(--text-muted);
+
+            background:
+                transparent;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .mobile-search-form {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin:
+                14px 15px 0;
+
+            min-height: 48px;
+
+            padding:
+                0 14px;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,0.035);
+
+            transition:
+                all var(--transition);
+        }
+
+
+        .mobile-search-form:focus-within {
+
+            border-color:
+                rgba(59,130,246,0.5);
+
+            background:
+                rgba(59,130,246,0.045);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(59,130,246,0.06);
+        }
+
+
+        .mobile-search-form input {
+
+            width: 100%;
+
+            min-width: 0;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            color:
+                var(--text-primary);
+
+            font-size: 14px;
+        }
+
+
+        .mobile-search-form input::placeholder {
+
+            color:
+                var(--text-muted);
+        }
+
+
+        .mobile-search-results {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding:
+                14px 15px 30px;
+        }
+
+
+        .mobile-search-suggestions {
+
+            display: none;
+
+            padding: 0;
+
+            background: transparent;
+        }
+
+
+        .mobile-search-suggestions.visible {
+
+            display: block;
+        }
+
+
+        .mobile-search-suggestion {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            width: 100%;
+
+            margin-bottom: 6px;
+
+            padding:
+                13px 10px;
+
+            color: inherit;
+
+            text-decoration: none;
+
+            border-radius: 12px;
+
+            transition:
+                background 150ms ease;
+        }
+
+
+        .mobile-search-suggestion:hover,
+        .mobile-search-suggestion.active {
+
+            background:
+                rgba(255,255,255,0.05);
+        }
+
+
+        .mobile-search-suggestion-avatar,
+        .mobile-search-suggestion-placeholder {
+
+            width: 44px;
+
+            height: 44px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+        }
+
+
+        .mobile-search-suggestion-avatar {
+
+            object-fit: cover;
+
+            background:
+                #1b2537;
+        }
+
+
+        .mobile-search-suggestion-placeholder {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                #172033;
+
+            color:
+                var(--blue-light);
+
+            font-size: 15px;
+
+            font-weight: 700;
+        }
+
+
+        .mobile-search-suggestion-content {
+
+            min-width: 0;
+
+            flex: 1;
+        }
+
+
+        .mobile-search-suggestion-title {
+
+            margin-bottom: 4px;
+
+            overflow: hidden;
+
+            color:
+                var(--text-primary);
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .mobile-search-suggestion-subtitle {
+
+            overflow: hidden;
+
+            color:
+                var(--text-muted);
+
+            font-size: 12px;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .mobile-search-suggestion-type {
+
+            flex-shrink: 0;
+
+            padding:
+                4px 7px;
+
+            color:
+                var(--text-muted);
+
+            background:
+                rgba(255,255,255,0.04);
+
+            border-radius: 7px;
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+        }
+
+
+        .mobile-search-empty {
+
+            padding:
+                40px 20px;
+
+            color:
+                var(--text-muted);
+
+            text-align: center;
+
+            font-size: 13px;
+        }
+
+
+        .mobile-search-view-all {
+
+            display: block;
+
+            margin-top: 8px;
+
+            padding:
+                13px;
+
+            color:
+                var(--blue-light);
+
+            text-align: center;
+
+            background:
+                rgba(59,130,246,0.07);
+
+            border:
+                1px solid rgba(59,130,246,0.12);
+
+            border-radius: 11px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
            SCROLLBAR
         ===================================================== */
 
@@ -1641,6 +2139,12 @@
             }
 
 
+            .mobile-search-button {
+
+                display: flex;
+            }
+
+
             .topbar-actions {
 
                 margin-left:
@@ -1769,6 +2273,22 @@
                     14px;
             }
 
+
+            .mobile-bottom-nav
+            .notification-count-badge {
+
+                position: absolute;
+
+                top: -5px;
+
+                right: -9px;
+
+                margin: 0;
+
+                border-color:
+                    rgba(8,11,18,0.95);
+            }
+
         }
 
 
@@ -1804,6 +2324,7 @@
         }
 
     </style>
+
 
     {% block extra_css %}{% endblock %}
 
@@ -1989,9 +2510,16 @@
                 </a>
 
 
+                {% if user.is_authenticated %}
+
                 <a
-                    href="#"
-                    class="nav-item"
+                    href="{% url 'notification_list' %}"
+                    class="
+                        nav-item
+                        {% if request.resolver_match.url_name == 'notification_list' %}
+                            active
+                        {% endif %}
+                    "
                 >
 
                     <span class="nav-item-icon">
@@ -2002,7 +2530,17 @@
                         Notifications
                     </span>
 
+                    <span
+                        class="notification-count-badge"
+                        data-notification-badge
+                    >
+                        0
+                    </span>
+
                 </a>
+
+                {% endif %}
+
 
             </div>
 
@@ -2111,6 +2649,8 @@
         <header class="topbar">
 
 
+            <!-- Mobile Brand -->
+
             <div class="mobile-brand">
 
                 <div class="brand-mark brand-mark-small">
@@ -2129,7 +2669,7 @@
 
 
             <!-- =================================================
-                 GLOBAL SEARCH
+                 DESKTOP SEARCH
             ================================================= -->
 
             <form
@@ -2178,21 +2718,57 @@
             <div class="topbar-actions">
 
 
-                {% if user.is_authenticated %}
-
+                <!-- Mobile Search Button -->
 
                 <button
                     type="button"
-                    class="topbar-icon-button"
+                    class="
+                        topbar-icon-button
+                        mobile-search-button
+                    "
+                    id="mobile-search-trigger"
+                    title="Search"
+                    aria-label="Search"
+                >
+                    ⌕
+                </button>
+
+
+                {% if user.is_authenticated %}
+
+
+                <!-- Notifications -->
+
+                <a
+                    href="{% url 'notification_list' %}"
+                    class="
+                        topbar-icon-button
+                        topbar-notification-link
+                    "
                     title="Notifications"
+                    aria-label="Notifications"
                 >
 
                     ♢
 
-                    <span class="notification-dot"></span>
 
-                </button>
+                    <span
+                        class="notification-dot"
+                        data-notification-dot
+                    ></span>
 
+
+                    <span
+                        class="notification-count-badge"
+                        data-notification-badge
+                    >
+                        0
+                    </span>
+
+                </a>
+
+
+                <!-- Profile -->
 
                 <a
                     href="{% url 'my_profile' %}"
@@ -2255,7 +2831,9 @@
 
                     {% for message in messages %}
 
-                        <div class="alert alert-{{ message.tags }}">
+                        <div
+                            class="alert alert-{{ message.tags }}"
+                        >
 
                             {{ message }}
 
@@ -2273,6 +2851,84 @@
 
 
         </main>
+
+
+        <!-- =================================================
+             MOBILE SEARCH OVERLAY
+        ================================================== -->
+
+        <div
+            class="mobile-search-overlay"
+            id="mobile-search-overlay"
+        >
+
+
+            <div class="mobile-search-header">
+
+
+                <button
+                    type="button"
+                    class="mobile-search-back"
+                    id="mobile-search-back"
+                    aria-label="Close search"
+                >
+                    ←
+                </button>
+
+
+                <div class="mobile-search-title">
+                    Search
+                </div>
+
+
+                <button
+                    type="button"
+                    class="mobile-search-close"
+                    id="mobile-search-close"
+                >
+                    Cancel
+                </button>
+
+
+            </div>
+
+
+            <form
+                class="mobile-search-form"
+                id="mobile-search-form"
+                action="{% url 'search' %}"
+                method="get"
+                autocomplete="off"
+            >
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    type="text"
+                    name="q"
+                    id="mobile-search-input"
+                    placeholder="Search people, posts..."
+                    autocomplete="off"
+                    aria-label="Search BitsXBytes"
+                >
+
+            </form>
+
+
+            <div class="mobile-search-results">
+
+                <div
+                    id="mobile-search-suggestions"
+                    class="mobile-search-suggestions"
+                ></div>
+
+            </div>
+
+
+        </div>
 
 
         <!-- =================================================
@@ -2329,11 +2985,30 @@
             </a>
 
 
-            <a href="#">
+            <!-- Mobile Notifications -->
 
-                <span>
+            <a
+                href="{% url 'notification_list' %}"
+                class="
+                    {% if request.resolver_match.url_name == 'notification_list' %}
+                        active
+                    {% endif %}
+                "
+            >
+
+                <span style="position: relative;">
+
                     ♢
+
+                    <span
+                        class="notification-count-badge"
+                        data-notification-badge
+                    >
+                        0
+                    </span>
+
                 </span>
+
 
                 <small>
                     Alerts
@@ -2373,7 +3048,7 @@
 
 
 <!-- =====================================================
-     GLOBAL SEARCH AUTOCOMPLETE
+     DESKTOP SEARCH AUTOCOMPLETE
 ====================================================== -->
 
 <script>
@@ -2414,10 +3089,6 @@ document.addEventListener(
         let activeIndex = -1;
 
 
-        /* =================================================
-           HIDE SUGGESTIONS
-        ================================================= */
-
         function hideSuggestions() {
 
             suggestions.classList.remove(
@@ -2435,10 +3106,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           SHOW SUGGESTIONS
-        ================================================= */
-
         function showSuggestions() {
 
             suggestions.classList.add(
@@ -2451,10 +3118,6 @@ document.addEventListener(
             );
         }
 
-
-        /* =================================================
-           CREATE SINGLE SUGGESTION
-        ================================================= */
 
         function createSuggestion(
             item,
@@ -2480,20 +3143,14 @@ document.addEventListener(
             );
 
 
-            /* Avatar */
-
             const avatarWrapper =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
             if (item.avatar) {
 
                 const img =
-                    document.createElement(
-                        "img"
-                    );
+                    document.createElement("img");
 
                 img.src =
                     item.avatar;
@@ -2520,21 +3177,15 @@ document.addEventListener(
             }
 
 
-            /* Content */
-
             const content =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             content.className =
                 "search-suggestion-content";
 
 
             const title =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             title.className =
                 "search-suggestion-title";
@@ -2544,9 +3195,7 @@ document.addEventListener(
 
 
             const subtitle =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             subtitle.className =
                 "search-suggestion-subtitle";
@@ -2564,12 +3213,8 @@ document.addEventListener(
             );
 
 
-            /* Type */
-
             const type =
-                document.createElement(
-                    "span"
-                );
+                document.createElement("span");
 
             type.className =
                 "search-suggestion-type";
@@ -2577,8 +3222,6 @@ document.addEventListener(
             type.textContent =
                 item.type;
 
-
-            /* Assemble */
 
             link.appendChild(
                 avatarWrapper
@@ -2597,10 +3240,6 @@ document.addEventListener(
         }
 
 
-        /* =================================================
-           RENDER SUGGESTIONS
-        ================================================= */
-
         function renderSuggestions(
             data,
             query
@@ -2617,9 +3256,7 @@ document.addEventListener(
             ) {
 
                 const empty =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
                 empty.className =
                     "search-suggestions-empty";
@@ -2643,39 +3280,29 @@ document.addEventListener(
                     index
                 ) {
 
-                    const suggestion =
+                    suggestions.appendChild(
                         createSuggestion(
                             item,
                             index
-                        );
-
-                    suggestions.appendChild(
-                        suggestion
+                        )
                     );
 
                 }
             );
 
 
-            /* View All */
-
             const footer =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             footer.className =
                 "search-suggestions-footer";
 
 
             const viewAll =
-                document.createElement(
-                    "a"
-                );
+                document.createElement("a");
 
             viewAll.className =
                 "search-view-all";
-
 
             viewAll.href =
                 "{% url 'search' %}?q="
@@ -2683,7 +3310,6 @@ document.addEventListener(
                 encodeURIComponent(
                     query
                 );
-
 
             viewAll.textContent =
                 "View all results →";
@@ -2701,10 +3327,6 @@ document.addEventListener(
             showSuggestions();
         }
 
-
-        /* =================================================
-           FETCH SUGGESTIONS
-        ================================================= */
 
         async function fetchSuggestions(
             query
@@ -2750,9 +3372,6 @@ document.addEventListener(
                     await response.json();
 
 
-                /* Make sure stale requests
-                   do not overwrite newer text */
-
                 if (
                     input.value.trim()
                     === query
@@ -2776,10 +3395,6 @@ document.addEventListener(
             }
         }
 
-
-        /* =================================================
-           INPUT EVENT
-        ================================================= */
 
         input.addEventListener(
             "input",
@@ -2819,10 +3434,6 @@ document.addEventListener(
         );
 
 
-        /* =================================================
-           KEYBOARD NAVIGATION
-        ================================================= */
-
         input.addEventListener(
             "keydown",
             function (event) {
@@ -2841,8 +3452,6 @@ document.addEventListener(
                     return;
                 }
 
-
-                /* Arrow Down */
 
                 if (
                     event.key
@@ -2868,7 +3477,656 @@ document.addEventListener(
                 }
 
 
-                /* Arrow Up */
+                if (
+                    event.key
+                    === "ArrowUp"
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        activeIndex <= 0
+                            ? items.length - 1
+                            : activeIndex - 1;
+                }
+
+
+                if (
+                    event.key
+                    === "Escape"
+                ) {
+
+                    event.preventDefault();
+
+                    hideSuggestions();
+
+                    return;
+                }
+
+
+                items.forEach(
+                    function (
+                        item,
+                        index
+                    ) {
+
+                        item.classList.toggle(
+                            "active",
+                            index === activeIndex
+                        );
+
+                    }
+                );
+
+
+                if (
+                    (
+                        event.key
+                        === "ArrowDown"
+                        ||
+                        event.key
+                        === "ArrowUp"
+                    )
+                    &&
+                    activeIndex >= 0
+                ) {
+
+                    items[
+                        activeIndex
+                    ].scrollIntoView({
+                        block: "nearest"
+                    });
+                }
+
+
+                if (
+                    event.key
+                    === "Enter"
+                    &&
+                    activeIndex >= 0
+                    &&
+                    items[activeIndex]
+                ) {
+
+                    event.preventDefault();
+
+                    window.location.href =
+                        items[
+                            activeIndex
+                        ].href;
+                }
+
+            }
+        );
+
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                const query =
+                    input.value.trim();
+
+
+                if (!query) {
+
+                    event.preventDefault();
+
+                    input.focus();
+
+                    return;
+                }
+
+
+                hideSuggestions();
+            }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !form.contains(
+                        event.target
+                    )
+                ) {
+
+                    hideSuggestions();
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+
+                    event.key === "/"
+
+                    &&
+
+                    document.activeElement.tagName
+                    !== "INPUT"
+
+                    &&
+
+                    document.activeElement.tagName
+                    !== "TEXTAREA"
+
+                ) {
+
+                    event.preventDefault();
+
+                    input.focus();
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+<!-- =====================================================
+     MOBILE SEARCH
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const trigger =
+            document.getElementById(
+                "mobile-search-trigger"
+            );
+
+        const overlay =
+            document.getElementById(
+                "mobile-search-overlay"
+            );
+
+        const backButton =
+            document.getElementById(
+                "mobile-search-back"
+            );
+
+        const closeButton =
+            document.getElementById(
+                "mobile-search-close"
+            );
+
+        const form =
+            document.getElementById(
+                "mobile-search-form"
+            );
+
+        const input =
+            document.getElementById(
+                "mobile-search-input"
+            );
+
+        const suggestions =
+            document.getElementById(
+                "mobile-search-suggestions"
+            );
+
+
+        if (
+            !trigger ||
+            !overlay ||
+            !backButton ||
+            !closeButton ||
+            !form ||
+            !input ||
+            !suggestions
+        ) {
+            return;
+        }
+
+
+        let debounceTimer = null;
+
+        let currentRequest = null;
+
+        let activeIndex = -1;
+
+
+        /* =================================================
+           OPEN SEARCH
+        ================================================= */
+
+        function openSearch() {
+
+            overlay.classList.add(
+                "visible"
+            );
+
+            document.body.style.overflow =
+                "hidden";
+
+
+            setTimeout(
+                function () {
+
+                    input.focus();
+
+                },
+                50
+            );
+        }
+
+
+        /* =================================================
+           CLOSE SEARCH
+        ================================================= */
+
+        function closeSearch() {
+
+            overlay.classList.remove(
+                "visible"
+            );
+
+            document.body.style.overflow =
+                "";
+
+            input.value = "";
+
+            suggestions.innerHTML = "";
+
+            suggestions.classList.remove(
+                "visible"
+            );
+
+            activeIndex = -1;
+        }
+
+
+        /* =================================================
+           CREATE RESULT
+        ================================================= */
+
+        function createResult(
+            item,
+            index
+        ) {
+
+            const link =
+                document.createElement("a");
+
+
+            link.href =
+                item.url;
+
+            link.className =
+                "mobile-search-suggestion";
+
+            link.dataset.index =
+                index;
+
+
+            const avatar =
+                document.createElement("div");
+
+
+            if (item.avatar) {
+
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    item.avatar;
+
+                img.alt =
+                    item.title;
+
+                img.className =
+                    "mobile-search-suggestion-avatar";
+
+                avatar.appendChild(
+                    img
+                );
+
+            } else {
+
+                avatar.className =
+                    "mobile-search-suggestion-placeholder";
+
+                avatar.textContent =
+                    item.title
+                        .charAt(0)
+                        .toUpperCase();
+            }
+
+
+            const content =
+                document.createElement("div");
+
+            content.className =
+                "mobile-search-suggestion-content";
+
+
+            const title =
+                document.createElement("div");
+
+            title.className =
+                "mobile-search-suggestion-title";
+
+            title.textContent =
+                item.title;
+
+
+            const subtitle =
+                document.createElement("div");
+
+            subtitle.className =
+                "mobile-search-suggestion-subtitle";
+
+            subtitle.textContent =
+                item.subtitle;
+
+
+            content.appendChild(
+                title
+            );
+
+            content.appendChild(
+                subtitle
+            );
+
+
+            const type =
+                document.createElement("span");
+
+            type.className =
+                "mobile-search-suggestion-type";
+
+            type.textContent =
+                item.type;
+
+
+            link.appendChild(
+                avatar
+            );
+
+            link.appendChild(
+                content
+            );
+
+            link.appendChild(
+                type
+            );
+
+
+            return link;
+        }
+
+
+        /* =================================================
+           RENDER RESULTS
+        ================================================= */
+
+        function renderResults(
+            data,
+            query
+        ) {
+
+            suggestions.innerHTML = "";
+
+            activeIndex = -1;
+
+
+            if (
+                !data.results ||
+                data.results.length === 0
+            ) {
+
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "mobile-search-empty";
+
+                empty.textContent =
+                    "No matching people or posts.";
+
+                suggestions.appendChild(
+                    empty
+                );
+
+                suggestions.classList.add(
+                    "visible"
+                );
+
+                return;
+            }
+
+
+            data.results.forEach(
+                function (
+                    item,
+                    index
+                ) {
+
+                    suggestions.appendChild(
+                        createResult(
+                            item,
+                            index
+                        )
+                    );
+
+                }
+            );
+
+
+            const viewAll =
+                document.createElement(
+                    "a"
+                );
+
+            viewAll.className =
+                "mobile-search-view-all";
+
+            viewAll.href =
+                "{% url 'search' %}?q="
+                +
+                encodeURIComponent(
+                    query
+                );
+
+            viewAll.textContent =
+                "View all results →";
+
+
+            suggestions.appendChild(
+                viewAll
+            );
+
+
+            suggestions.classList.add(
+                "visible"
+            );
+        }
+
+
+        /* =================================================
+           FETCH RESULTS
+        ================================================= */
+
+        async function fetchResults(
+            query
+        ) {
+
+            if (currentRequest) {
+
+                currentRequest.abort();
+            }
+
+
+            currentRequest =
+                new AbortController();
+
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "{% url 'search_suggestions' %}?q="
+                        +
+                        encodeURIComponent(
+                            query
+                        ),
+
+                        {
+                            signal:
+                                currentRequest.signal
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Search request failed"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    input.value.trim()
+                    === query
+                ) {
+
+                    renderResults(
+                        data,
+                        query
+                    );
+                }
+
+            } catch (error) {
+
+                if (
+                    error.name
+                    !== "AbortError"
+                ) {
+
+                    suggestions.innerHTML = "";
+
+                    suggestions.classList.remove(
+                        "visible"
+                    );
+                }
+
+            }
+        }
+
+
+        /* =================================================
+           INPUT
+        ================================================= */
+
+        input.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    input.value.trim();
+
+
+                clearTimeout(
+                    debounceTimer
+                );
+
+
+                if (
+                    query.length < 2
+                ) {
+
+                    suggestions.innerHTML = "";
+
+                    suggestions.classList.remove(
+                        "visible"
+                    );
+
+                    activeIndex = -1;
+
+                    return;
+                }
+
+
+                debounceTimer =
+                    setTimeout(
+                        function () {
+
+                            fetchResults(
+                                query
+                            );
+
+                        },
+                        250
+                    );
+            }
+        );
+
+
+        /* =================================================
+           KEYBOARD NAVIGATION
+        ================================================= */
+
+        input.addEventListener(
+            "keydown",
+            function (event) {
+
+                const items =
+                    suggestions.querySelectorAll(
+                        ".mobile-search-suggestion"
+                    );
+
+
+                if (
+                    event.key
+                    === "ArrowDown"
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        (
+                            activeIndex + 1
+                        )
+                        %
+                        items.length;
+                }
+
 
                 if (
                     event.key
@@ -2892,8 +4150,6 @@ document.addEventListener(
                 }
 
 
-                /* Escape */
-
                 if (
                     event.key
                     === "Escape"
@@ -2901,13 +4157,11 @@ document.addEventListener(
 
                     event.preventDefault();
 
-                    hideSuggestions();
+                    closeSearch();
 
                     return;
                 }
 
-
-                /* Active state */
 
                 items.forEach(
                     function (
@@ -2924,8 +4178,6 @@ document.addEventListener(
                 );
 
 
-                /* Scroll active result */
-
                 if (
                     (
                         event.key
@@ -2941,14 +4193,10 @@ document.addEventListener(
                     items[
                         activeIndex
                     ].scrollIntoView({
-
                         block: "nearest"
-
                     });
                 }
 
-
-                /* Open active result */
 
                 if (
                     event.key
@@ -2960,7 +4208,6 @@ document.addEventListener(
                 ) {
 
                     event.preventDefault();
-
 
                     window.location.href =
                         items[
@@ -2994,33 +4241,35 @@ document.addEventListener(
                 }
 
 
-                hideSuggestions();
+                closeSearch();
             }
         );
 
 
         /* =================================================
-           CLICK OUTSIDE
+           OPEN / CLOSE BUTTONS
         ================================================= */
 
-        document.addEventListener(
+        trigger.addEventListener(
             "click",
-            function (event) {
+            openSearch
+        );
 
-                if (
-                    !form.contains(
-                        event.target
-                    )
-                ) {
 
-                    hideSuggestions();
-                }
-            }
+        backButton.addEventListener(
+            "click",
+            closeSearch
+        );
+
+
+        closeButton.addEventListener(
+            "click",
+            closeSearch
         );
 
 
         /* =================================================
-           "/" SEARCH SHORTCUT
+           GLOBAL ESCAPE
         ================================================= */
 
         document.addEventListener(
@@ -3028,25 +4277,14 @@ document.addEventListener(
             function (event) {
 
                 if (
-
-                    event.key === "/"
-
+                    event.key === "Escape"
                     &&
-
-                    document.activeElement.tagName
-                    !== "INPUT"
-
-                    &&
-
-                    document.activeElement.tagName
-                    !== "TEXTAREA"
-
+                    overlay.classList.contains(
+                        "visible"
+                    )
                 ) {
 
-                    event.preventDefault();
-
-
-                    input.focus();
+                    closeSearch();
                 }
 
             }
@@ -3056,6 +4294,145 @@ document.addEventListener(
 );
 
 </script>
+
+
+<!-- =====================================================
+     NOTIFICATION UNREAD COUNT
+====================================================== -->
+
+{% if user.is_authenticated %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const badges =
+            document.querySelectorAll(
+                "[data-notification-badge]"
+            );
+
+        const dot =
+            document.querySelector(
+                "[data-notification-dot]"
+            );
+
+
+        if (
+            !badges.length
+        ) {
+            return;
+        }
+
+
+        async function updateNotificationCount() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "{% url 'unread_count' %}",
+                        {
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !data.success
+                ) {
+                    return;
+                }
+
+
+                const count =
+                    Number(
+                        data.unread_count
+                    );
+
+
+                /* Update all badges */
+
+                badges.forEach(
+                    function (badge) {
+
+                        if (count > 0) {
+
+                            badge.textContent =
+                                count > 99
+                                    ? "99+"
+                                    : count;
+
+                            badge.classList.add(
+                                "visible"
+                            );
+
+                        } else {
+
+                            badge.textContent =
+                                "0";
+
+                            badge.classList.remove(
+                                "visible"
+                            );
+                        }
+
+                    }
+                );
+
+
+                /* Update notification dot */
+
+                if (dot) {
+
+                    dot.style.display =
+                        count > 0
+                            ? "block"
+                            : "none";
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Notification count error:",
+                    error
+                );
+
+            }
+        }
+
+
+        /* Initial count */
+
+        updateNotificationCount();
+
+
+        /* Refresh every 30 seconds */
+
+        setInterval(
+            updateNotificationCount,
+            30000
+        );
+
+    }
+);
+
+</script>
+
+{% endif %}
 
 
 {% block extra_js %}{% endblock %}

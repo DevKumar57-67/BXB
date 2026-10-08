@@ -1,488 +1,1122 @@
 {% extends "base.html" %}
 
-{% block title %}{{ profile_user.username }} | BitsXBytes{% endblock %}
+{% block title %}
+    {{ profile_user.username }} | BitsXBytes
+{% endblock %}
+
 
 {% block content %}
 
 <style>
+
+    /* =====================================================
+       PUBLIC PROFILE
+    ===================================================== */
+
     .public-profile {
+
         max-width: 1050px;
+
         margin: 0 auto;
+
         padding-bottom: 40px;
     }
 
-    /* Hero */
+
+    /* =====================================================
+       HERO
+    ===================================================== */
+
     .profile-hero {
+
         position: relative;
+
         overflow: hidden;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-xl);
-        box-shadow: var(--shadow-card);
+
+        background:
+            var(--bg-card);
+
+        border:
+            1px solid var(--border);
+
+        border-radius:
+            var(--radius-xl);
+
+        box-shadow:
+            var(--shadow-card);
     }
 
+
     .profile-cover {
+
         height: 180px;
+
         position: relative;
+
         background:
+
             radial-gradient(
                 circle at 20% 30%,
                 rgba(59,130,246,.30),
                 transparent 30%
             ),
+
             radial-gradient(
                 circle at 80% 70%,
                 rgba(37,99,235,.22),
                 transparent 30%
             ),
+
             linear-gradient(
                 135deg,
                 #0d1628,
                 #101827 50%,
                 #0b1020
             );
-        border-bottom: 1px solid var(--border);
+
+        border-bottom:
+            1px solid var(--border);
     }
+
 
     .cover-grid {
+
         position: absolute;
+
         inset: 0;
+
         opacity: .18;
+
         background-image:
-            linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
-        background-size: 35px 35px;
+
+            linear-gradient(
+                rgba(255,255,255,.08) 1px,
+                transparent 1px
+            ),
+
+            linear-gradient(
+                90deg,
+                rgba(255,255,255,.08) 1px,
+                transparent 1px
+            );
+
+        background-size:
+            35px 35px;
     }
+
 
     .profile-main {
-        padding: 0 30px 28px;
+
+        padding:
+            0 30px 28px;
     }
 
+
     .profile-top {
+
         display: flex;
+
         align-items: flex-end;
+
         justify-content: space-between;
+
         gap: 20px;
     }
 
+
     .avatar-area {
+
         margin-top: -55px;
+
         position: relative;
     }
 
+
     .profile-avatar {
+
         width: 120px;
+
         height: 120px;
+
         border-radius: 50%;
+
         object-fit: cover;
-        background: #151b28;
-        border: 5px solid var(--bg-card);
-        box-shadow: 0 8px 30px rgba(0,0,0,.35);
+
+        background:
+            #151b28;
+
+        border:
+            5px solid var(--bg-card);
+
+        box-shadow:
+            0 8px 30px rgba(0,0,0,.35);
     }
 
+
     .avatar-placeholder {
+
         width: 120px;
+
         height: 120px;
+
         border-radius: 50%;
-        border: 5px solid var(--bg-card);
+
+        border:
+            5px solid var(--bg-card);
+
         background:
+
             linear-gradient(
                 135deg,
                 rgba(59,130,246,.35),
                 rgba(37,99,235,.08)
             );
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
-        color: var(--blue-light);
-        font-family: "Space Grotesk", sans-serif;
+
+        color:
+            var(--blue-light);
+
+        font-family:
+            "Space Grotesk",
+            sans-serif;
+
         font-size: 42px;
+
         font-weight: 700;
-        box-shadow: 0 8px 30px rgba(0,0,0,.35);
+
+        box-shadow:
+            0 8px 30px rgba(0,0,0,.35);
     }
+
 
     .online-dot {
+
         position: absolute;
+
         right: 8px;
+
         bottom: 10px;
+
         width: 18px;
+
         height: 18px;
+
         border-radius: 50%;
-        background: var(--success);
-        border: 4px solid var(--bg-card);
+
+        background:
+            var(--success);
+
+        border:
+            4px solid var(--bg-card);
     }
 
+
+    /* =====================================================
+       PROFILE ACTIONS
+    ===================================================== */
+
     .profile-actions {
+
         display: flex;
+
         gap: 9px;
+
         padding-bottom: 8px;
     }
 
+
     .profile-btn {
+
         display: inline-flex;
+
         align-items: center;
+
         justify-content: center;
+
         gap: 7px;
+
         min-height: 38px;
-        padding: 0 15px;
+
+        padding:
+            0 15px;
+
         border-radius: 9px;
-        border: 1px solid var(--border);
-        background: var(--bg-secondary);
-        color: var(--text-primary);
+
+        border:
+            1px solid var(--border);
+
+        background:
+            var(--bg-secondary);
+
+        color:
+            var(--text-primary);
+
         text-decoration: none;
+
         font-size: 12px;
+
         font-weight: 600;
-        transition: var(--transition);
+
+        transition:
+            var(--transition);
     }
+
 
     .profile-btn:hover {
-        border-color: var(--border-hover);
-        background: var(--bg-card-hover);
+
+        border-color:
+            var(--border-hover);
+
+        background:
+            var(--bg-card-hover);
     }
+
 
     .profile-btn.primary {
-        border-color: transparent;
-        background: linear-gradient(
-            135deg,
-            var(--blue),
-            var(--blue-dark)
-        );
-        color: white;
+
+        border-color:
+            transparent;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                var(--blue),
+                var(--blue-dark)
+            );
+
+        color:
+            white;
     }
+
 
     .profile-btn.primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(37,99,235,.25);
+
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0 8px 20px
+            rgba(37,99,235,.25);
     }
 
-    /* Identity */
+
+    .profile-btn.handshake-pending {
+
+        color:
+            var(--blue-light);
+
+        background:
+            rgba(59,130,246,.08);
+
+        border-color:
+            rgba(59,130,246,.22);
+    }
+
+
+    .profile-btn.handshake-connected {
+
+        color:
+            #86efac;
+
+        background:
+            rgba(34,197,94,.08);
+
+        border-color:
+            rgba(34,197,94,.22);
+    }
+
+
+    .profile-btn.handshake-rejected {
+
+        color:
+            #94a3b8;
+
+        background:
+            rgba(255,255,255,.04);
+    }
+
+
+    .profile-btn.handshake-danger:hover {
+
+        color:
+            #fca5a5;
+
+        border-color:
+            rgba(239,68,68,.25);
+
+        background:
+            rgba(239,68,68,.07);
+    }
+
+
+    /* =====================================================
+       HANDSHAKE STATUS
+    ===================================================== */
+
+    .handshake-status {
+
+        display: none;
+
+        margin-top: 14px;
+
+        padding:
+            10px 13px;
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 10px;
+
+        color:
+            var(--text-secondary);
+
+        background:
+            rgba(255,255,255,.025);
+
+        font-size: 11px;
+
+        line-height: 1.5;
+    }
+
+
+    .handshake-status.visible {
+
+        display: block;
+    }
+
+
+    .handshake-status strong {
+
+        color:
+            var(--text-primary);
+    }
+
+
+    .handshake-response-actions {
+
+        display: flex;
+
+        gap: 7px;
+
+        margin-top: 9px;
+    }
+
+
+    .handshake-response-button {
+
+        min-height: 32px;
+
+        padding:
+            0 11px;
+
+        border-radius: 8px;
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        transition:
+            var(--transition);
+    }
+
+
+    .handshake-accept {
+
+        color: white;
+
+        background:
+            var(--blue);
+    }
+
+
+    .handshake-accept:hover {
+
+        background:
+            var(--blue-dark);
+    }
+
+
+    .handshake-reject {
+
+        color:
+            var(--text-secondary);
+
+        background:
+            rgba(255,255,255,.05);
+
+        border:
+            1px solid var(--border);
+    }
+
+
+    .handshake-reject:hover {
+
+        color:
+            #fca5a5;
+
+        border-color:
+            rgba(239,68,68,.25);
+    }
+
+
+    /* =====================================================
+       IDENTITY
+    ===================================================== */
+
     .identity {
+
         margin-top: 16px;
     }
 
+
     .profile-name {
+
         margin: 0;
-        font-family: "Space Grotesk", sans-serif;
+
+        font-family:
+            "Space Grotesk",
+            sans-serif;
+
         font-size: 27px;
+
         font-weight: 700;
-        color: var(--text-primary);
+
+        color:
+            var(--text-primary);
     }
+
 
     .username {
+
         margin-top: 3px;
-        color: var(--text-muted);
+
+        color:
+            var(--text-muted);
+
         font-size: 14px;
     }
 
+
     .bio {
+
         max-width: 720px;
-        margin: 14px 0 0;
-        color: var(--text-secondary);
+
+        margin:
+            14px 0 0;
+
+        color:
+            var(--text-secondary);
+
         font-size: 14px;
+
         line-height: 1.65;
     }
 
-    /* Meta */
+
+    /* =====================================================
+       META
+    ===================================================== */
+
     .profile-meta {
+
         display: flex;
+
         flex-wrap: wrap;
+
         gap: 16px;
+
         margin-top: 17px;
     }
 
+
     .meta-item {
+
         display: flex;
+
         align-items: center;
+
         gap: 6px;
-        color: var(--text-muted);
+
+        color:
+            var(--text-muted);
+
         font-size: 12px;
     }
 
+
     .meta-icon {
+
         font-size: 14px;
     }
 
+
     .meta-item strong {
-        color: var(--text-secondary);
+
+        color:
+            var(--text-secondary);
+
         font-weight: 500;
     }
 
-    /* Stats */
+
+    /* =====================================================
+       STATS
+    ===================================================== */
+
     .profile-stats {
+
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
         margin-top: 25px;
-        border-top: 1px solid var(--border);
+
+        border-top:
+            1px solid var(--border);
+
         padding-top: 22px;
     }
 
+
     .stat {
+
         text-align: center;
-        border-right: 1px solid var(--border);
+
+        border-right:
+            1px solid var(--border);
     }
 
+
     .stat:last-child {
+
         border-right: none;
     }
 
+
     .stat-value {
+
         display: block;
-        font-family: "Space Grotesk", sans-serif;
-        color: var(--text-primary);
+
+        font-family:
+            "Space Grotesk",
+            sans-serif;
+
+        color:
+            var(--text-primary);
+
         font-size: 21px;
+
         font-weight: 700;
     }
 
+
     .stat-label {
+
         display: block;
+
         margin-top: 3px;
-        color: var(--text-muted);
+
+        color:
+            var(--text-muted);
+
         font-size: 11px;
     }
 
-    /* Content */
+
+    /* =====================================================
+       CONTENT
+    ===================================================== */
+
     .profile-content {
+
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 300px;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            300px;
+
         gap: 20px;
+
         margin-top: 20px;
     }
 
+
     .content-card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
+
+        background:
+            var(--bg-card);
+
+        border:
+            1px solid var(--border);
+
+        border-radius:
+            var(--radius-lg);
+
         padding: 23px;
-        box-shadow: var(--shadow-card);
+
+        box-shadow:
+            var(--shadow-card);
     }
 
+
     .card-heading {
+
         display: flex;
+
         align-items: center;
+
         gap: 10px;
+
         margin-bottom: 17px;
     }
 
+
     .card-heading-icon {
+
         width: 35px;
+
         height: 35px;
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         border-radius: 9px;
-        background: rgba(59,130,246,.11);
-        border: 1px solid rgba(59,130,246,.15);
+
+        background:
+            rgba(59,130,246,.11);
+
+        border:
+            1px solid
+            rgba(59,130,246,.15);
     }
 
+
     .card-heading h2 {
+
         margin: 0;
-        font-family: "Space Grotesk", sans-serif;
-        color: var(--text-primary);
+
+        font-family:
+            "Space Grotesk",
+            sans-serif;
+
+        color:
+            var(--text-primary);
+
         font-size: 16px;
     }
 
-    /* Skills */
+
+    /* =====================================================
+       SKILLS
+    ===================================================== */
+
     .skills {
+
         display: flex;
+
         flex-wrap: wrap;
+
         gap: 8px;
     }
 
+
     .skill {
-        padding: 7px 11px;
+
+        padding:
+            7px 11px;
+
         border-radius: 8px;
-        background: rgba(59,130,246,.09);
-        border: 1px solid rgba(59,130,246,.16);
-        color: var(--blue-light);
+
+        background:
+            rgba(59,130,246,.09);
+
+        border:
+            1px solid
+            rgba(59,130,246,.16);
+
+        color:
+            var(--blue-light);
+
         font-size: 12px;
+
         font-weight: 600;
     }
 
+
     .empty-text {
-        color: var(--text-muted);
+
+        color:
+            var(--text-muted);
+
         font-size: 13px;
     }
 
-    /* About */
+
+    /* =====================================================
+       ABOUT
+    ===================================================== */
+
     .about-row {
+
         display: flex;
+
         align-items: flex-start;
+
         gap: 13px;
-        padding: 13px 0;
-        border-bottom: 1px solid var(--border);
+
+        padding:
+            13px 0;
+
+        border-bottom:
+            1px solid var(--border);
     }
 
+
     .about-row:first-child {
+
         padding-top: 0;
     }
 
+
     .about-row:last-child {
+
         border-bottom: none;
+
         padding-bottom: 0;
     }
 
+
     .about-icon {
+
         width: 32px;
+
         height: 32px;
+
         border-radius: 8px;
-        background: var(--bg-secondary);
+
+        background:
+            var(--bg-secondary);
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         flex-shrink: 0;
     }
 
+
     .about-label {
-        color: var(--text-muted);
+
+        color:
+            var(--text-muted);
+
         font-size: 11px;
     }
 
+
     .about-value {
+
         margin-top: 2px;
-        color: var(--text-secondary);
+
+        color:
+            var(--text-secondary);
+
         font-size: 13px;
     }
 
-    /* Social */
+
+    /* =====================================================
+       SOCIAL
+    ===================================================== */
+
     .social-links {
+
         display: flex;
+
         flex-direction: column;
+
         gap: 9px;
     }
 
+
     .social-link {
+
         display: flex;
+
         align-items: center;
+
         gap: 11px;
+
         padding: 11px;
+
         border-radius: 10px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border);
-        color: var(--text-secondary);
+
+        background:
+            var(--bg-secondary);
+
+        border:
+            1px solid var(--border);
+
+        color:
+            var(--text-secondary);
+
         text-decoration: none;
+
         font-size: 12px;
-        transition: var(--transition);
+
+        transition:
+            var(--transition);
     }
+
 
     .social-link:hover {
-        color: var(--text-primary);
-        border-color: var(--border-hover);
-        transform: translateX(2px);
+
+        color:
+            var(--text-primary);
+
+        border-color:
+            var(--border-hover);
+
+        transform:
+            translateX(2px);
     }
 
+
     .social-icon {
+
         width: 30px;
+
         height: 30px;
+
         border-radius: 8px;
-        background: var(--bg-card-hover);
+
+        background:
+            var(--bg-card-hover);
+
         display: flex;
+
         align-items: center;
+
         justify-content: center;
+
         font-weight: 700;
+
         font-size: 11px;
     }
 
-    /* Interests */
+
+    /* =====================================================
+       INTERESTS
+    ===================================================== */
+
     .interests {
+
         display: flex;
+
         flex-wrap: wrap;
+
         gap: 7px;
     }
 
+
     .interest {
-        padding: 6px 9px;
+
+        padding:
+            6px 9px;
+
         border-radius: 7px;
-        color: var(--text-secondary);
-        background: var(--bg-secondary);
-        border: 1px solid var(--border);
+
+        color:
+            var(--text-secondary);
+
+        background:
+            var(--bg-secondary);
+
+        border:
+            1px solid var(--border);
+
         font-size: 11px;
     }
 
-    /* Responsive */
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+
     @media (max-width: 900px) {
+
         .profile-content {
-            grid-template-columns: 1fr;
+
+            grid-template-columns:
+                1fr;
         }
+
     }
 
+
     @media (max-width: 650px) {
+
         .public-profile {
-            padding-bottom: 75px;
+
+            padding-bottom:
+                75px;
         }
 
+
         .profile-cover {
+
             height: 140px;
         }
 
+
         .profile-main {
-            padding: 0 18px 22px;
+
+            padding:
+                0 18px 22px;
         }
+
 
         .profile-top {
-            align-items: flex-start;
-            flex-direction: column;
+
+            align-items:
+                flex-start;
+
+            flex-direction:
+                column;
         }
 
+
         .profile-actions {
+
             width: 100%;
+
             padding-bottom: 0;
         }
 
+
         .profile-btn {
+
             flex: 1;
         }
 
+
         .profile-name {
+
             font-size: 23px;
         }
 
+
         .profile-avatar,
         .avatar-placeholder {
+
             width: 100px;
+
             height: 100px;
         }
 
+
         .avatar-area {
-            margin-top: -48px;
+
+            margin-top:
+                -48px;
         }
+
 
         .profile-stats {
-            margin-top: 20px;
+
+            margin-top:
+                20px;
         }
+
 
         .content-card {
-            padding: 19px;
+
+            padding:
+                19px;
         }
+
     }
 
+
     @media (max-width: 430px) {
+
         .profile-meta {
-            flex-direction: column;
+
+            flex-direction:
+                column;
+
             gap: 8px;
         }
 
+
         .profile-actions {
+
             display: grid;
-            grid-template-columns: 1fr 1fr;
+
+            grid-template-columns:
+                1fr 1fr;
         }
+
+
+        .handshake-response-actions {
+
+            width: 100%;
+        }
+
+
+        .handshake-response-button {
+
+            flex: 1;
+        }
+
     }
+
 </style>
 
 
+<!-- =====================================================
+     PUBLIC PROFILE
+====================================================== -->
+
 <div class="public-profile">
 
-    <!-- Profile Hero -->
+
+    <!-- =================================================
+         PROFILE HERO
+    ================================================== -->
+
     <section class="profile-hero">
 
+
         <div class="profile-cover">
+
             <div class="cover-grid"></div>
+
         </div>
+
 
         <div class="profile-main">
 
+
             <div class="profile-top">
 
+
+                <!-- Avatar -->
+
                 <div class="avatar-area">
+
 
                     {% if profile.avatar %}
 
@@ -495,19 +1129,27 @@
                     {% else %}
 
                         <div class="avatar-placeholder">
+
                             {{ profile_user.username|first|upper }}
+
                         </div>
 
                     {% endif %}
 
+
                     <div class="online-dot"></div>
+
 
                 </div>
 
 
+                <!-- Actions -->
+
                 <div class="profile-actions">
 
+
                     {% if request.user == profile_user %}
+
 
                         <a
                             href="{% url 'edit_profile' %}"
@@ -516,17 +1158,78 @@
                             ✎ Edit Profile
                         </a>
 
+
                     {% else %}
 
-                        <button
-                            type="button"
-                            class="profile-btn primary"
-                            onclick="alert('Handshake is coming soon!')"
-                        >
-                            🤝 Handshake
-                        </button>
+
+                        {% if request.user.is_authenticated %}
+
+
+                            <!-- Hidden CSRF token -->
+
+                            <div
+                                id="handshake-csrf"
+                                style="display:none;"
+                            >
+
+                                {% csrf_token %}
+
+                            </div>
+
+
+                            <!-- Handshake button -->
+
+                            <button
+                                type="button"
+                                id="handshake-button"
+                                class="
+                                    profile-btn
+                                    primary
+                                "
+                                data-username="{{ profile_user.username }}"
+                                data-status="{{ handshake_status|default:'none' }}"
+                                data-handshake-id="{{ handshake_id|default:'' }}"
+                            >
+
+                                <span
+                                    id="handshake-button-icon"
+                                >
+                                    🤝
+                                </span>
+
+                                <span
+                                    id="handshake-button-text"
+                                >
+                                    Send Handshake
+                                </span>
+
+                            </button>
+
+
+                            <!-- Status message -->
+
+                            <div
+                                id="handshake-status"
+                                class="handshake-status"
+                            ></div>
+
+
+                        {% else %}
+
+
+                            <a
+                                href="{% url 'login' %}"
+                                class="profile-btn primary"
+                            >
+                                🤝 Login to Handshake
+                            </a>
+
+
+                        {% endif %}
+
 
                     {% endif %}
+
 
                     <a
                         href="{% url 'feed' %}"
@@ -535,146 +1238,242 @@
                         ← Back
                     </a>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- Identity -->
+            <!-- =================================================
+                 IDENTITY
+            ================================================== -->
+
             <div class="identity">
 
+
                 <h1 class="profile-name">
+
                     {{ profile_user.get_full_name|default:profile_user.username }}
+
                 </h1>
 
+
                 <div class="username">
+
                     @{{ profile_user.username }}
+
                 </div>
 
 
                 {% if profile.bio %}
 
                     <p class="bio">
+
                         {{ profile.bio }}
+
                     </p>
 
                 {% else %}
 
                     <p class="bio">
+
                         This person hasn't added a bio yet.
+
                     </p>
 
                 {% endif %}
 
 
+                <!-- Meta -->
+
                 <div class="profile-meta">
 
+
                     {% if profile.college %}
+
                         <div class="meta-item">
-                            <span class="meta-icon">🎓</span>
-                            <strong>{{ profile.college }}</strong>
+
+                            <span class="meta-icon">
+                                🎓
+                            </span>
+
+                            <strong>
+                                {{ profile.college }}
+                            </strong>
+
                         </div>
+
                     {% endif %}
 
 
                     {% if profile.course %}
+
                         <div class="meta-item">
-                            <span class="meta-icon">📚</span>
-                            <strong>{{ profile.course }}</strong>
+
+                            <span class="meta-icon">
+                                📚
+                            </span>
+
+                            <strong>
+                                {{ profile.course }}
+                            </strong>
+
                         </div>
+
                     {% endif %}
 
 
                     {% if profile.year %}
+
                         <div class="meta-item">
-                            <span class="meta-icon">📅</span>
-                            <strong>Year {{ profile.year }}</strong>
+
+                            <span class="meta-icon">
+                                📅
+                            </span>
+
+                            <strong>
+                                Year {{ profile.year }}
+                            </strong>
+
                         </div>
+
                     {% endif %}
 
 
                     <div class="meta-item">
-                        <span class="meta-icon">🗓</span>
+
+                        <span class="meta-icon">
+                            🗓
+                        </span>
+
                         <strong>
                             Joined {{ profile.created_at|date:"M Y" }}
                         </strong>
+
                     </div>
 
+
                 </div>
+
 
             </div>
 
 
-            <!-- Stats -->
+            <!-- =================================================
+                 STATS
+            ================================================== -->
+
             <div class="profile-stats">
 
+
                 <div class="stat">
+
                     <span class="stat-value">
+
                         {{ profile_user.posts.count }}
+
                     </span>
+
                     <span class="stat-label">
                         Posts
                     </span>
+
                 </div>
 
+
                 <div class="stat">
-                    <span class="stat-value">
-                        0
+
+                    <span
+                        class="stat-value"
+                        id="connection-count"
+                    >
+                        {{ connection_count|default:"0" }}
                     </span>
+
                     <span class="stat-label">
                         Connections
                     </span>
+
                 </div>
 
+
                 <div class="stat">
-                    <span class="stat-value">
-                        0
+
+                    <span
+                        class="stat-value"
+                        id="handshake-count"
+                    >
+                        {{ handshake_count|default:"0" }}
                     </span>
+
                     <span class="stat-label">
                         Handshakes
                     </span>
+
                 </div>
 
+
             </div>
+
 
         </div>
 
     </section>
 
 
-    <!-- Profile Content -->
+    <!-- =================================================
+         PROFILE CONTENT
+    ================================================== -->
+
     <div class="profile-content">
 
-        <!-- Main Column -->
+
+        <!-- =================================================
+             MAIN COLUMN
+        ================================================== -->
+
         <div>
 
+
             <!-- Skills -->
+
             <div class="content-card">
 
+
                 <div class="card-heading">
+
 
                     <div class="card-heading-icon">
                         ⚡
                     </div>
 
+
                     <h2>
                         Skills
                     </h2>
+
 
                 </div>
 
 
                 {% if profile.skills %}
 
+
                     <div class="skills">
 
                         {% for skill in profile.skills.split|default:"" %}
+
                             <span class="skill">
+
                                 {{ skill }}
+
                             </span>
+
                         {% endfor %}
 
                     </div>
+
 
                     <div
                         style="
@@ -683,122 +1482,178 @@
                             font-size: 11px;
                         "
                     >
+
                         {{ profile.skills }}
+
                     </div>
+
 
                 {% else %}
 
+
                     <div class="empty-text">
+
                         No skills added yet.
+
                     </div>
 
+
                 {% endif %}
+
 
             </div>
 
 
             <!-- About -->
+
             <div
                 class="content-card"
                 style="margin-top: 20px;"
             >
 
+
                 <div class="card-heading">
+
 
                     <div class="card-heading-icon">
                         👤
                     </div>
 
+
                     <h2>
                         About
                     </h2>
+
 
                 </div>
 
 
                 <div class="about-row">
+
 
                     <div class="about-icon">
                         🎓
                     </div>
 
+
                     <div>
+
+
                         <div class="about-label">
                             College
                         </div>
 
+
                         <div class="about-value">
+
                             {{ profile.college|default:"Not specified" }}
+
                         </div>
+
+
                     </div>
+
 
                 </div>
 
 
                 <div class="about-row">
+
 
                     <div class="about-icon">
                         📚
                     </div>
 
+
                     <div>
+
+
                         <div class="about-label">
                             Course
                         </div>
 
+
                         <div class="about-value">
+
                             {{ profile.course|default:"Not specified" }}
+
                         </div>
+
+
                     </div>
+
 
                 </div>
 
 
                 <div class="about-row">
 
+
                     <div class="about-icon">
                         🎯
                     </div>
 
+
                     <div>
+
+
                         <div class="about-label">
                             Interests
                         </div>
 
+
                         <div class="about-value">
+
                             {{ profile.interests|default:"No interests added yet." }}
+
                         </div>
+
+
                     </div>
+
 
                 </div>
 
+
             </div>
+
 
         </div>
 
 
-        <!-- Sidebar -->
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
         <aside>
 
+
             <!-- Social Links -->
+
             <div class="content-card">
 
+
                 <div class="card-heading">
+
 
                     <div class="card-heading-icon">
                         🔗
                     </div>
 
+
                     <h2>
                         Connect
                     </h2>
+
 
                 </div>
 
 
                 <div class="social-links">
 
+
                     {% if profile.github %}
+
 
                         <a
                             href="{{ profile.github }}"
@@ -806,23 +1661,31 @@
                             rel="noopener noreferrer"
                             class="social-link"
                         >
+
+
                             <span class="social-icon">
                                 GH
                             </span>
+
 
                             <span>
                                 GitHub
                             </span>
 
+
                             <span style="margin-left:auto;">
                                 ↗
                             </span>
+
+
                         </a>
+
 
                     {% endif %}
 
 
                     {% if profile.linkedin %}
+
 
                         <a
                             href="{{ profile.linkedin }}"
@@ -830,76 +1693,733 @@
                             rel="noopener noreferrer"
                             class="social-link"
                         >
+
+
                             <span class="social-icon">
                                 in
                             </span>
+
 
                             <span>
                                 LinkedIn
                             </span>
 
+
                             <span style="margin-left:auto;">
                                 ↗
                             </span>
+
+
                         </a>
+
 
                     {% endif %}
 
 
                     {% if not profile.github and not profile.linkedin %}
 
+
                         <div class="empty-text">
+
                             No social links added yet.
+
                         </div>
+
 
                     {% endif %}
 
+
                 </div>
+
 
             </div>
 
 
             <!-- Interests -->
+
             <div
                 class="content-card"
                 style="margin-top: 20px;"
             >
 
+
                 <div class="card-heading">
+
 
                     <div class="card-heading-icon">
                         ❤️
                     </div>
 
+
                     <h2>
                         Interests
                     </h2>
+
 
                 </div>
 
 
                 {% if profile.interests %}
 
+
                     <div class="interests">
 
-                        {{ profile.interests }}
+                        {% for interest in profile.interests.split|default:"" %}
+
+                            <span class="interest">
+                                {{ interest }}
+                            </span>
+
+                        {% endfor %}
 
                     </div>
+
 
                 {% else %}
 
+
                     <div class="empty-text">
+
                         No interests added yet.
+
                     </div>
+
 
                 {% endif %}
 
+
             </div>
+
 
         </aside>
 
+
     </div>
 
+
 </div>
+
+
+<!-- =====================================================
+     HANDSHAKE JAVASCRIPT
+====================================================== -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        const button =
+            document.getElementById(
+                "handshake-button"
+            );
+
+
+        if (!button) {
+            return;
+        }
+
+
+        const buttonText =
+            document.getElementById(
+                "handshake-button-text"
+            );
+
+
+        const buttonIcon =
+            document.getElementById(
+                "handshake-button-icon"
+            );
+
+
+        const statusBox =
+            document.getElementById(
+                "handshake-status"
+            );
+
+
+        const csrfInput =
+            document.querySelector(
+                "#handshake-csrf input[name='csrfmiddlewaretoken']"
+            );
+
+
+        const csrfToken =
+            csrfInput
+                ? csrfInput.value
+                : "";
+
+
+        let status =
+            button.dataset.status
+            || "none";
+
+
+        let handshakeId =
+            button.dataset.handshakeId
+            || "";
+
+
+        function setButton(
+            newStatus
+        ) {
+
+            status =
+                newStatus;
+
+
+            button.classList.remove(
+                "handshake-pending",
+                "handshake-connected",
+                "handshake-rejected"
+            );
+
+
+            if (
+                newStatus === "none"
+            ) {
+
+                button.classList.add(
+                    "primary"
+                );
+
+                button.disabled =
+                    false;
+
+                buttonIcon.textContent =
+                    "🤝";
+
+                buttonText.textContent =
+                    "Send Handshake";
+
+                return;
+            }
+
+
+            if (
+                newStatus === "pending_sent"
+            ) {
+
+                button.classList.add(
+                    "handshake-pending"
+                );
+
+                button.classList.remove(
+                    "primary"
+                );
+
+                button.disabled =
+                    false;
+
+                buttonIcon.textContent =
+                    "⏳";
+
+                buttonText.textContent =
+                    "Handshake Pending";
+
+                return;
+            }
+
+
+            if (
+                newStatus === "pending_received"
+            ) {
+
+                button.classList.add(
+                    "handshake-pending"
+                );
+
+                button.classList.remove(
+                    "primary"
+                );
+
+                button.disabled =
+                    false;
+
+                buttonIcon.textContent =
+                    "🤝";
+
+                buttonText.textContent =
+                    "Respond to Handshake";
+
+                return;
+            }
+
+
+            if (
+                newStatus === "accepted"
+            ) {
+
+                button.classList.add(
+                    "handshake-connected"
+                );
+
+                button.classList.remove(
+                    "primary"
+                );
+
+                button.disabled =
+                    true;
+
+                buttonIcon.textContent =
+                    "✓";
+
+                buttonText.textContent =
+                    "Connected";
+
+                return;
+            }
+
+
+            if (
+                newStatus === "rejected"
+            ) {
+
+                button.classList.add(
+                    "handshake-rejected"
+                );
+
+                button.classList.remove(
+                    "primary"
+                );
+
+                button.disabled =
+                    false;
+
+                buttonIcon.textContent =
+                    "↺";
+
+                buttonText.textContent =
+                    "Send Again";
+            }
+        }
+
+
+        function showStatus(
+            html
+        ) {
+
+            if (!statusBox) {
+                return;
+            }
+
+
+            statusBox.innerHTML =
+                html;
+
+
+            statusBox.classList.add(
+                "visible"
+            );
+        }
+
+
+        function hideStatus() {
+
+            if (!statusBox) {
+                return;
+            }
+
+
+            statusBox.innerHTML =
+                "";
+
+            statusBox.classList.remove(
+                "visible"
+            );
+        }
+
+
+        async function sendRequest(
+            url
+        ) {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "POST",
+
+                        headers: {
+
+                            "X-CSRFToken":
+                                csrfToken,
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error
+                    ||
+                    "Handshake request failed."
+                );
+            }
+
+
+            return data;
+        }
+
+
+        setButton(status);
+
+
+        /* =================================================
+           MAIN HANDSHAKE BUTTON
+        ================================================= */
+
+        button.addEventListener(
+            "click",
+            async function () {
+
+
+                if (
+                    status === "accepted"
+                ) {
+                    return;
+                }
+
+
+                button.disabled =
+                    true;
+
+
+                try {
+
+
+                    /* =====================================
+                       SEND
+                    ===================================== */
+
+                    if (
+                        status === "none"
+                        ||
+                        status === "rejected"
+                    ) {
+
+                        const username =
+                            button.dataset.username;
+
+
+                        const url =
+                            "{% url 'send_handshake' 'USERNAME_PLACEHOLDER' %}"
+                                .replace(
+                                    "USERNAME_PLACEHOLDER",
+                                    encodeURIComponent(
+                                        username
+                                    )
+                                );
+
+
+                        const data =
+                            await sendRequest(
+                                url
+                            );
+
+
+                        status =
+                            data.status;
+
+
+                        setButton(
+                            data.status
+                        );
+
+
+                        if (
+                            data.status
+                            === "accepted"
+                        ) {
+
+                            showStatus(
+                                "<strong>Connected!</strong> " +
+                                "You and @" +
+                                username +
+                                " are now connected."
+                            );
+
+                        } else {
+
+                            showStatus(
+                                "<strong>Handshake sent.</strong> " +
+                                "They can accept or reject your request."
+                            );
+                        }
+
+
+                        return;
+                    }
+
+
+                    /* =====================================
+                       CANCEL
+                    ===================================== */
+
+                    if (
+                        status
+                        === "pending_sent"
+                    ) {
+
+                        if (
+                            !handshakeId
+                        ) {
+
+                            throw new Error(
+                                "Handshake ID is missing."
+                            );
+                        }
+
+
+                        const url =
+                            "{% url 'cancel_handshake' 0 %}"
+                                .replace(
+                                    "/0/",
+                                    "/" +
+                                    handshakeId +
+                                    "/"
+                                );
+
+
+                        const data =
+                            await sendRequest(
+                                url
+                            );
+
+
+                        if (
+                            data.success
+                        ) {
+
+                            setButton(
+                                "none"
+                            );
+
+                            hideStatus();
+
+                        }
+
+
+                        return;
+                    }
+
+
+                    /* =====================================
+                       ACCEPT / RECEIVER ACTION
+                    ===================================== */
+
+                    if (
+                        status
+                        === "pending_received"
+                    ) {
+
+                        if (
+                            !handshakeId
+                        ) {
+
+                            throw new Error(
+                                "Handshake ID is missing."
+                            );
+                        }
+
+
+                        showStatus(
+                            "<strong>Incoming handshake.</strong>" +
+                            "<div class='handshake-response-actions'>" +
+
+                            "<button " +
+                            "type='button' " +
+                            "class='handshake-response-button handshake-accept' " +
+                            "id='accept-handshake'>" +
+                            "Accept" +
+                            "</button>" +
+
+                            "<button " +
+                            "type='button' " +
+                            "class='handshake-response-button handshake-reject' " +
+                            "id='reject-handshake'>" +
+                            "Reject" +
+                            "</button>" +
+
+                            "</div>"
+                        );
+
+
+                        button.disabled =
+                            false;
+
+
+                        return;
+                    }
+
+
+                } catch (error) {
+
+
+                    console.error(
+                        "Handshake error:",
+                        error
+                    );
+
+
+                    showStatus(
+                        "<strong>Couldn't update Handshake.</strong> " +
+                        error.message
+                    );
+
+
+                } finally {
+
+
+                    if (
+                        status
+                        !== "pending_received"
+                    ) {
+
+                        button.disabled =
+                            status
+                            === "accepted";
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           ACCEPT / REJECT DELEGATION
+        ================================================= */
+
+        document.addEventListener(
+            "click",
+            async function (event) {
+
+
+                if (
+                    event.target.id
+                    === "accept-handshake"
+                ) {
+
+                    if (!handshakeId) {
+                        return;
+                    }
+
+
+                    try {
+
+                        const url =
+                            "{% url 'accept_handshake' 0 %}"
+                                .replace(
+                                    "/0/",
+                                    "/" +
+                                    handshakeId +
+                                    "/"
+                                );
+
+
+                        const data =
+                            await sendRequest(
+                                url
+                            );
+
+
+                        if (
+                            data.success
+                        ) {
+
+                            setButton(
+                                "accepted"
+                            );
+
+
+                            showStatus(
+                                "<strong>Handshake accepted!</strong> " +
+                                "You are now connected."
+                            );
+                        }
+
+
+                    } catch (error) {
+
+                        showStatus(
+                            "<strong>Couldn't accept.</strong> " +
+                            error.message
+                        );
+
+                    }
+
+                }
+
+
+                if (
+                    event.target.id
+                    === "reject-handshake"
+                ) {
+
+                    if (!handshakeId) {
+                        return;
+                    }
+
+
+                    try {
+
+                        const url =
+                            "{% url 'reject_handshake' 0 %}"
+                                .replace(
+                                    "/0/",
+                                    "/" +
+                                    handshakeId +
+                                    "/"
+                                );
+
+
+                        const data =
+                            await sendRequest(
+                                url
+                            );
+
+
+                        if (
+                            data.success
+                        ) {
+
+                            setButton(
+                                "none"
+                            );
+
+
+                            hideStatus();
+                        }
+
+
+                    } catch (error) {
+
+                        showStatus(
+                            "<strong>Couldn't reject.</strong> " +
+                            error.message
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
 
 {% endblock %}

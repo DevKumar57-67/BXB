@@ -90,6 +90,10 @@ urlpatterns = [
     path('feed/', include('posts.urls')),
 
      path('search/', include('search.urls')),
+
+     path('handshake/', include('handshake.urls')),
+
+     path('notifications/', include('notifications.urls')),
 ]
 
 
