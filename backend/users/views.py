@@ -69,28 +69,25 @@ from .models import User
 
 from .forms import RegistrationForm
 from .utils import send_otp_email
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 
 def register(request):
-
     if request.user.is_authenticated:
         return redirect('feed')
 
     if request.method == 'POST':
-
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-
             request.session['registration_data'] = {
                 'username': form.cleaned_data['username'],
                 'email': form.cleaned_data['email'],
-                'password': form.cleaned_data['password1'],
+                'password': form.cleaned_data['password'],
             }
 
-            send_otp_email(
-                form.cleaned_data['email']
-            )
+            send_otp_email(form.cleaned_data['email'])
 
             return redirect('verify_otp')
 
@@ -102,7 +99,6 @@ def register(request):
         'users/register.html',
         {'form': form}
     )
-
 
 def verify_otp(request):
 

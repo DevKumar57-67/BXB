@@ -1,20 +1,613 @@
-{% extends "base.html" %}
 
-{% block title %}Create Account | BitsXBytes{% endblock %}
-
-{% block content %}
-<div class="card">
-    <h1>Create your BxB account</h1>
-
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create Account</button>
-    </form>
-
-    <p>
-        Already have an account?
-        <a href="{% url 'login' %}">Login</a>
-    </p>
-</div>
-{% endblock %}
+ 
+<style> 
+    .auth-page { 
+        min-height: calc(100vh - 72px); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        padding: 40px 20px; 
+        position: relative; 
+        overflow: hidden; 
+    } 
+ 
+    .auth-page::before { 
+        content: ""; 
+        position: absolute; 
+        width: 520px; 
+        height: 520px; 
+        background: rgba(59, 130, 246, 0.10); 
+        filter: blur(110px); 
+        border-radius: 50%; 
+        top: 0; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        pointer-events: none; 
+    } 
+ 
+    .auth-container { 
+        width: 100%; 
+        max-width: 480px; 
+        position: relative; 
+        z-index: 2; 
+    } 
+ 
+    /* Brand */ 
+ 
+    .auth-brand { 
+        text-align: center; 
+        margin-bottom: 28px; 
+    } 
+ 
+    .auth-logo { 
+        width: 58px; 
+        height: 58px; 
+        margin: 0 auto 16px; 
+ 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+ 
+        border-radius: 16px; 
+ 
+        background: linear-gradient( 
+            135deg, 
+            #3b82f6, 
+            #2563eb 
+        ); 
+ 
+        color: white; 
+ 
+        font-family: "Space Grotesk", sans-serif; 
+        font-size: 25px; 
+        font-weight: 800; 
+ 
+        box-shadow: 
+            0 12px 35px rgba(37, 99, 235, 0.35), 
+            inset 0 1px 0 rgba(255,255,255,.2); 
+    } 
+ 
+    .auth-brand h1 { 
+        margin: 0 0 7px; 
+ 
+        color: var(--text-primary); 
+ 
+        font-family: "Space Grotesk", sans-serif; 
+        font-size: 26px; 
+        font-weight: 700; 
+    } 
+ 
+    .auth-brand p { 
+        margin: 0; 
+ 
+        color: var(--text-secondary); 
+        font-size: 14px; 
+    } 
+ 
+    /* Card */ 
+ 
+    .auth-card { 
+        background: rgba(16, 21, 33, 0.94); 
+ 
+        border: 1px solid var(--border); 
+        border-radius: 20px; 
+ 
+        padding: 32px; 
+ 
+        box-shadow: 
+            0 25px 70px rgba(0,0,0,.35), 
+            inset 0 1px 0 rgba(255,255,255,.03); 
+ 
+        backdrop-filter: blur(18px); 
+    } 
+ 
+    .auth-card-header { 
+        margin-bottom: 25px; 
+    } 
+ 
+    .auth-card-header h2 { 
+        margin: 0 0 7px; 
+ 
+        color: var(--text-primary); 
+ 
+        font-family: "Space Grotesk", sans-serif; 
+        font-size: 21px; 
+    } 
+ 
+    .auth-card-header p { 
+        margin: 0; 
+ 
+        color: var(--text-secondary); 
+        font-size: 13px; 
+        line-height: 1.6; 
+    } 
+ 
+    /* Progress */ 
+ 
+    .signup-progress { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px; 
+ 
+        margin-bottom: 26px; 
+    } 
+ 
+    .progress-step { 
+        height: 4px; 
+        flex: 1; 
+ 
+        border-radius: 999px; 
+ 
+        background: #1e293b; 
+    } 
+ 
+    .progress-step.active { 
+        background: #3b82f6; 
+    } 
+ 
+    .progress-label { 
+        margin-left: 4px; 
+ 
+        color: #64748b; 
+        font-size: 11px; 
+        white-space: nowrap; 
+    } 
+ 
+    /* Form */ 
+ 
+    .register-form p { 
+        margin: 0 0 18px; 
+    } 
+ 
+    .register-form label { 
+        display: block; 
+ 
+        margin-bottom: 7px; 
+ 
+        color: #cbd5e1; 
+ 
+        font-size: 13px; 
+        font-weight: 600; 
+    } 
+ 
+    .register-form input { 
+        width: 100%; 
+        box-sizing: border-box; 
+ 
+        padding: 12px 14px; 
+ 
+        background: #0b0f19; 
+ 
+        border: 1px solid rgba(255,255,255,.09); 
+        border-radius: 10px; 
+ 
+        color: var(--text-primary); 
+ 
+        font-family: inherit; 
+        font-size: 14px; 
+ 
+        outline: none; 
+ 
+        transition: all 180ms ease; 
+    } 
+ 
+    .register-form input::placeholder { 
+        color: #475569; 
+    } 
+ 
+    .register-form input:focus { 
+        border-color: rgba(59,130,246,.65); 
+ 
+        box-shadow: 
+            0 0 0 3px rgba(59,130,246,.10); 
+ 
+        background: #0d1320; 
+    } 
+ 
+    /* Errors */ 
+ 
+    .errorlist { 
+        list-style: none; 
+ 
+        padding: 0; 
+        margin: 7px 0 0; 
+ 
+        color: #f87171; 
+ 
+        font-size: 12px; 
+        line-height: 1.5; 
+    } 
+ 
+    .form-errors { 
+        background: rgba(239,68,68,.08); 
+ 
+        border: 1px solid rgba(239,68,68,.18); 
+ 
+        border-radius: 10px; 
+ 
+        padding: 12px 14px; 
+ 
+        margin-bottom: 20px; 
+ 
+        color: #fca5a5; 
+ 
+        font-size: 13px; 
+    } 
+ 
+    /* Password help */ 
+ 
+    .helptext { 
+        display: block; 
+ 
+        margin-top: 7px; 
+ 
+        color: #64748b; 
+ 
+        font-size: 11px; 
+        line-height: 1.5; 
+    } 
+ 
+    /* Submit */ 
+ 
+    .register-btn { 
+        width: 100%; 
+ 
+        border: none; 
+        border-radius: 10px; 
+ 
+        padding: 13px 16px; 
+ 
+        background: linear-gradient( 
+            135deg, 
+            #3b82f6, 
+            #2563eb 
+        ); 
+ 
+        color: white; 
+ 
+        font-family: inherit; 
+        font-size: 14px; 
+        font-weight: 700; 
+ 
+        cursor: pointer; 
+ 
+        box-shadow: 
+            0 8px 25px rgba(37,99,235,.25); 
+ 
+        transition: 
+            transform 180ms ease, 
+            box-shadow 180ms ease, 
+            filter 180ms ease; 
+    } 
+ 
+    .register-btn:hover { 
+        transform: translateY(-1px); 
+ 
+        filter: brightness(1.08); 
+ 
+        box-shadow: 
+            0 12px 30px rgba(37,99,235,.35); 
+    } 
+ 
+    .register-btn:active { 
+        transform: translateY(0); 
+    } 
+ 
+    /* Divider */ 
+ 
+    .auth-divider { 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+ 
+        margin: 25px 0; 
+ 
+        color: #475569; 
+ 
+        font-size: 11px; 
+    } 
+ 
+    .auth-divider::before, 
+    .auth-divider::after { 
+        content: ""; 
+ 
+        height: 1px; 
+ 
+        flex: 1; 
+ 
+        background: rgba(255,255,255,.07); 
+    } 
+ 
+    /* Login */ 
+ 
+    .login-box { 
+        text-align: center; 
+    } 
+ 
+    .login-box p { 
+        margin: 0; 
+ 
+        color: var(--text-secondary); 
+ 
+        font-size: 13px; 
+    } 
+ 
+    .login-box a { 
+        color: var(--blue-light); 
+ 
+        text-decoration: none; 
+ 
+        font-weight: 600; 
+ 
+        margin-left: 4px; 
+    } 
+ 
+    .login-box a:hover { 
+        text-decoration: underline; 
+    } 
+ 
+    /* Verification note */ 
+ 
+    .verification-note { 
+        display: flex; 
+        align-items: flex-start; 
+        gap: 10px; 
+ 
+        margin-top: 20px; 
+ 
+        padding: 12px 14px; 
+ 
+        background: rgba(59,130,246,.06); 
+ 
+        border: 1px solid rgba(59,130,246,.12); 
+ 
+        border-radius: 10px; 
+    } 
+ 
+    .verification-icon { 
+        width: 24px; 
+        height: 24px; 
+ 
+        flex-shrink: 0; 
+ 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+ 
+        border-radius: 7px; 
+ 
+        background: rgba(59,130,246,.12); 
+ 
+        color: #60a5fa; 
+ 
+        font-size: 12px; 
+    } 
+ 
+    .verification-note p { 
+        margin: 0; 
+ 
+        color: #64748b; 
+ 
+        font-size: 11px; 
+ 
+        line-height: 1.55; 
+    } 
+ 
+    .verification-note strong { 
+        color: #94a3b8; 
+    } 
+ 
+    /* Mobile */ 
+ 
+    @media (max-width: 520px) { 
+ 
+        .auth-page { 
+            padding: 25px 14px; 
+        } 
+ 
+        .auth-card { 
+            padding: 24px 20px; 
+            border-radius: 16px; 
+        } 
+ 
+        .auth-brand h1 { 
+            font-size: 23px; 
+        } 
+ 
+        .auth-logo { 
+            width: 52px; 
+            height: 52px; 
+        } 
+ 
+        .progress-label { 
+            display: none; 
+        } 
+    } 
+</style> 
+ 
+ 
+<div class="auth-page"> 
+ 
+    <div class="auth-container"> 
+ 
+        <!-- Brand --> 
+ 
+        <div class="auth-brand"> 
+ 
+            <div class="auth-logo"> 
+                B 
+            </div> 
+ 
+            <h1>Join BitsXBytes.</h1> 
+ 
+            <p> 
+                Create your account and join the student network. 
+            </p> 
+ 
+        </div> 
+ 
+ 
+        <!-- Registration Card --> 
+ 
+        <div class="auth-card"> 
+ 
+            <div class="auth-card-header"> 
+ 
+                <h2>Create your account</h2> 
+ 
+                <p> 
+                    Start building your profile, connecting with students, 
+                    and showcasing what you build. 
+                </p> 
+ 
+            </div> 
+ 
+ 
+            <!-- Registration Progress --> 
+ 
+            <div class="signup-progress"> 
+ 
+                <div class="progress-step active"></div> 
+ 
+                <div class="progress-step"></div> 
+ 
+                <span class="progress-label"> 
+                    Account verification 
+                </span> 
+ 
+            </div> 
+ 
+ 
+            {% if form.non_field_errors %} 
+ 
+                <div class="form-errors"> 
+                    {{ form.non_field_errors }} 
+                </div> 
+ 
+            {% endif %} 
+ 
+ 
+            <form method="post" class="register-form"> 
+ 
+                {% csrf_token %} 
+ 
+ 
+                <!-- Username --> 
+ 
+                <p> 
+ 
+                    <label for="{{ form.username.id_for_label }}"> 
+                        Username 
+                    </label> 
+ 
+                    {{ form.username }} 
+ 
+                    {{ form.username.errors }} 
+ 
+                    {% if form.username.help_text %} 
+                        <span class="helptext"> 
+                            {{ form.username.help_text }} 
+                        </span> 
+                    {% endif %} 
+ 
+                </p> 
+ 
+ 
+                <!-- Email --> 
+ 
+                <p> 
+ 
+                    <label for="{{ form.email.id_for_label }}"> 
+                        Email address 
+                    </label> 
+ 
+                    {{ form.email }} 
+ 
+                    {{ form.email.errors }} 
+ 
+                    <span class="helptext"> 
+                        We'll send a verification OTP to this email. 
+                    </span> 
+ 
+                </p> 
+ 
+ 
+                <!-- Password --> 
+ 
+                <p> 
+ 
+                    <label for="{{ form.password1.id_for_label }}"> 
+                        Password 
+                    </label> 
+ 
+                    {{ form.password1 }} 
+ 
+                    {{ form.password1.errors }} 
+ 
+                </p> 
+ 
+ 
+                <!-- Confirm Password --> 
+ 
+                <p> 
+ 
+                    <label for="{{ form.password2.id_for_label }}"> 
+                        Confirm password 
+                    </label> 
+ 
+                    {{ form.password2 }} 
+ 
+                    {{ form.password2.errors }} 
+ 
+                </p> 
+ 
+ 
+                <button type="submit" class="register-btn"> 
+                    Continue to verification → 
+                </button> 
+ 
+            </form> 
+ 
+ 
+            <div class="auth-divider"> 
+                ALREADY A MEMBER? 
+            </div> 
+ 
+ 
+            <div class="login-box"> 
+ 
+                <p> 
+ 
+                    Already have an account? 
+ 
+                    <a href="{% url 'login' %}"> 
+                        Sign in 
+                    </a> 
+ 
+                </p> 
+ 
+            </div> 
+ 
+ 
+            <!-- OTP Information --> 
+ 
+            <div class="verification-note"> 
+ 
+                <div class="verification-icon"> 
+                    ✉ 
+                </div> 
+ 
+                <p> 
+                    <strong>Email verification required.</strong> 
+                    After submitting this form, you'll receive a 
+                    6-digit OTP. Your account will be created after 
+                    successful verification. 
+                </p> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+</div> 
