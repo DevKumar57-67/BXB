@@ -1,0 +1,767 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Login | BitsXBytes
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 24px;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(37, 99, 235, 0.12),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(59, 130, 246, 0.08),
+                    transparent 35%
+                ),
+                #05070a;
+
+            color: #f5f7fa;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                sans-serif;
+
+        }
+
+
+        /* =====================================================
+           AUTH WRAPPER
+        ====================================================== */
+
+        .auth-container {
+
+            width: 100%;
+
+            max-width: 430px;
+
+        }
+
+
+        /* =====================================================
+           BRAND
+        ====================================================== */
+
+        .auth-brand {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .brand-mark {
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 13px;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 12px 35px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.30
+                );
+
+        }
+
+
+        .brand-name {
+
+            font-size: 20px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                -0.5px;
+
+        }
+
+
+        .brand-subtitle {
+
+            margin-top: 4px;
+
+            color: #66717f;
+
+            font-size: 11px;
+
+        }
+
+
+        /* =====================================================
+           CARD
+        ====================================================== */
+
+        .auth-card {
+
+            padding: 34px;
+
+            background:
+                rgba(
+                    10,
+                    15,
+                    22,
+                    0.96
+                );
+
+            border:
+                1px solid #1c2632;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.40
+                );
+
+        }
+
+
+        .auth-heading {
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .auth-heading h1 {
+
+            margin: 0 0 7px;
+
+            font-size: 25px;
+
+            line-height: 1.2;
+
+            letter-spacing:
+                -0.6px;
+
+        }
+
+
+        .auth-heading p {
+
+            margin: 0;
+
+            color: #7f8996;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+
+        }
+
+
+        /* =====================================================
+           FORM
+        ====================================================== */
+
+        .form-group {
+
+            margin-bottom: 17px;
+
+        }
+
+
+        .form-label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #aab4c1;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+        }
+
+
+        .form-input {
+
+            width: 100%;
+
+            height: 46px;
+
+            padding:
+                0 13px;
+
+            border:
+                1px solid #202c39;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: #080d13;
+
+            color: #f5f7fa;
+
+            font-size: 13px;
+
+            transition:
+                border-color 180ms ease,
+                box-shadow 180ms ease;
+
+        }
+
+
+        .form-input::placeholder {
+
+            color: #4f5b68;
+
+        }
+
+
+        .form-input:focus {
+
+            border-color:
+                rgba(
+                    59,
+                    130,
+                    246,
+                    0.65
+                );
+
+            box-shadow:
+                0 0 0 3px
+                rgba(
+                    59,
+                    130,
+                    246,
+                    0.10
+                );
+
+        }
+
+
+        /* =====================================================
+           ERRORS
+        ====================================================== */
+
+        .form-errors {
+
+            margin-bottom: 17px;
+
+            padding: 11px 13px;
+
+            border:
+                1px solid
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.28
+                );
+
+            border-radius: 9px;
+
+            background:
+                rgba(
+                    239,
+                    68,
+                    68,
+                    0.07
+                );
+
+            color: #fca5a5;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .field-error {
+
+            margin-top: 6px;
+
+            color: #f87171;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =====================================================
+           LOGIN BUTTON
+        ====================================================== */
+
+        .login-button {
+
+            width: 100%;
+
+            height: 46px;
+
+            margin-top: 5px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3b82f6,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            box-shadow:
+                0 10px 25px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.20
+                );
+
+            transition:
+                transform 180ms ease,
+                box-shadow 180ms ease;
+
+        }
+
+
+        .login-button:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 14px 30px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.30
+                );
+
+        }
+
+
+        .login-button:active {
+
+            transform:
+                translateY(0);
+
+        }
+
+
+        /* =====================================================
+           DIVIDER
+        ====================================================== */
+
+        .divider {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin:
+                24px 0;
+
+            color: #46515d;
+
+            font-size: 10px;
+
+        }
+
+
+        .divider::before,
+        .divider::after {
+
+            content: "";
+
+            flex: 1;
+
+            height: 1px;
+
+            background:
+                #1b2530;
+
+        }
+
+
+        /* =====================================================
+           REGISTER
+        ====================================================== */
+
+        .register-text {
+
+            text-align: center;
+
+            color: #697482;
+
+            font-size: 11px;
+
+        }
+
+
+        .register-link {
+
+            color: #60a5fa;
+
+            font-weight: 600;
+
+            transition:
+                color 180ms ease;
+
+        }
+
+
+        .register-link:hover {
+
+            color: #93c5fd;
+
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .auth-footer {
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            color: #414c58;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 500px) {
+
+            body {
+
+                padding: 16px;
+
+            }
+
+
+            .auth-card {
+
+                padding: 25px 21px;
+
+                border-radius: 15px;
+
+            }
+
+
+            .auth-heading h1 {
+
+                font-size: 23px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="auth-container">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================== -->
+
+        <div class="auth-brand">
+
+            <div class="brand-mark">
+                B
+            </div>
+
+            <div class="brand-name">
+                BitsXBytes
+            </div>
+
+            <div class="brand-subtitle">
+                Campus • Community • Code
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LOGIN CARD
+        ================================================== -->
+
+        <div class="auth-card">
+
+
+            <div class="auth-heading">
+
+                <h1>
+                    Welcome back
+                </h1>
+
+                <p>
+                    Sign in to continue to your BitsXBytes account.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                action=""
+            >
+
+                {% csrf_token %}
+
+
+                <!-- NON FIELD ERRORS -->
+
+                {% if form.non_field_errors %}
+
+                    <div class="form-errors">
+
+                        {% for error in form.non_field_errors %}
+
+                            {{ error }}
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- USERNAME -->
+
+                <div class="form-group">
+
+                    <label
+                        for="{{ form.username.id_for_label }}"
+                        class="form-label"
+                    >
+                        Username
+                    </label>
+
+
+                    <input
+                        type="text"
+                        name="{{ form.username.html_name }}"
+                        id="{{ form.username.id_for_label }}"
+                        value="{{ form.username.value|default:'' }}"
+                        class="form-input"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required
+                    >
+
+
+                    {% for error in form.username.errors %}
+
+                        <div class="field-error">
+
+                            {{ error }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label
+                        for="{{ form.password.id_for_label }}"
+                        class="form-label"
+                    >
+                        Password
+                    </label>
+
+
+                    <input
+                        type="password"
+                        name="{{ form.password.html_name }}"
+                        id="{{ form.password.id_for_label }}"
+                        class="form-input"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+
+                    {% for error in form.password.errors %}
+
+                        <div class="field-error">
+
+                            {{ error }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- LOGIN -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+
+            <!-- =================================================
+                 DIVIDER
+            ================================================== -->
+
+            <div class="divider">
+                OR
+            </div>
+
+
+            <!-- =================================================
+                 REGISTER
+            ================================================== -->
+
+            <div class="register-text">
+
+                Don't have a BitsXBytes account?
+
+                <a
+                    href="{% url 'register' %}"
+                    class="register-link"
+                >
+                    Create one
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <div class="auth-footer">
+
+            BitsXBytes &nbsp;•&nbsp;
+            Built for students, builders and creators.
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>
