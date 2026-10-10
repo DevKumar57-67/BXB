@@ -6,7 +6,7 @@ from django.utils import timezone
 from .forms import RegistrationForm
 from .models import User, EmailOTP
 from .utils import send_otp_email
-
+from django.utils.http import url_has_allowed_host_and_scheme
 
 def register(request):
     if request.user.is_authenticated:
@@ -169,28 +169,39 @@ def verify_otp(request):
     )
 
 
+
+
+from django.utils.http import url_has_allowed_host_and_scheme
+
+
 def login_view(request):
+    next_url = request.POST.get("next") or request.GET.get("next")
+
     if request.user.is_authenticated:
+        if next_url and url_has_allowed_host_and_scheme(
+            next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        ):
+            return redirect(next_url)
+
         return redirect("feed")
 
     if request.method == "POST":
-
-        form = AuthenticationForm(
-            request,
-            data=request.POST
-        )
+        form = AuthenticationForm(request, data=request.POST)
 
         if form.is_valid():
-
             user = form.get_user()
+            login(request, user)
 
-            login(
-                request,
-                user
-            )
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
 
             return redirect("feed")
-
     else:
         form = AuthenticationForm()
 
@@ -198,10 +209,10 @@ def login_view(request):
         request,
         "users/login.html",
         {
-            "form": form
-        }
+            "form": form,
+            "next": next_url or "",
+        },
     )
-
 
 def logout_view(request):
     logout(request)

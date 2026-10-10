@@ -70,7 +70,7 @@ urlpatterns = [
     path('feed/', include('posts.urls')),
 ]
 
-"""
+
 
 from django.contrib import admin
 from django.conf import settings
@@ -94,6 +94,8 @@ urlpatterns = [
      path('handshake/', include('handshake.urls')),
 
      path('notifications/', include('notifications.urls')),
+
+     path("ai-studio/", include("ai_studio.urls")),
 ]
 
 
@@ -101,4 +103,48 @@ if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
+    )
+
+    """
+
+
+from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import include, path
+
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+
+    # Main website
+    path("", include("core.urls")),
+
+    # Authentication
+    path("auth/", include("users.urls")),
+
+    # User profiles
+    path("profile/", include("profiles.urls")),
+
+    # Feed and social interactions
+    path("feed/", include("posts.urls")),
+
+    # Search
+    path("search/", include("search.urls")),
+
+    # Handshake connections
+    path("handshake/", include("handshake.urls")),
+
+    # Notifications
+    path("notifications/", include("notifications.urls")),
+
+    # AI Studio dashboard
+    path("ai-studio/", include("ai_studio.urls")),
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
     )

@@ -1,0 +1,392 @@
+
+{% extends "base.html" %}
+
+{% block title %}AI Studio | BitsXBytes{% endblock %}
+
+{% block extra_css %}
+<style>
+.ai-studio {
+    max-width: 1450px;
+    margin: 0 auto;
+    padding: 28px;
+    color: var(--text-primary, #f4f7fb);
+}
+.studio-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 34px;
+    border: 1px solid #26364b;
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(59,130,246,.22), transparent 35%),
+        linear-gradient(135deg, #101927, #090d15);
+}
+.studio-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #82b4ff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+.studio-hero h1 {
+    max-width: 680px;
+    margin: 17px 0 10px;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.08;
+    letter-spacing: -1.8px;
+}
+.studio-hero p {
+    max-width: 590px;
+    margin: 0;
+    color: #9ba9bc;
+    font-size: 14px;
+    line-height: 1.8;
+}
+.studio-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 20px 0 34px;
+}
+.studio-stat {
+    padding: 19px;
+    border: 1px solid var(--border-color, #26303d);
+    border-radius: 15px;
+    background: var(--card-bg, #0d121b);
+}
+.studio-stat strong {
+    display: block;
+    font-size: 25px;
+    margin-bottom: 5px;
+}
+.studio-stat span {
+    color: var(--text-muted, #8e9aaa);
+    font-size: 12px;
+}
+.studio-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 17px;
+}
+.studio-section-heading h2 {
+    margin: 0 0 5px;
+    font-size: 20px;
+    letter-spacing: -.5px;
+}
+.studio-section-heading p {
+    margin: 0;
+    color: var(--text-muted, #8e9aaa);
+    font-size: 12px;
+}
+.studio-search {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: min(100%, 360px);
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--border-color, #26303d);
+    border-radius: 12px;
+    background: var(--card-bg, #0d121b);
+}
+.studio-search span { color: #8997aa; }
+.studio-search input {
+    min-width: 0;
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+}
+.studio-search input::placeholder { color: #718096; }
+.studio-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 20px 0;
+}
+.studio-filter {
+    padding: 9px 13px;
+    border: 1px solid var(--border-color, #26303d);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-secondary, #aab5c4);
+    font-size: 12px;
+    cursor: pointer;
+    transition: .18s ease;
+}
+.studio-filter:hover,
+.studio-filter.active {
+    border-color: #3679ed;
+    background: rgba(37,99,235,.14);
+    color: #8bbaff;
+}
+.studio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+.studio-tool {
+    display: flex;
+    flex-direction: column;
+    min-height: 230px;
+    padding: 20px;
+    border: 1px solid var(--border-color, #26303d);
+    border-radius: 17px;
+    background: var(--card-bg, #0d121b);
+    transition: transform .18s ease, border-color .18s ease;
+}
+.studio-tool:hover {
+    transform: translateY(-3px);
+    border-color: #365c91;
+}
+.studio-tool[hidden] { display: none !important; }
+.tool-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+.tool-icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 1px solid #29446b;
+    border-radius: 13px;
+    background: rgba(37,99,235,.13);
+    color: #8bbaff;
+    font-size: 21px;
+    font-weight: 700;
+}
+.tool-status {
+    padding: 6px 8px;
+    border-radius: 999px;
+    background: #171e29;
+    color: #a7b2c2;
+    font-size: 10px;
+    white-space: nowrap;
+}
+.studio-tool h3 {
+    margin: 18px 0 7px;
+    font-size: 15px;
+}
+.studio-tool p {
+    margin: 0;
+    color: var(--text-muted, #8e9aaa);
+    font-size: 12px;
+    line-height: 1.7;
+}
+.tool-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 20px;
+}
+.tool-category {
+    color: #8bbaff;
+    font-size: 11px;
+}
+.tool-launch {
+    padding: 8px 11px;
+    border: 1px solid #2b3e56;
+    border-radius: 9px;
+    background: #121c2a;
+    color: #d8e7ff;
+    font-size: 11px;
+    font-weight: 700;
+}
+.tool-launch:disabled {
+    cursor: not-allowed;
+    color: #78879a;
+    opacity: .8;
+}
+.studio-empty {
+    display: none;
+    padding: 38px 18px;
+    border: 1px dashed #314158;
+    border-radius: 15px;
+    color: #99a8bc;
+    text-align: center;
+    font-size: 13px;
+}
+.studio-empty.visible { display: block; }
+
+@media (max-width: 1000px) {
+    .studio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+    .ai-studio { padding: 18px 14px; }
+    .studio-hero { padding: 24px 20px; border-radius: 17px; }
+    .studio-stats { gap: 9px; margin: 15px 0 28px; }
+    .studio-stat { padding: 13px 11px; }
+    .studio-stat strong { font-size: 21px; }
+    .studio-stat span { font-size: 10px; }
+    .studio-section-heading { align-items: stretch; flex-direction: column; }
+    .studio-search { width: 100%; }
+    .studio-grid { grid-template-columns: 1fr; }
+    .studio-tool { min-height: 205px; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="ai-studio">
+    <section class="studio-hero">
+        <div class="studio-eyebrow">✦ BxB Intelligence</div>
+        <h1>One studio.<br>Endless ways to create.</h1>
+        <p>
+            Your central workspace for AI-powered learning, coding,
+            research and creativity. Discover the right tool for
+            whatever you are working on.
+        </p>
+    </section>
+
+    <section class="studio-stats" aria-label="AI Studio overview">
+        <div class="studio-stat">
+            <strong>{{ total_tools }}</strong>
+            <span>Tools in the catalogue</span>
+        </div>
+        <div class="studio-stat">
+            <strong>{{ available_tools }}</strong>
+            <span>Tools available to launch</span>
+        </div>
+        <div class="studio-stat">
+            <strong>{{ categories|length|add:"-1" }}</strong>
+            <span>Tool categories</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="studio-section-heading">
+            <div>
+                <h2>Explore AI tools</h2>
+                <p>Find a tool that matches what you need to do.</p>
+            </div>
+
+            <label class="studio-search">
+                <span aria-hidden="true">⌕</span>
+                <input
+                    type="search"
+                    id="tool-search"
+                    placeholder="Search tools..."
+                    aria-label="Search AI tools"
+                >
+            </label>
+        </div>
+
+        <div class="studio-filters" aria-label="Filter tools by category">
+            {% for category in categories %}
+            <button
+                type="button"
+                class="studio-filter {% if category.slug == 'all' %}active{% endif %}"
+                data-filter="{{ category.slug }}"
+            >
+                {{ category.name }}
+            </button>
+            {% endfor %}
+        </div>
+
+        <div class="studio-grid" id="studio-grid">
+            {% for tool in tools %}
+            <article
+                class="studio-tool"
+                data-category="{{ tool.category_slug }}"
+                data-search="{{ tool.name|lower }} {{ tool.description|lower }} {{ tool.category|lower }}"
+            >
+                <div class="tool-card-top">
+                    <div class="tool-icon">{{ tool.icon }}</div>
+                    {% if tool.available %}
+                    <span class="tool-status">Available</span>
+                    {% else %}
+                    <span class="tool-status">Coming soon</span>
+                    {% endif %}
+                </div>
+
+                <h3>{{ tool.name }}</h3>
+                <p>{{ tool.description }}</p>
+
+                <div class="tool-card-bottom">
+                    <span class="tool-category">{{ tool.category }}</span>
+
+                    {% if tool.available %}
+                    <a class="tool-launch" href="{{ tool.url }}">
+                        Open tool ↗
+                    </a>
+                    {% else %}
+                    <button class="tool-launch" type="button" disabled>
+                        Coming soon
+                    </button>
+                    {% endif %}
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <div class="studio-empty" id="studio-empty">
+            No tools match your search. Try another keyword or category.
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const searchInput = document.getElementById("tool-search");
+    const filters = document.querySelectorAll(".studio-filter");
+    const cards = document.querySelectorAll(".studio-tool");
+    const emptyState = document.getElementById("studio-empty");
+
+    if (!searchInput || !cards.length) return;
+
+    let activeCategory = "all";
+
+    function applyFilters() {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach(function (card) {
+            const category = card.dataset.category || "";
+            const searchableText = card.dataset.search || "";
+
+            const matchesCategory =
+                activeCategory === "all" ||
+                category === activeCategory;
+
+            const matchesSearch = searchableText.includes(query);
+            const visible = matchesCategory && matchesSearch;
+
+            card.hidden = !visible;
+
+            if (visible) visibleCount += 1;
+        });
+
+        emptyState.classList.toggle("visible", visibleCount === 0);
+    }
+
+    filters.forEach(function (button) {
+        button.addEventListener("click", function () {
+            activeCategory = button.dataset.filter || "all";
+
+            filters.forEach(function (filter) {
+                filter.classList.toggle("active", filter === button);
+            });
+
+            applyFilters();
+        });
+    });
+
+    searchInput.addEventListener("input", applyFilters);
+})();
+</script>
+{% endblock %}
