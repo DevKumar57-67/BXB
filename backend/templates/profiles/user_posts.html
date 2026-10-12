@@ -1,4 +1,5 @@
- {% extends "base.html" %}
+
+{% extends "base.html" %}
 
 {% block title %}{{ profile_user.username }}'s Posts | BitsXBytes{% endblock %}
 
@@ -50,6 +51,7 @@
         font-size: clamp(22px, 4vw, 30px);
         font-weight: 800;
         letter-spacing: -0.7px;
+        overflow-wrap: anywhere;
     }
 
     .posts-heading p {
@@ -157,7 +159,7 @@
         object-fit: contain;
     }
 
-    /* Post interaction bar */
+    /* Post actions */
 
     .post-footer {
         display: flex;
@@ -180,6 +182,7 @@
         border-radius: 8px;
         color: #8291a9;
         background: transparent;
+        font-family: inherit;
         font-size: 11px;
         cursor: pointer;
         transition: all 0.2s;
@@ -188,6 +191,11 @@
     .post-action:hover {
         color: #93c5fd;
         background: rgba(59, 130, 246, 0.08);
+    }
+
+    .post-action:disabled {
+        opacity: 0.55;
+        cursor: wait;
     }
 
     .post-action-icon {
@@ -223,10 +231,142 @@
     .post-feedback {
         display: none;
         width: 100%;
-        margin-top: 6px;
+        margin-top: 7px;
         color: #fca5a5;
         font-size: 11px;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
     }
+
+    /* Comments */
+
+    .comments-section {
+        display: none;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid #202d44;
+    }
+
+    .comments-section.visible { display: block; }
+
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .comment {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+    }
+
+    .comment-avatar {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .comment-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .comment-body {
+        min-width: 0;
+        flex: 1;
+        padding: 10px 12px;
+        border: 1px solid #263650;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.025);
+    }
+
+    .comment-user {
+        color: #e2e8f0;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .comment-user:hover { color: #60a5fa; }
+
+    .comment-text {
+        margin-top: 5px;
+        color: #cbd5e1;
+        font-size: 12px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .comment-time {
+        margin-top: 5px;
+        color: #8291a9;
+        font-size: 10px;
+    }
+
+    .comment-form {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .comment-input {
+        min-width: 0;
+        flex: 1;
+        min-height: 40px;
+        max-height: 120px;
+        margin: 0;
+        padding: 10px 12px;
+        resize: vertical;
+        border: 1px solid #263650;
+        border-radius: 10px;
+        outline: none;
+        background: #080d18;
+        color: #e2e8f0;
+        font: inherit;
+        font-size: 12px;
+    }
+
+    .comment-input:focus { border-color: #3b82f6; }
+
+    .comment-submit {
+        min-height: 40px;
+        padding: 0 13px;
+        border: 0;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .comment-submit:hover { background: #1d4ed8; }
+
+    .comment-submit:disabled {
+        opacity: 0.6;
+        cursor: wait;
+    }
+
+    .empty-comments {
+        margin-bottom: 12px;
+        color: #8291a9;
+        font-size: 12px;
+    }
+
+    /* Empty state */
 
     .empty-posts {
         padding: 55px 24px;
@@ -274,6 +414,8 @@
         .posts-count { display: none; }
         .post-card { padding: 17px; }
         .post-action { padding: 7px; font-size: 10px; }
+        .comment-form { align-items: stretch; }
+        .comment-submit { padding: 0 10px; }
     }
 </style>
 
@@ -288,7 +430,9 @@
         >←</a>
 
         <div class="posts-heading">
-            <h1>Posts <span class="accent">by {{ profile_user.username }}</span></h1>
+            <h1>
+                Posts <span class="accent">by {{ profile_user.username }}</span>
+            </h1>
             <p>Explore everything this member has shared on BitsXBytes.</p>
         </div>
 
@@ -344,37 +488,42 @@
                 <!-- LIKE -->
                 <button
                     type="button"
-                    class="post-action interaction-button like-button
-                        {% for like in post.likes.all %}
-                            {% if like.user_id == user.id %}active{% endif %}
-                        {% endfor %}"
+                    class="post-action interaction-button like-button {% for like in post.likes.all %}{% if like.user_id == user.id %}active{% endif %}{% endfor %}"
                     data-url="{% url 'like_post' post.id %}"
                     data-action="like"
                     title="Like"
+                    aria-label="Like post"
                 >
                     <span class="post-action-icon">♥</span>
                     <span>Like</span>
-                    <span class="post-action-count" data-count="like">
-                        {{ post.likes.count }}
-                    </span>
+                    <span class="post-action-count" data-count="like">{{ post.likes.count }}</span>
+                </button>
+
+                <!-- COMMENT -->
+                <button
+                    type="button"
+                    class="post-action comment-toggle"
+                    data-post-id="{{ post.id }}"
+                    aria-expanded="false"
+                    aria-controls="comments-{{ post.id }}"
+                    title="Comments"
+                >
+                    <span class="post-action-icon">💬</span>
+                    <span>Comment</span>
+                    <span class="post-action-count" data-count="comment">{{ post.comments.count }}</span>
                 </button>
 
                 <!-- REPOST -->
                 <button
                     type="button"
-                    class="post-action interaction-button repost-button
-                        {% for repost in post.reposts.all %}
-                            {% if repost.user_id == user.id %}active{% endif %}
-                        {% endfor %}"
+                    class="post-action interaction-button repost-button {% for repost in post.reposts.all %}{% if repost.user_id == user.id %}active{% endif %}{% endfor %}"
                     data-url="{% url 'repost_post' post.id %}"
                     data-action="repost"
                     title="Repost"
                 >
                     <span class="post-action-icon">↻</span>
                     <span>Repost</span>
-                    <span class="post-action-count" data-count="repost">
-                        {{ post.reposts.count }}
-                    </span>
+                    <span class="post-action-count" data-count="repost">{{ post.reposts.count }}</span>
                 </button>
 
                 <!-- SHARE -->
@@ -391,20 +540,80 @@
                 <!-- SAVE -->
                 <button
                     type="button"
-                    class="post-action interaction-button save-button
-                        {% for save in post.saves.all %}
-                            {% if save.user_id == user.id %}active{% endif %}
-                        {% endfor %}"
+                    class="post-action interaction-button save-button {% for saved in post.saves.all %}{% if saved.user_id == user.id %}active{% endif %}{% endfor %}"
                     data-url="{% url 'save_post' post.id %}"
                     data-action="save"
                     title="Save"
                 >
                     <span class="post-action-icon">🔖</span>
-                    <span>Save</span>
+                    <span data-save-label>
+                        {% for saved in post.saves.all %}{% if saved.user_id == user.id %}Saved{% endif %}{% endfor %}
+                        {% if not post.saves.all %}Save{% endif %}
+                    </span>
+                    <span class="post-action-count" data-count="save">{{ post.saves.count }}</span>
                 </button>
 
-                <div class="post-feedback" data-feedback="{{ post.id }}"></div>
+                <div class="post-feedback" aria-live="polite"></div>
             </div>
+
+            <!-- COMMENTS SECTION -->
+            <section
+                class="comments-section"
+                id="comments-{{ post.id }}"
+                data-comments-section="{{ post.id }}"
+            >
+                <div class="comment-list" data-comment-list>
+                    {% for comment in post.comments.all %}
+                        <div class="comment">
+                            <div class="comment-avatar">
+                                {% if comment.user.profile.avatar %}
+                                    <img
+                                        src="{{ comment.user.profile.avatar.url }}"
+                                        alt="{{ comment.user.username }}"
+                                    >
+                                {% else %}
+                                    {{ comment.user.username|first|upper }}
+                                {% endif %}
+                            </div>
+
+                            <div class="comment-body">
+                                <a
+                                    class="comment-user"
+                                    href="{% url 'public_profile' comment.user.username %}"
+                                >@{{ comment.user.username }}</a>
+
+                                <div class="comment-text">{{ comment.content }}</div>
+
+                                <div class="comment-time">
+                                    {{ comment.created_at|date:"M d, Y · g:i A" }}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="empty-comments">No comments yet. Start the conversation.</div>
+                    {% endfor %}
+                </div>
+
+                <form
+                    class="comment-form"
+                    data-comment-form
+                    data-post-id="{{ post.id }}"
+                    data-url="{% url 'comment_post' post.id %}"
+                >
+                    <textarea
+                        class="comment-input"
+                        name="content"
+                        rows="1"
+                        maxlength="1000"
+                        placeholder="Write a comment..."
+                        required
+                    ></textarea>
+
+                    <button class="comment-submit" type="submit">Send</button>
+                </form>
+
+                <div class="post-feedback" data-comment-feedback aria-live="polite"></div>
+            </section>
 
         </article>
 
@@ -426,7 +635,7 @@
 
 </div>
 
-<!-- Provides a CSRF token for AJAX requests -->
+<!-- CSRF token for AJAX requests -->
 <form id="csrf-token-form" hidden>
     {% csrf_token %}
 </form>
@@ -434,43 +643,68 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    function getCSRFToken() {
-        return document.querySelector(
-            '#csrf-token-form input[name="csrfmiddlewaretoken"]'
-        )?.value || "";
+    const csrfInput = document.querySelector(
+        '#csrf-token-form input[name="csrfmiddlewaretoken"]'
+    );
+
+    const csrfToken = csrfInput ? csrfInput.value : "";
+
+    function showFeedback(element, message) {
+        if (!element) return;
+
+        element.textContent = message;
+        element.style.display = "block";
     }
 
-    async function postRequest(url) {
-        const response = await fetch(url, {
+    async function postRequest(url, body = null) {
+        const options = {
             method: "POST",
             headers: {
-                "X-CSRFToken": getCSRFToken(),
+                "X-CSRFToken": csrfToken,
                 "X-Requested-With": "XMLHttpRequest"
             }
-        });
+        };
 
-        const data = await response.json();
+        if (body !== null) {
+            options.headers["Content-Type"] =
+                "application/x-www-form-urlencoded;charset=UTF-8";
+            options.body = new URLSearchParams(body).toString();
+        }
+
+        const response = await fetch(url, options);
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            throw new Error(
+                "The server returned an unexpected response. Check the Django terminal."
+            );
+        }
 
         if (!response.ok || !data.success) {
-            throw new Error(data.error || "Something went wrong.");
+            throw new Error(data.error || "The action could not be completed.");
         }
 
         return data;
     }
 
+    /* LIKE, REPOST AND SAVE */
+
     document.querySelectorAll(".interaction-button").forEach(function (button) {
         button.addEventListener("click", async function () {
-            if (button.dataset.loading === "true") return;
-
-            button.dataset.loading = "true";
+            if (button.disabled) return;
 
             const card = button.closest(".post-card");
-            const feedback = card?.querySelector(".post-feedback");
+            const feedback = card?.querySelector(".post-footer .post-feedback");
 
             if (feedback) {
-                feedback.style.display = "none";
                 feedback.textContent = "";
+                feedback.style.display = "none";
             }
+
+            button.disabled = true;
 
             try {
                 const data = await postRequest(button.dataset.url);
@@ -483,11 +717,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (count) count.textContent = data.like_count;
                 }
 
-                if (action === "save") {
-                    button.classList.toggle("active", data.is_saved);
-                    button.title = data.is_saved ? "Remove saved post" : "Save";
-                }
-
                 if (action === "repost") {
                     button.classList.toggle("active", data.is_reposted);
 
@@ -495,25 +724,146 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (count) count.textContent = data.repost_count;
                 }
 
-            } catch (error) {
-                if (feedback) {
-                    feedback.textContent = error.message;
-                    feedback.style.display = "block";
-                } else {
-                    console.error("Post interaction error:", error);
+                if (action === "save") {
+                    button.classList.toggle("active", data.is_saved);
+                    button.title = data.is_saved ? "Remove saved post" : "Save";
+
+                    const label = button.querySelector("[data-save-label]");
+                    if (label) label.textContent = data.is_saved ? "Saved" : "Save";
+
+                    const count = button.querySelector('[data-count="save"]');
+                    if (count && data.save_count !== undefined) {
+                        count.textContent = data.save_count;
+                    }
                 }
+
+            } catch (error) {
+                showFeedback(feedback, error.message);
+                console.error("Post interaction error:", error);
             } finally {
-                button.dataset.loading = "false";
+                button.disabled = false;
             }
         });
     });
 
+    /* OPEN AND CLOSE COMMENTS */
+
+    document.querySelectorAll(".comment-toggle").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const postId = button.dataset.postId;
+            const section = document.getElementById("comments-" + postId);
+
+            if (!section) return;
+
+            const isOpen = section.classList.toggle("visible");
+            button.setAttribute("aria-expanded", String(isOpen));
+
+            if (isOpen) {
+                section.querySelector("textarea")?.focus();
+            }
+        });
+    });
+
+    /* SUBMIT A COMMENT */
+
+    document.querySelectorAll("[data-comment-form]").forEach(function (form) {
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const textarea = form.querySelector("textarea[name='content']");
+            const submitButton = form.querySelector("button[type='submit']");
+            const section = form.closest(".comments-section");
+            const card = form.closest(".post-card");
+            const feedback = section?.querySelector("[data-comment-feedback]");
+            const commentList = section?.querySelector("[data-comment-list]");
+
+            const content = textarea.value.trim();
+
+            if (!content) {
+                showFeedback(feedback, "Please write a comment first.");
+                return;
+            }
+
+            submitButton.disabled = true;
+            if (feedback) {
+                feedback.textContent = "";
+                feedback.style.display = "none";
+            }
+
+            try {
+                const data = await postRequest(form.dataset.url, { content });
+
+                if (commentList) {
+                    const emptyMessage = commentList.querySelector(".empty-comments");
+                    if (emptyMessage) emptyMessage.remove();
+
+                    const comment = document.createElement("div");
+                    comment.className = "comment";
+
+                    const avatar = document.createElement("div");
+                    avatar.className = "comment-avatar";
+                    avatar.textContent = data.comment.username.charAt(0).toUpperCase();
+
+                    const body = document.createElement("div");
+                    body.className = "comment-body";
+
+                    const username = document.createElement("a");
+                    username.className = "comment-user";
+                    username.textContent = "@" + data.comment.username;
+
+                    /*
+                     * Use the server-rendered username route for navigation.
+                     * The content itself is inserted as text to prevent HTML injection.
+                     */
+                    const profileUrlTemplate =
+                        "{% url 'public_profile' profile_user.username %}";
+
+                    username.href = profileUrlTemplate.replace(
+                        "{{ profile_user.username|escapejs }}",
+                        encodeURIComponent(data.comment.username)
+                    );
+
+                    const commentText = document.createElement("div");
+                    commentText.className = "comment-text";
+                    commentText.textContent = data.comment.content;
+
+                    const time = document.createElement("div");
+                    time.className = "comment-time";
+                    time.textContent = data.comment.created_at;
+
+                    body.append(username, commentText, time);
+                    comment.append(avatar, body);
+                    commentList.appendChild(comment);
+                }
+
+                const commentToggle = card?.querySelector(".comment-toggle");
+                const count = commentToggle?.querySelector('[data-count="comment"]');
+
+                if (count) {
+                    count.textContent = data.comment_count;
+                }
+
+                textarea.value = "";
+
+            } catch (error) {
+                showFeedback(feedback, error.message);
+                console.error("Comment error:", error);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    });
+
+    /* SHARE */
+
     document.querySelectorAll(".share-button").forEach(function (button) {
         button.addEventListener("click", async function () {
             const postId = button.dataset.postId;
-            const shareUrl = window.location.origin
-                + "{% url 'feed' %}"
-                + "#post-" + postId;
+
+            const shareUrl = new URL(
+                "{% url 'feed' %}#post-" + postId,
+                window.location.origin
+            ).href;
 
             const shareData = {
                 title: "BitsXBytes",
@@ -524,22 +874,23 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 if (navigator.share) {
                     await navigator.share(shareData);
-                } else if (navigator.clipboard) {
+                } else if (navigator.clipboard && window.isSecureContext) {
                     await navigator.clipboard.writeText(shareUrl);
 
-                    const original = button.innerHTML;
+                    const originalHTML = button.innerHTML;
                     button.innerHTML =
                         '<span class="post-action-icon">✓</span><span>Copied</span>';
 
-                    setTimeout(function () {
-                        button.innerHTML = original;
+                    window.setTimeout(function () {
+                        button.innerHTML = originalHTML;
                     }, 1500);
                 } else {
-                    window.prompt("Copy this link:", shareUrl);
+                    window.prompt("Copy this post link:", shareUrl);
                 }
             } catch (error) {
                 if (error.name !== "AbortError") {
                     console.error("Share error:", error);
+                    window.prompt("Copy this post link:", shareUrl);
                 }
             }
         });
