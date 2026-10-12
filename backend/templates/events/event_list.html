@@ -81,6 +81,23 @@
         background: rgba(255, 255, 255, 0.09);
     }
 
+    /* Create Event CTA */
+    .events-btn-create {
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        border-color: rgba(147, 197, 253, 0.25);
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .events-btn-create:hover {
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        box-shadow: 0 9px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .create-event-plus {
+        font-size: 19px;
+        line-height: 1;
+    }
+
     .events-section {
         margin-top: 32px;
     }
@@ -286,6 +303,16 @@
         .events-section-header h2 {
             font-size: 18px;
         }
+
+        .events-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .events-btn {
+            width: 100%;
+            box-sizing: border-box;
+        }
     }
 </style>
 
@@ -309,14 +336,22 @@
         </p>
 
         <div class="events-actions">
+
             <a href="#upcoming-events" class="events-btn">
                 Explore Events →
+            </a>
+
+            <a href="{% url 'events:create_event' %}"
+               class="events-btn events-btn-create">
+                <span class="create-event-plus" aria-hidden="true">＋</span>
+                Create Event
             </a>
 
             <a href="{% url 'events:my_events' %}"
                class="events-btn events-btn-secondary">
                 My Events
             </a>
+
         </div>
     </section>
 
@@ -403,6 +438,13 @@
                     New opportunities will appear here when college events
                     are published. Check back soon!
                 </p>
+                <div class="events-actions" style="justify-content: center;">
+                    <a href="{% url 'events:create_event' %}"
+                       class="events-btn events-btn-create">
+                        <span class="create-event-plus" aria-hidden="true">＋</span>
+                        Publish the First Event
+                    </a>
+                </div>
             </div>
         {% endif %}
     </section>

@@ -1,14 +1,14 @@
-from django.shortcuts import render
 
-# Create your views here.
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError, transaction
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.text import slugify
 from django.views.decorators.http import require_POST
 
+from .forms import EventCreateForm
 from .models import (
     Event,
     EventRegistration,
@@ -156,14 +156,19 @@ def register_event(request, slug):
                 ).count()
 
                 if registered_count >= event.max_participants:
-                    messages.error(request, "This event has reached its capacity.")
+                    messages.error(
+                        request,
+                        "This event has reached its capacity.",
+                    )
                     return redirect("events:event_detail", slug=event.slug)
 
             EventRegistration.objects.update_or_create(
                 event=event,
                 user=request.user,
                 defaults={
-                    "registration_type": EventRegistration.RegistrationType.INDIVIDUAL,
+                    "registration_type": (
+                        EventRegistration.RegistrationType.INDIVIDUAL
+                    ),
                     "status": EventRegistration.Status.REGISTERED,
                 },
             )
@@ -179,7 +184,7 @@ def register_event(request, slug):
 @login_required
 @require_POST
 def cancel_registration(request, slug):
-    """Cancel the user's registration and clean up their team if they lead it."""
+    """Cancel registration and clean up the user's team if they lead it."""
     event = get_object_or_404(
         Event,
         slug=slug,
@@ -203,7 +208,6 @@ def cancel_registration(request, slug):
         ).first()
 
         if team and team.leader_id == request.user.pk:
-            # Cancelling a team leader cancels the whole team's participation.
             team_members = list(team.members.all())
 
             EventRegistration.objects.filter(
@@ -243,7 +247,10 @@ def create_team(request, slug):
     )
 
     if event.participation_type == Event.ParticipationType.INDIVIDUAL:
-        messages.error(request, "This event only allows individual participation.")
+        messages.error(
+            request,
+            "This event only allows individual participation.",
+        )
         return redirect("events:event_detail", slug=event.slug)
 
     if not event.is_registration_open:
@@ -271,12 +278,16 @@ def create_team(request, slug):
     ).exists():
         messages.error(
             request,
-            "You are already registered for this event. Cancel that registration before creating a team.",
+            "You are already registered for this event. "
+            "Cancel that registration before creating a team.",
         )
         return redirect("events:event_detail", slug=event.slug)
 
     if EventTeam.objects.filter(event=event, name__iexact=team_name).exists():
-        messages.error(request, "A team with that name already exists for this event.")
+        messages.error(
+            request,
+            "A team with that name already exists for this event.",
+        )
         return redirect("events:event_detail", slug=event.slug)
 
     try:
@@ -288,7 +299,10 @@ def create_team(request, slug):
                 ).count()
 
                 if registered_count >= event.max_participants:
-                    messages.error(request, "This event has reached its capacity.")
+                    messages.error(
+                        request,
+                        "This event has reached its capacity.",
+                    )
                     return redirect("events:event_detail", slug=event.slug)
 
             team = EventTeam.objects.create(
@@ -317,7 +331,8 @@ def create_team(request, slug):
     except IntegrityError:
         messages.error(
             request,
-            "The team could not be created. Check whether its name is already in use.",
+            "The team could not be created. Check whether its name is "
+            "already in use.",
         )
 
     return redirect("events:event_detail", slug=event.slug)
@@ -340,7 +355,10 @@ def join_team(request, slug, team_id):
     )
 
     if event.participation_type == Event.ParticipationType.INDIVIDUAL:
-        messages.error(request, "This event only allows individual participation.")
+        messages.error(
+            request,
+            "This event only allows individual participation.",
+        )
         return redirect("events:event_detail", slug=event.slug)
 
     if not event.is_registration_open:
@@ -376,7 +394,10 @@ def join_team(request, slug, team_id):
                 ).count()
 
                 if registered_count >= event.max_participants:
-                    messages.error(request, "This event has reached its capacity.")
+                    messages.error(
+                        request,
+                        "This event has reached its capacity.",
+                    )
                     return redirect("events:event_detail", slug=event.slug)
 
             EventTeamMembership.objects.create(
@@ -391,9 +412,60 @@ def join_team(request, slug, team_id):
                 status=EventRegistration.Status.REGISTERED,
             )
 
-        messages.success(request, f"You have joined '{team.name}' successfully!")
+        messages.success(
+            request,
+            f"You have joined '{team.name}' successfully!",
+        )
 
     except IntegrityError:
         messages.error(request, "You could not join this team. Please try again.")
 
     return redirect("events:event_detail", slug=event.slug)
+
+
+# =====================================================
+# CREATE EVENT
+# =====================================================
+
+@login_required
+def create_event(request):
+    """Create an event, including optional uploaded banner and poster images."""
+    if request.method == "POST":
+        # request.FILES is required for uploaded images.
+        form = EventCreateForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            event = form.save(commit=False)
+
+            # Generate a unique URL slug from the event title.
+            base_slug = slugify(event.title) or "event"
+            unique_slug = base_slug
+            counter = 2
+
+            while Event.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            event.slug = unique_slug
+            event.created_by = request.user
+            event.status = Event.Status.PUBLISHED
+            event.save()
+
+            messages.success(
+                request,
+                "Your event has been published successfully!",
+            )
+
+            return redirect(
+                "events:event_detail",
+                slug=event.slug,
+            )
+
+    else:
+        form = EventCreateForm()
+
+    return render(
+        request,
+        "events/create_event.html",
+        {"form": form},
+    )

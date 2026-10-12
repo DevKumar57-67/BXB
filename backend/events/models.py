@@ -1,6 +1,4 @@
-from django.db import models
 
-# Create your models here.
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -23,6 +21,7 @@ class Event(models.Model):
     description = models.TextField()
     organizer = models.CharField(max_length=150)
     venue = models.CharField(max_length=200, blank=True)
+
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     registration_deadline = models.DateTimeField()
@@ -42,9 +41,24 @@ class Event(models.Model):
     min_team_size = models.PositiveIntegerField(default=2)
     max_team_size = models.PositiveIntegerField(default=4)
 
+    # Existing public image URL — kept for compatibility.
     image = models.URLField(
         blank=True,
         help_text="Optional public image URL for the event banner.",
+    )
+
+    # NEW: Uploaded event banner image.
+    banner = models.ImageField(
+        upload_to="events/banners/",
+        blank=True,
+        help_text="Upload a banner image for your event.",
+    )
+
+    # NEW: Uploaded event poster.
+    poster = models.ImageField(
+        upload_to="events/posters/",
+        blank=True,
+        help_text="Upload the promotional poster for your event.",
     )
 
     registration_link = models.URLField(
