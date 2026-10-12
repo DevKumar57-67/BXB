@@ -9,22 +9,24 @@ from .models import Notification
 
 
 @login_required
+
 def notification_list(request):
     notifications = (
         Notification.objects
-        .filter(recipient=request.user)
+        .filter(
+            recipient=request.user,
+            is_read=False,
+        )
         .select_related(
             "actor",
             "post",
             "handshake",
-            "comment"
+            "comment",
         )
         .order_by("-created_at")
     )
 
-    unread_count = notifications.filter(
-        is_read=False
-    ).count()
+    unread_count = notifications.count()
 
     return render(
         request,
