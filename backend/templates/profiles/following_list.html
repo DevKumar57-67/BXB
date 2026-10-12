@@ -1,0 +1,257 @@
+```html
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Following | BitsXBytes{% endblock %}
+
+{% block content %}
+<style>
+    .people-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 24px;
+        color: #e8eefc;
+    }
+
+    .people-header {
+        padding: 26px;
+        margin-bottom: 24px;
+        border: 1px solid #243451;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #101b31, #0a1020);
+    }
+
+    .people-header h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .people-header p {
+        margin: 0;
+        color: #94a3b8;
+        line-height: 1.6;
+    }
+
+    .people-back {
+        display: inline-flex;
+        margin-bottom: 18px;
+        color: #8ab4ff;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .people-back:hover {
+        color: #c2d8ff;
+    }
+
+    .people-count {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 7px 12px;
+        border: 1px solid #29456e;
+        border-radius: 999px;
+        background: #142541;
+        color: #9cc4ff;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .people-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+        gap: 16px;
+    }
+
+    .person-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid #243451;
+        border-radius: 16px;
+        background: #0d1526;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .person-card:hover {
+        border-color: #4269a5;
+        transform: translateY(-2px);
+    }
+
+    .person-avatar {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        overflow: hidden;
+        border: 1px solid #304566;
+        border-radius: 50%;
+        background: #182844;
+        color: #a8caff;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .person-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .person-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .person-name {
+        display: block;
+        overflow: hidden;
+        color: #f1f5ff;
+        font-size: 16px;
+        font-weight: 750;
+        text-decoration: none;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .person-name:hover {
+        color: #8ab4ff;
+    }
+
+    .person-username {
+        display: block;
+        overflow: hidden;
+        margin-top: 5px;
+        color: #8493ac;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .person-action {
+        flex-shrink: 0;
+        padding: 9px 13px;
+        border: 1px solid #315b98;
+        border-radius: 10px;
+        background: #172d4c;
+        color: #b8d3ff;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .person-action:hover {
+        background: #244575;
+    }
+
+    .people-empty {
+        padding: 48px 20px;
+        border: 1px dashed #2b3d5a;
+        border-radius: 18px;
+        background: #0b1322;
+        text-align: center;
+    }
+
+    .people-empty h2 {
+        margin: 0 0 10px;
+        color: #e5edfc;
+        font-size: 20px;
+    }
+
+    .people-empty p {
+        margin: 0;
+        color: #91a0b8;
+        line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+        .people-page {
+            padding: 14px;
+        }
+
+        .people-header {
+            padding: 20px;
+        }
+
+        .person-card {
+            gap: 10px;
+            padding: 13px;
+        }
+
+        .person-avatar {
+            width: 46px;
+            height: 46px;
+        }
+
+        .person-action {
+            padding: 8px 10px;
+        }
+    }
+</style>
+
+<div class="people-page">
+    <a class="people-back"
+       href="{% url 'public_profile' profile_user.username %}">
+        ← Back to @{{ profile_user.username }}'s profile
+    </a>
+
+    <section class="people-header">
+        <h1>Following</h1>
+        <p>
+            People <strong>@{{ profile_user.username }}</strong>
+            follows on BitsXBytes.
+        </p>
+
+        <span class="people-count">
+            {{ following|length }}
+            following
+        </span>
+    </section>
+
+    {% if following %}
+        <div class="people-list">
+            {% for follow in following %}
+                <article class="person-card">
+                    <div class="person-avatar">
+                        {% if follow.following.profile.avatar %}
+                            <img
+                                src="{{ follow.following.profile.avatar.url }}"
+                                alt="{{ follow.following.username }}'s avatar"
+                            >
+                        {% else %}
+                            {{ follow.following.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div class="person-info">
+                        <a class="person-name"
+                           href="{% url 'public_profile' follow.following.username %}">
+                            {{ follow.following.get_full_name|default:follow.following.username }}
+                        </a>
+
+                        <span class="person-username">
+                            @{{ follow.following.username }}
+                        </span>
+                    </div>
+
+                    <a class="person-action"
+                       href="{% url 'public_profile' follow.following.username %}">
+                        View Profile
+                    </a>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="people-empty">
+            <h2>Not following anyone yet</h2>
+            <p>Accounts followed by this user will appear here.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+```

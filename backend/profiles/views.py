@@ -7,6 +7,14 @@ from users.models import User
 
 from .forms import ProfileForm
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Follow
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, render
+from users.models import User
+from handshake.models import Handshake
+
 
 @login_required
 def my_profile(request):
@@ -19,6 +27,8 @@ def my_profile(request):
             'profile': profile,
         }
     )
+
+
 
 
 @login_required
@@ -62,6 +72,25 @@ def public_profile(request, username):
     )
 
     profile = profile_user.profile
+
+    
+    from .models import Follow
+
+    is_following = False
+    followers_count = Follow.objects.filter(
+        following=profile_user
+    ).count()
+
+    following_count = Follow.objects.filter(
+        follower=profile_user
+    ).count()
+
+    if request.user.is_authenticated:
+        is_following = Follow.objects.filter(
+            follower=request.user,
+            following=profile_user,
+        ).exists()
+
 
     # Default Handshake state.
     handshake_status = 'none'
@@ -179,5 +208,129 @@ def public_profile(request, username):
             'handshake_id': handshake_id,
             'connection_count': connection_count,
             'handshake_count': handshake_count,
+            'is_following': is_following,
+            'followers_count': followers_count,
+            'following_count': following_count,
         }
     )
+
+
+@login_required
+@require_POST
+def follow_user(request, username):
+    target_user = get_object_or_404(User, username=username)
+
+    if request.user == target_user:
+        return JsonResponse({
+            "success": False,
+            "error": "You cannot follow yourself."
+        }, status=400)
+
+    follow, created = Follow.objects.get_or_create(
+        follower=request.user,
+        following=target_user,
+    )
+
+    return JsonResponse({
+        "success": True,
+        "following": True,
+        "message": (
+            f"You are now following {target_user.username}."
+            if created
+            else f"You already follow {target_user.username}."
+        ),
+    })
+
+
+@login_required
+@require_POST
+def unfollow_user(request, username):
+    target_user = get_object_or_404(User, username=username)
+
+    Follow.objects.filter(
+        follower=request.user,
+        following=target_user,
+    ).delete()
+
+    return JsonResponse({
+        "success": True,
+        "following": False,
+        "message": f"You unfollowed {target_user.username}.",
+    })
+
+
+def followers_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    followers = Follow.objects.filter(
+        following=profile_user
+    ).select_related("follower")
+
+    return render(
+        request,
+        "profiles/followers_list.html",
+        {
+            "profile_user": profile_user,
+            "followers": followers,
+        },
+    )
+
+
+def following_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    following = Follow.objects.filter(
+        follower=profile_user
+    ).select_related("following")
+
+    return render(
+        request,
+        "profiles/following_list.html",
+        {
+            "profile_user": profile_user,
+            "following": following,
+        },
+    )
+
+
+def connections_list(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    connections = User.objects.filter(
+        Q(
+            handshakes_received__sender=profile_user,
+            handshakes_received__status=Handshake.Status.ACCEPTED,
+        )
+        | Q(
+            handshakes_sent__receiver=profile_user,
+            handshakes_sent__status=Handshake.Status.ACCEPTED,
+        )
+    ).exclude(
+        id=profile_user.id
+    ).distinct().order_by("username")
+
+    return render(
+        request,
+        "profiles/connections_list.html",
+        {
+            "profile_user": profile_user,
+            "connections": connections,
+        },
+    )
+
+
+def user_posts(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    posts = profile_user.posts.all().order_by("-created_at")
+
+    return render(
+        request,
+        "profiles/user_posts.html",
+        {
+            "profile_user": profile_user,
+            "posts": posts,
+        },
+    )
+
+

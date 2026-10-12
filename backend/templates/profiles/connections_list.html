@@ -1,0 +1,63 @@
+
+{% extends "base.html" %}
+
+{% block title %}Connections | BitsXBytes{% endblock %}
+
+{% block content %}
+<style>
+.people-page{max-width:900px;margin:0 auto;padding:10px 0 50px;color:var(--text-primary)}
+.people-header,.person-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.people-header{padding:25px;margin-bottom:18px}
+.people-header h1{font-size:25px;margin:0 0 8px}
+.people-header p{color:var(--text-secondary);font-size:13px;margin:0}
+.people-list{display:grid;gap:12px}
+.person-card{display:flex;align-items:center;gap:14px;padding:17px}
+.person-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.person-placeholder{display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,.15);color:var(--blue-light);font-size:20px;font-weight:700}
+.person-info{flex:1;min-width:0}
+.person-name{font-weight:700;overflow-wrap:anywhere}
+.person-username{color:var(--text-muted);font-size:12px;margin-top:4px}
+.person-link{color:var(--text-primary);text-decoration:none}
+.person-link:hover{color:var(--blue-light)}
+.person-action{padding:9px 13px;border-radius:8px;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-primary);text-decoration:none;font-size:12px;font-weight:600;white-space:nowrap}
+.people-empty{text-align:center;padding:38px 20px;color:var(--text-secondary);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg)}
+@media(max-width:500px){.person-card{padding:13px;gap:10px}.person-action{padding:8px;font-size:11px}.people-header{padding:19px}}
+</style>
+
+<div class="people-page">
+    <div class="people-header">
+        <h1>Connections</h1>
+        <p>People connected with @{{ profile_user.username }} on BitsXBytes.</p>
+    </div>
+
+    <div class="people-list">
+        {% for person in connections %}
+            <article class="person-card">
+                {% if person.profile.avatar %}
+                    <img class="person-avatar" src="{{ person.profile.avatar.url }}" alt="{{ person.username }}">
+                {% else %}
+                    <div class="person-avatar person-placeholder">
+                        {{ person.username|first|upper }}
+                    </div>
+                {% endif %}
+
+                <div class="person-info">
+                    <a class="person-link person-name" href="{% url 'public_profile' person.username %}">
+                        {{ person.get_full_name|default:person.username }}
+                    </a>
+                    <div class="person-username">@{{ person.username }}</div>
+                </div>
+
+                <a class="person-action" href="{% url 'public_profile' person.username %}">
+                    View Profile
+                </a>
+            </article>
+        {% empty %}
+            <div class="people-empty">
+                <h3>No connections yet</h3>
+                <p>Accepted collaboration requests will appear here.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

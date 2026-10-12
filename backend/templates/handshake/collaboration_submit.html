@@ -1,0 +1,1289 @@
+
+{% extends "base.html" %}
+
+{% block title %}Collaboration Studio | BitsXBytes{% endblock %}
+
+{% block content %}
+
+<style>
+    .collab-page,
+    .collab-page * {
+        box-sizing: border-box;
+    }
+
+    .collab-page {
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 28px 24px 60px;
+        color: #e8eefc;
+    }
+
+    .collab-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        color: #a4b5d1;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color .2s;
+    }
+
+    .collab-back:hover {
+        color: #8bb8ff;
+    }
+
+    .collab-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 34px;
+        margin-bottom: 24px;
+        border: 1px solid #243957;
+        border-radius: 24px;
+        background:
+            radial-gradient(
+                circle at 90% 10%,
+                rgba(42, 111, 232, .24),
+                transparent 36%
+            ),
+            linear-gradient(135deg, #101e35, #090f1d 75%);
+    }
+
+    .collab-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border: 1px solid #294c7d;
+        border-radius: 999px;
+        background: rgba(30, 64, 115, .28);
+        color: #a8cbff;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+    }
+
+    .collab-hero h1 {
+        margin: 20px 0 12px;
+        color: #f4f7ff;
+        font-size: clamp(28px, 4vw, 40px);
+        font-weight: 850;
+        line-height: 1.15;
+        letter-spacing: -1px;
+    }
+
+    .collab-hero p {
+        max-width: 650px;
+        margin: 0;
+        color: #a1b0c9;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .collab-recipient {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 24px;
+        padding: 10px 14px;
+        border: 1px solid #293c5b;
+        border-radius: 12px;
+        background: rgba(8, 16, 31, .65);
+    }
+
+    .recipient-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #1d3b65;
+        color: #b9d5ff;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .recipient-caption {
+        display: block;
+        margin-bottom: 3px;
+        color: #8192ae;
+        font-size: 11px;
+    }
+
+    .recipient-name {
+        color: #eef4ff;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .collab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 280px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    .collab-form-card,
+    .collab-side-card {
+        border: 1px solid #243451;
+        border-radius: 20px;
+        background: #0c1424;
+    }
+
+    .collab-form-card {
+        padding: 28px;
+        min-width: 0;
+    }
+
+    .collab-section {
+        padding-bottom: 27px;
+        margin-bottom: 27px;
+        border-bottom: 1px solid #202e45;
+    }
+
+    .collab-section:last-of-type {
+        padding-bottom: 0;
+        margin-bottom: 24px;
+        border-bottom: none;
+    }
+
+    .collab-section-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 21px;
+    }
+
+    .section-number {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border: 1px solid #31568a;
+        border-radius: 11px;
+        background: #142b4a;
+        color: #9fc5ff;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .collab-section-heading h2 {
+        margin: 1px 0 5px;
+        color: #eff4ff;
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .collab-section-heading p {
+        margin: 0;
+        color: #8798b3;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .collab-field {
+        margin-bottom: 20px;
+    }
+
+    .collab-field:last-child {
+        margin-bottom: 0;
+    }
+
+    .collab-label {
+        display: block;
+        margin-bottom: 9px;
+        color: #dce6f8;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .collab-label .optional {
+        margin-left: 5px;
+        color: #7586a2;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .collab-input,
+    .collab-textarea,
+    .collab-select {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        padding: 13px 14px;
+        border: 1px solid #2a3a55;
+        border-radius: 11px;
+        outline: none;
+        background: #080f1c;
+        color: #edf3ff;
+        font: inherit;
+        font-size: 13px;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .collab-input::placeholder,
+    .collab-textarea::placeholder {
+        color: #61718b;
+    }
+
+    .collab-input:focus,
+    .collab-textarea:focus,
+    .collab-select:focus {
+        border-color: #4e91fa;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .13);
+    }
+
+    .collab-textarea {
+        min-height: 145px;
+        resize: vertical;
+        line-height: 1.8;
+    }
+
+    .collab-textarea.short {
+        min-height: 100px;
+    }
+
+    .collab-help {
+        display: block;
+        margin-top: 8px;
+        color: #7788a3;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .collab-counter {
+        margin-top: 6px;
+        color: #7788a3;
+        font-size: 11px;
+        text-align: right;
+    }
+
+    .stage-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .stage-option {
+        position: relative;
+        min-width: 0;
+    }
+
+    .stage-option input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    .stage-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        height: 100%;
+        min-height: 112px;
+        padding: 14px 12px;
+        border: 1px solid #293953;
+        border-radius: 13px;
+        background: #0a1120;
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+    }
+
+    .stage-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 33px;
+        height: 33px;
+        margin-bottom: 13px;
+        border-radius: 10px;
+        background: #182a45;
+        color: #8dbaff;
+        font-size: 16px;
+    }
+
+    .stage-option strong {
+        color: #e6edfa;
+        font-size: 12px;
+    }
+
+    .stage-option small {
+        margin-top: 5px;
+        color: #8291a9;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .stage-option input:checked + label {
+        border-color: #5597ff;
+        background: linear-gradient(145deg, #142c4c, #0c172a);
+        box-shadow: inset 0 0 0 1px rgba(85, 151, 255, .15);
+    }
+
+    .stage-option input:checked + label .stage-icon {
+        background: #254b7d;
+        color: #d1e4ff;
+    }
+
+    .stage-option input:focus-visible + label {
+        outline: 2px solid #8bb8ff;
+        outline-offset: 3px;
+    }
+
+    .upload-zone {
+        display: block;
+        padding: 26px 16px;
+        border: 1px dashed #385071;
+        border-radius: 14px;
+        background: #0a1221;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+    }
+
+    .upload-zone:hover {
+        border-color: #5a9cff;
+        background: #0e1b30;
+    }
+
+    .upload-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 46px;
+        height: 46px;
+        margin: 0 auto 12px;
+        border: 1px solid #304c72;
+        border-radius: 14px;
+        background: #172a45;
+        color: #a6caff;
+        font-size: 21px;
+    }
+
+    .upload-zone strong {
+        display: block;
+        color: #e4edff;
+        font-size: 13px;
+    }
+
+    .upload-zone span {
+        display: block;
+        margin-top: 7px;
+        color: #8192ae;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .upload-zone input {
+        display: none;
+    }
+
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .image-preview {
+        overflow: hidden;
+        aspect-ratio: 1;
+        border: 1px solid #30415c;
+        border-radius: 10px;
+        background: #080f1b;
+    }
+
+    .image-preview img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-field {
+        margin-top: 18px;
+        padding: 18px;
+        border: 1px solid #29405f;
+        border-radius: 13px;
+        background: #0a1424;
+    }
+
+    .video-field[hidden] {
+        display: none;
+    }
+
+    .collab-side {
+        display: grid;
+        gap: 16px;
+    }
+
+    .collab-side-card {
+        padding: 21px;
+    }
+
+    .collab-side-card h3 {
+        margin: 0 0 15px;
+        color: #eef4ff;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .tip-check {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 23px;
+        height: 23px;
+        border-radius: 7px;
+        background: #153325;
+        color: #7ce4a4;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .tip-item strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #dbe6f8;
+        font-size: 12px;
+    }
+
+    .tip-item p {
+        margin: 0;
+        color: #8595af;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .privacy-note {
+        padding: 14px;
+        border: 1px solid #293b55;
+        border-radius: 12px;
+        background: #101c30;
+        color: #98abc7;
+        font-size: 11px;
+        line-height: 1.8;
+    }
+
+    .privacy-note strong {
+        color: #dbe7fa;
+    }
+
+    .collab-submit-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding-top: 23px;
+        border-top: 1px solid #202e45;
+    }
+
+    .collab-submit-note {
+        max-width: 270px;
+        color: #8292aa;
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    .collab-submit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 46px;
+        padding: 12px 20px;
+        border: 1px solid #5798ff;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #347ee8, #2563cb);
+        color: white;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform .2s, filter .2s;
+    }
+
+    .collab-submit-button:hover {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+    }
+
+    .collab-submit-button:disabled {
+        opacity: .6;
+        cursor: wait;
+        transform: none;
+    }
+
+    .collab-message {
+        display: none;
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        border: 1px solid #36516e;
+        border-radius: 11px;
+        background: #102139;
+        color: #d7e7ff;
+        font-size: 13px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+    .collab-message.visible {
+        display: block;
+    }
+
+    .collab-message.error {
+        border-color: #793c4b;
+        background: #2a1420;
+        color: #ffc0ca;
+    }
+
+    .collab-message.success {
+        border-color: #28664a;
+        background: #10281e;
+        color: #a9f0c8;
+    }
+
+    .collab-state-card {
+        padding: 36px;
+        border: 1px solid #293d5a;
+        border-radius: 20px;
+        background: #0c1424;
+        text-align: center;
+    }
+
+    .collab-state-card h2 {
+        margin: 0 0 12px;
+        color: #eff4ff;
+    }
+
+    .collab-state-card p {
+        margin: 0 auto 22px;
+        max-width: 540px;
+        color: #9baac1;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .collab-state-card a {
+        display: inline-flex;
+        padding: 11px 16px;
+        border: 1px solid #315b98;
+        border-radius: 10px;
+        background: #172d4c;
+        color: #c1d9ff;
+        font-size: 13px;
+        font-weight: 750;
+        text-decoration: none;
+    }
+
+    @media (max-width: 850px) {
+        .collab-layout {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .collab-side {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 560px) {
+        .collab-page {
+            padding: 16px 12px 40px;
+        }
+
+        .collab-hero {
+            padding: 24px 19px;
+            border-radius: 18px;
+        }
+
+        .collab-form-card {
+            padding: 19px 15px;
+        }
+
+        .collab-side {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .stage-grid {
+            gap: 7px;
+        }
+
+        .stage-option label {
+            padding: 11px 8px;
+        }
+
+        .stage-option strong {
+            font-size: 11px;
+        }
+
+        .collab-submit-row {
+            align-items: stretch;
+        }
+
+        .collab-submit-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="collab-page">
+
+    <a class="collab-back"
+       href="{% url 'public_profile' receiver.username %}">
+        ← Back to profile
+    </a>
+
+    <header class="collab-hero">
+        <span class="collab-eyebrow">
+            <span aria-hidden="true">✦</span>
+            BxB Collaboration Studio
+        </span>
+
+        <h1>Turn your idea into<br>something extraordinary.</h1>
+
+        <p>
+            Great projects start with a conversation. Share your idea,
+            show what you have built so far, and explain how you would
+            like to collaborate.
+        </p>
+
+        <div class="collab-recipient">
+            <div class="recipient-avatar">
+                {{ receiver.username|first|upper }}
+            </div>
+            <div>
+                <span class="recipient-caption">Collaboration proposal for</span>
+                <span class="recipient-name">@{{ receiver.username }}</span>
+            </div>
+        </div>
+    </header>
+
+    {% if already_connected %}
+        <section class="collab-state-card">
+            <h2>You're already connected</h2>
+            <p>
+                You have already established a connection with
+                @{{ receiver.username }}. You don't need to send another
+                collaboration request.
+            </p>
+            <a href="{% url 'public_profile' receiver.username %}">
+                Return to profile
+            </a>
+        </section>
+
+    {% elif request_pending %}
+        <section class="collab-state-card">
+            {% if reverse_pending %}
+                <h2>A proposal is waiting for you</h2>
+                <p>
+                    @{{ receiver.username }} has already sent you a
+                    collaboration request. Review that request and
+                    accept or decline it before sending another.
+                </p>
+            {% else %}
+                <h2>Proposal already sent</h2>
+                <p>
+                    Your collaboration request to @{{ receiver.username }}
+                    is still pending. You can send another proposal after
+                    the existing request has been resolved.
+                </p>
+            {% endif %}
+
+            <a href="{% url 'public_profile' receiver.username %}">
+                Return to profile
+            </a>
+        </section>
+
+    {% else %}
+
+        <div class="collab-layout">
+
+            <main class="collab-form-card">
+
+                <div id="collab-message"
+                     class="collab-message"
+                     role="status"
+                     aria-live="polite"></div>
+
+                <form
+                    id="collab-form"
+                    method="post"
+                    action="{% url 'send_handshake' receiver.username %}"
+                    enctype="multipart/form-data"
+                >
+                    {% csrf_token %}
+
+                    <!-- SECTION 1: PROJECT DETAILS -->
+
+                    <section class="collab-section">
+
+                        <div class="collab-section-heading">
+                            <span class="section-number">01</span>
+                            <div>
+                                <h2>Introduce your idea</h2>
+                                <p>
+                                    Give your project a name and explain
+                                    what makes it worth building.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="collab-field">
+                            <label class="collab-label" for="idea-title">
+                                Idea title
+                            </label>
+
+                            <input
+                                class="collab-input"
+                                type="text"
+                                id="idea-title"
+                                name="title"
+                                maxlength="120"
+                                placeholder="e.g. AgentGuard — AI Security Platform"
+                                required
+                            >
+                            <span class="collab-help">
+                                Choose a clear, memorable project name.
+                            </span>
+                        </div>
+
+                        <div class="collab-field">
+                            <label class="collab-label" for="idea-description">
+                                Project description
+                            </label>
+
+                            <textarea
+                                class="collab-textarea"
+                                id="idea-description"
+                                name="description"
+                                maxlength="500"
+                                placeholder="What problem are you solving? How will your solution work? What is the vision?"
+                                required
+                            ></textarea>
+
+                            <div class="collab-counter">
+                                <span id="description-count">0</span>/500
+                                characters
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <!-- SECTION 2: DEVELOPMENT STAGE -->
+
+                    <section class="collab-section">
+
+                        <div class="collab-section-heading">
+                            <span class="section-number">02</span>
+                            <div>
+                                <h2>Where are you right now?</h2>
+                                <p>
+                                    Help the recipient understand the
+                                    project's current maturity.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="stage-grid">
+
+                            <div class="stage-option">
+                                <input
+                                    type="radio"
+                                    id="stage-idea"
+                                    name="stage"
+                                    value="idea"
+                                    checked
+                                >
+                                <label for="stage-idea">
+                                    <span class="stage-icon">✦</span>
+                                    <strong>Idea</strong>
+                                    <small>
+                                        Concept and planning
+                                    </small>
+                                </label>
+                            </div>
+
+                            <div class="stage-option">
+                                <input
+                                    type="radio"
+                                    id="stage-prototype"
+                                    name="stage"
+                                    value="prototype"
+                                >
+                                <label for="stage-prototype">
+                                    <span class="stage-icon">⌘</span>
+                                    <strong>Prototype</strong>
+                                    <small>
+                                        Early version in development
+                                    </small>
+                                </label>
+                            </div>
+
+                            <div class="stage-option">
+                                <input
+                                    type="radio"
+                                    id="stage-product"
+                                    name="stage"
+                                    value="product"
+                                >
+                                <label for="stage-product">
+                                    <span class="stage-icon">↗</span>
+                                    <strong>Product</strong>
+                                    <small>
+                                        Working product or MVP
+                                    </small>
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div
+                            id="video-field"
+                            class="video-field"
+                            hidden
+                        >
+                            <div class="collab-field">
+                                <label
+                                    class="collab-label"
+                                    for="demo-video"
+                                >
+                                    Product demo video
+                                    <span class="optional">Optional</span>
+                                </label>
+
+                                <input
+                                    class="collab-input"
+                                    type="url"
+                                    id="demo-video"
+                                    name="demo_video_url"
+                                    maxlength="200"
+                                    placeholder="https://www.youtube.com/watch?v=..."
+                                >
+
+                                <span class="collab-help">
+                                    Share a YouTube, Vimeo, or other
+                                    publicly accessible demo link.
+                                    This field appears for working products.
+                                </span>
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <!-- SECTION 3: IMAGES -->
+
+                    <section class="collab-section">
+
+                        <div class="collab-section-heading">
+                            <span class="section-number">03</span>
+                            <div>
+                                <h2>Show us what you're building</h2>
+                                <p>
+                                    Add mockups, screenshots, diagrams,
+                                    or product photos.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="collab-field">
+                            <label class="upload-zone" for="idea-images">
+                                <span class="upload-icon">↑</span>
+                                <strong>Click to upload project images</strong>
+                                <span>
+                                    JPG, PNG, or WebP · Up to 5 images ·
+                                    Maximum 5 MB per image
+                                </span>
+
+                                <input
+                                    type="file"
+                                    id="idea-images"
+                                    name="images"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    multiple
+                                >
+                            </label>
+
+                            <span class="collab-help" id="image-status">
+                                Images are optional. A good visual can
+                                make your idea easier to understand.
+                            </span>
+
+                            <div
+                                id="image-preview-grid"
+                                class="image-preview-grid"
+                            ></div>
+                        </div>
+
+                    </section>
+
+                    <!-- SECTION 4: COLLABORATION -->
+
+                    <section class="collab-section">
+
+                        <div class="collab-section-heading">
+                            <span class="section-number">04</span>
+                            <div>
+                                <h2>Build together</h2>
+                                <p>
+                                    Tell the recipient what kind of
+                                    collaboration would help.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="collab-field">
+                            <label
+                                class="collab-label"
+                                for="collaboration-needs"
+                            >
+                                Skills and roles you need
+                                <span class="optional">Optional</span>
+                            </label>
+
+                            <textarea
+                                class="collab-textarea short"
+                                id="collaboration-needs"
+                                name="collaboration_needs"
+                                maxlength="500"
+                                placeholder="e.g. Looking for an AI/ML engineer, Django backend developer, and UI/UX designer."
+                            ></textarea>
+
+                            <span class="collab-help">
+                                Mention technical skills, responsibilities,
+                                or the specific problem you want to solve
+                                together.
+                            </span>
+                        </div>
+
+                    </section>
+
+                    <div class="collab-submit-row">
+                        <div class="collab-submit-note">
+                            By submitting, you send a collaboration
+                            proposal to @{{ receiver.username }} for
+                            review. They can accept or decline it.
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="collab-submit-button"
+                            id="collab-submit-button"
+                        >
+                            <span>Send proposal</span>
+                            <span aria-hidden="true">→</span>
+                        </button>
+                    </div>
+
+                </form>
+            </main>
+
+            <!-- RIGHT SIDEBAR -->
+
+            <aside class="collab-side">
+
+                <section class="collab-side-card">
+                    <h3>Make your proposal stand out</h3>
+
+                    <div class="tip-item">
+                        <span class="tip-check">✓</span>
+                        <div>
+                            <strong>Explain the problem</strong>
+                            <p>
+                                Describe who needs your solution and why
+                                the problem matters.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <span class="tip-check">✓</span>
+                        <div>
+                            <strong>Show your progress</strong>
+                            <p>
+                                Share genuine screenshots or mockups
+                                to communicate your vision.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <span class="tip-check">✓</span>
+                        <div>
+                            <strong>Be specific</strong>
+                            <p>
+                                Explain the skills or contribution you
+                                want from your collaborator.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="collab-side-card">
+                    <h3>What happens next?</h3>
+
+                    <div class="tip-item">
+                        <span class="tip-check">1</span>
+                        <div>
+                            <strong>Proposal sent</strong>
+                            <p>
+                                The recipient receives a collaboration
+                                notification.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <span class="tip-check">2</span>
+                        <div>
+                            <strong>They review it</strong>
+                            <p>
+                                They decide whether to accept or decline.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <span class="tip-check">3</span>
+                        <div>
+                            <strong>Connection established</strong>
+                            <p>
+                                Acceptance establishes your connection
+                                under the existing BxB workflow.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="privacy-note">
+                    <strong>Quick reminder</strong><br>
+                    Only share images and links you have permission
+                    to disclose. Avoid including passwords, API keys,
+                    private credentials, or confidential information.
+                </div>
+
+            </aside>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+(function () {
+    const form = document.getElementById("collab-form");
+
+    // The recipient may already be connected or have a pending request.
+    if (!form) {
+        return;
+    }
+
+    const messageBox = document.getElementById("collab-message");
+    const submitButton = document.getElementById("collab-submit-button");
+    const description = document.getElementById("idea-description");
+    const descriptionCount = document.getElementById("description-count");
+    const imageInput = document.getElementById("idea-images");
+    const imageGrid = document.getElementById("image-preview-grid");
+    const imageStatus = document.getElementById("image-status");
+    const videoField = document.getElementById("video-field");
+    const videoInput = document.getElementById("demo-video");
+
+    let previewUrls = [];
+
+    function showMessage(message, type) {
+        messageBox.textContent = message;
+        messageBox.className = "collab-message visible " + type;
+        messageBox.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
+    description.addEventListener("input", function () {
+        descriptionCount.textContent = description.value.length;
+    });
+
+    function updateVideoField() {
+        const selectedStage = form.querySelector(
+            'input[name="stage"]:checked'
+        );
+
+        const isProduct = selectedStage &&
+            selectedStage.value === "product";
+
+        videoField.hidden = !isProduct;
+
+        if (!isProduct) {
+            videoInput.value = "";
+        }
+    }
+
+    form.querySelectorAll('input[name="stage"]').forEach(function (radio) {
+        radio.addEventListener("change", updateVideoField);
+    });
+
+    updateVideoField();
+
+    imageInput.addEventListener("change", function () {
+        previewUrls.forEach(function (url) {
+            URL.revokeObjectURL(url);
+        });
+
+        previewUrls = [];
+        imageGrid.replaceChildren();
+
+        const files = Array.from(imageInput.files || []);
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (files.length > 5) {
+            imageInput.value = "";
+            imageStatus.textContent = "Please select no more than 5 images.";
+            showMessage("You can upload a maximum of 5 images.", "error");
+            return;
+        }
+
+        const invalidFile = files.find(function (file) {
+            return !allowedTypes.includes(file.type) ||
+                file.size > 5 * 1024 * 1024;
+        });
+
+        if (invalidFile) {
+            imageInput.value = "";
+            imageStatus.textContent =
+                "Please choose supported images under 5 MB each.";
+            showMessage(
+                "Each image must be JPG, PNG, or WebP and no larger than 5 MB.",
+                "error"
+            );
+            return;
+        }
+
+        files.forEach(function (file) {
+            const url = URL.createObjectURL(file);
+            previewUrls.push(url);
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "image-preview";
+
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = file.name;
+
+            wrapper.appendChild(img);
+            imageGrid.appendChild(wrapper);
+        });
+
+        imageStatus.textContent = files.length
+            ? files.length + " image(s) selected."
+            : "Images are optional. A good visual can make your idea easier to understand.";
+    });
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!form.reportValidity()) {
+            return;
+        }
+
+        const selectedStage = form.querySelector(
+            'input[name="stage"]:checked'
+        );
+
+        if (
+            selectedStage &&
+            selectedStage.value === "product" &&
+            videoInput.value.trim()
+        ) {
+            try {
+                const videoUrl = new URL(videoInput.value.trim());
+
+                if (
+                    videoUrl.protocol !== "https:" &&
+                    videoUrl.protocol !== "http:"
+                ) {
+                    throw new Error("Unsupported protocol");
+                }
+            } catch (error) {
+                showMessage("Please enter a valid HTTP or HTTPS video URL.", "error");
+                videoInput.focus();
+                return;
+            }
+        }
+
+        submitButton.disabled = true;
+        submitButton.querySelector("span").textContent = "Sending proposal...";
+        messageBox.className = "collab-message";
+        messageBox.textContent = "";
+
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: new FormData(form),
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                credentials: "same-origin"
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                showMessage(
+                    data.error || "Unable to send the proposal. Please try again.",
+                    "error"
+                );
+                return;
+            }
+
+            showMessage(
+                data.message || "Your collaboration proposal has been sent.",
+                "success"
+            );
+
+            submitButton.querySelector("span").textContent = "Proposal sent";
+
+            window.setTimeout(function () {
+                window.location.href =
+                    "{% url 'public_profile' receiver.username %}";
+            }, 1400);
+
+        } catch (error) {
+            showMessage(
+                "A network error occurred. Please check your connection and try again.",
+                "error"
+            );
+        } finally {
+            if (!submitButton.textContent.includes("Proposal sent")) {
+                submitButton.disabled = false;
+                submitButton.querySelector("span").textContent = "Send proposal";
+            }
+        }
+    });
+
+    window.addEventListener("pagehide", function () {
+        previewUrls.forEach(function (url) {
+            URL.revokeObjectURL(url);
+        });
+    });
+})();
+</script>
+
+{% endblock %}
