@@ -16,6 +16,7 @@ urlpatterns = [
     path("notifications/", include("notifications.urls")),
     path("ai-studio/", include("ai_studio.urls")),
     path("events/", include("events.urls")),
+    path("publish/", include("publish.urls")),
 ]
 
 if settings.DEBUG:

@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "notifications",
     "ai_studio",
     "events",
+    'publish',
 ]
 
 MIDDLEWARE = [
