@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+
+{% block title %}Campus Events | BitsXBytes{% endblock %}
+
+{% block content %}
+
+<style>
+    .events-page {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 24px;
+        color: var(--text-primary, #f1f5f9);
+    }
+
+    .events-hero {
+        padding: 32px;
+        border: 1px solid rgba(96, 165, 250, 0.24);
+        border-radius: 22px;
+        background:
+            radial-gradient(circle at top right, rgba(37, 99, 235, 0.24), transparent 45%),
+            linear-gradient(135deg, #101a31, #090d18);
+        margin-bottom: 30px;
+    }
+
+    .events-eyebrow {
+        color: #60a5fa;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .events-hero h1 {
+        margin: 12px 0;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 850;
+        letter-spacing: -1px;
+    }
+
+    .events-hero p {
+        color: #aab7cc;
+        line-height: 1.7;
+        max-width: 650px;
+        margin-bottom: 0;
+    }
+
+    .events-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+    }
+
+    .events-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 17px;
+        border-radius: 10px;
+        background: #2563eb;
+        color: #fff !important;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 750;
+        border: 1px solid transparent;
+        transition: 0.2s ease;
+    }
+
+    .events-btn:hover {
+        background: #3b82f6;
+        transform: translateY(-1px);
+    }
+
+    .events-btn-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(148, 163, 184, 0.25);
+    }
+
+    .events-btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.09);
+    }
+
+    .events-section {
+        margin-top: 32px;
+    }
+
+    .events-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .events-section-header h2 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .events-count {
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+        gap: 18px;
+    }
+
+    .event-card {
+        min-width: 0;
+        overflow: hidden;
+        border-radius: 17px;
+        background: #0d1423;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .event-card:hover {
+        border-color: rgba(96, 165, 250, 0.55);
+        transform: translateY(-3px);
+    }
+
+    .event-banner {
+        height: 155px;
+        background:
+            radial-gradient(circle at 75% 20%, rgba(59, 130, 246, 0.4), transparent 35%),
+            linear-gradient(135deg, #172554, #101827);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 46px;
+        overflow: hidden;
+    }
+
+    .event-banner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .event-card-content {
+        padding: 19px;
+    }
+
+    .event-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 12px;
+    }
+
+    .event-tag {
+        padding: 5px 9px;
+        border-radius: 7px;
+        background: rgba(59, 130, 246, 0.12);
+        color: #93c5fd;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .event-tag-ongoing {
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.12);
+    }
+
+    .event-card h3 {
+        margin: 0 0 9px;
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .event-card h3 a {
+        color: #f1f5f9;
+        text-decoration: none;
+    }
+
+    .event-card h3 a:hover {
+        color: #93c5fd;
+    }
+
+    .event-description {
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.7;
+        min-height: 44px;
+        overflow-wrap: anywhere;
+    }
+
+    .event-meta {
+        display: grid;
+        gap: 10px;
+        padding: 15px 0;
+        margin-top: 12px;
+        border-top: 1px solid rgba(148, 163, 184, 0.12);
+        color: #aab7cc;
+        font-size: 12px;
+    }
+
+    .event-meta-row {
+        display: flex;
+        gap: 9px;
+        align-items: flex-start;
+    }
+
+    .event-meta-icon {
+        width: 18px;
+        flex-shrink: 0;
+    }
+
+    .event-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .event-participation {
+        color: #94a3b8;
+        font-size: 11px;
+    }
+
+    .event-link {
+        color: #93c5fd;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .event-link:hover {
+        color: #fff;
+    }
+
+    .events-empty {
+        padding: 38px 20px;
+        text-align: center;
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px dashed rgba(148, 163, 184, 0.25);
+        border-radius: 16px;
+    }
+
+    .events-empty-icon {
+        font-size: 34px;
+        margin-bottom: 10px;
+    }
+
+    .events-empty h3 {
+        margin: 0 0 8px;
+        font-size: 17px;
+    }
+
+    .events-empty p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .events-message {
+        padding: 12px 15px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(96, 165, 250, 0.25);
+        color: #bfdbfe;
+        font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+        .events-page {
+            padding: 15px;
+        }
+
+        .events-hero {
+            padding: 23px 19px;
+        }
+
+        .events-section-header h2 {
+            font-size: 18px;
+        }
+    }
+</style>
+
+<div class="events-page">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="events-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="events-hero">
+        <div class="events-eyebrow">Your campus. Your community.</div>
+
+        <h1>Discover Campus Events.</h1>
+
+        <p>
+            Find hackathons, workshops, technical fests, competitions and
+            campus activities. Discover opportunities, meet collaborators
+            and participate as an individual or a team.
+        </p>
+
+        <div class="events-actions">
+            <a href="#upcoming-events" class="events-btn">
+                Explore Events →
+            </a>
+
+            <a href="{% url 'events:my_events' %}"
+               class="events-btn events-btn-secondary">
+                My Events
+            </a>
+        </div>
+    </section>
+
+    <section class="events-section" id="upcoming-events">
+        <div class="events-section-header">
+            <h2>🚀 Upcoming Events</h2>
+            <span class="events-count">{{ upcoming_events|length }} events</span>
+        </div>
+
+        {% if upcoming_events %}
+            <div class="events-grid">
+                {% for event in upcoming_events %}
+                    <article class="event-card">
+
+                        <div class="event-banner">
+                            {% if event.image %}
+                                <img src="{{ event.image }}"
+                                     alt="{{ event.title }}"
+                                     loading="lazy">
+                            {% else %}
+                                <span aria-hidden="true">✦</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="event-card-content">
+
+                            <div class="event-tags">
+                                <span class="event-tag">
+                                    {{ event.get_participation_type_display }}
+                                </span>
+                            </div>
+
+                            <h3>
+                                <a href="{% url 'events:event_detail' event.slug %}">
+                                    {{ event.title }}
+                                </a>
+                            </h3>
+
+                            <p class="event-description">
+                                {{ event.description|truncatewords:22 }}
+                            </p>
+
+                            <div class="event-meta">
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">📅</span>
+                                    <span>{{ event.start_date|date:"D, d M Y · h:i A" }}</span>
+                                </div>
+
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">📍</span>
+                                    <span>{{ event.venue|default:"Venue to be announced" }}</span>
+                                </div>
+
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">🏢</span>
+                                    <span>{{ event.organizer }}</span>
+                                </div>
+                            </div>
+
+                            <div class="event-card-footer">
+                                <span class="event-participation">
+                                    {% if event.max_participants %}
+                                        {{ event.registration_count }}/{{ event.max_participants }} registrations
+                                    {% else %}
+                                        Registration available
+                                    {% endif %}
+                                </span>
+
+                                <a class="event-link"
+                                   href="{% url 'events:event_detail' event.slug %}">
+                                    View Details →
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="events-empty">
+                <div class="events-empty-icon">🗓️</div>
+                <h3>No upcoming events yet</h3>
+                <p>
+                    New opportunities will appear here when college events
+                    are published. Check back soon!
+                </p>
+            </div>
+        {% endif %}
+    </section>
+
+    {% if ongoing_events %}
+        <section class="events-section">
+            <div class="events-section-header">
+                <h2>⚡ Happening Now</h2>
+                <span class="events-count">{{ ongoing_events|length }} events</span>
+            </div>
+
+            <div class="events-grid">
+                {% for event in ongoing_events %}
+                    <article class="event-card">
+                        <div class="event-banner">
+                            {% if event.image %}
+                                <img src="{{ event.image }}"
+                                     alt="{{ event.title }}"
+                                     loading="lazy">
+                            {% else %}
+                                <span aria-hidden="true">⚡</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="event-card-content">
+                            <div class="event-tags">
+                                <span class="event-tag event-tag-ongoing">
+                                    Happening Now
+                                </span>
+                            </div>
+
+                            <h3>
+                                <a href="{% url 'events:event_detail' event.slug %}">
+                                    {{ event.title }}
+                                </a>
+                            </h3>
+
+                            <p class="event-description">
+                                {{ event.description|truncatewords:22 }}
+                            </p>
+
+                            <div class="event-meta">
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">📍</span>
+                                    <span>{{ event.venue|default:"Venue to be announced" }}</span>
+                                </div>
+
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">🏢</span>
+                                    <span>{{ event.organizer }}</span>
+                                </div>
+                            </div>
+
+                            <a class="event-link"
+                               href="{% url 'events:event_detail' event.slug %}">
+                                View Details →
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if past_events %}
+        <section class="events-section">
+            <div class="events-section-header">
+                <h2>📚 Past Events</h2>
+                <span class="events-count">{{ past_events|length }} events</span>
+            </div>
+
+            <div class="events-grid">
+                {% for event in past_events %}
+                    <article class="event-card">
+                        <div class="event-card-content">
+                            <div class="event-tags">
+                                <span class="event-tag">Event Concluded</span>
+                            </div>
+
+                            <h3>
+                                <a href="{% url 'events:event_detail' event.slug %}">
+                                    {{ event.title }}
+                                </a>
+                            </h3>
+
+                            <p class="event-description">
+                                {{ event.description|truncatewords:18 }}
+                            </p>
+
+                            <div class="event-meta">
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">📅</span>
+                                    <span>{{ event.start_date|date:"d M Y" }}</span>
+                                </div>
+
+                                <div class="event-meta-row">
+                                    <span class="event-meta-icon">🏢</span>
+                                    <span>{{ event.organizer }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+</div>
+
+{% endblock %}

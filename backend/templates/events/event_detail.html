@@ -1,0 +1,610 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} | BitsXBytes Events{% endblock %}
+
+{% block content %}
+
+<style>
+    .event-detail-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 24px;
+        color: #e2e8f0;
+    }
+
+    .event-back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #93c5fd;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .event-detail-hero {
+        padding: 32px;
+        border-radius: 22px;
+        border: 1px solid rgba(96, 165, 250, 0.25);
+        background:
+            radial-gradient(circle at 90% 5%, rgba(37, 99, 235, .25), transparent 40%),
+            linear-gradient(135deg, #111d35, #090d18);
+        margin-bottom: 22px;
+    }
+
+    .event-detail-label {
+        display: inline-block;
+        color: #93c5fd;
+        background: rgba(59, 130, 246, .12);
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .event-detail-hero h1 {
+        font-size: clamp(27px, 4vw, 40px);
+        line-height: 1.2;
+        letter-spacing: -1px;
+        margin: 17px 0 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .event-detail-hero p {
+        color: #a8b5ca;
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .event-detail-banner {
+        margin-top: 24px;
+        overflow: hidden;
+        border-radius: 14px;
+        max-height: 340px;
+    }
+
+    .event-detail-banner img {
+        display: block;
+        width: 100%;
+        max-height: 340px;
+        object-fit: cover;
+    }
+
+    .event-detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr);
+        gap: 20px;
+        align-items: start;
+    }
+
+    .event-detail-card {
+        background: #0d1423;
+        border: 1px solid rgba(148, 163, 184, .16);
+        border-radius: 17px;
+        padding: 23px;
+        margin-bottom: 20px;
+        min-width: 0;
+    }
+
+    .event-detail-card h2 {
+        margin: 0 0 18px;
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+    .event-description-full {
+        color: #b7c3d6;
+        font-size: 14px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+    }
+
+    .event-info-list {
+        display: grid;
+        gap: 18px;
+    }
+
+    .event-info-item {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .event-info-icon {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(59, 130, 246, .12);
+        border-radius: 11px;
+    }
+
+    .event-info-label {
+        color: #8190a7;
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+
+    .event-info-value {
+        color: #e2e8f0;
+        font-size: 13px;
+        font-weight: 650;
+        overflow-wrap: anywhere;
+    }
+
+    .event-action-btn {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        padding: 12px 15px;
+        border: 0;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background .2s ease;
+    }
+
+    .event-action-btn:hover {
+        background: #3b82f6;
+    }
+
+    .event-action-secondary {
+        background: rgba(255, 255, 255, .05);
+        border: 1px solid rgba(148, 163, 184, .25);
+    }
+
+    .event-action-secondary:hover {
+        background: rgba(255, 255, 255, .09);
+    }
+
+    .event-action-danger {
+        background: rgba(239, 68, 68, .10);
+        border: 1px solid rgba(248, 113, 113, .3);
+        color: #fca5a5;
+    }
+
+    .event-action-danger:hover {
+        background: rgba(239, 68, 68, .2);
+    }
+
+    .event-action-note {
+        color: #94a3b8;
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 12px 0 0;
+    }
+
+    .event-inline-form {
+        margin-top: 14px;
+    }
+
+    .event-form-label {
+        display: block;
+        color: #b7c3d6;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .event-form-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px;
+        background: #080d18;
+        border: 1px solid rgba(148, 163, 184, .25);
+        border-radius: 9px;
+        color: #f1f5f9;
+        font: inherit;
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .event-form-input:focus {
+        outline: 2px solid rgba(59, 130, 246, .5);
+        border-color: #3b82f6;
+    }
+
+    .event-team-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .event-team-item {
+        padding: 16px;
+        border: 1px solid rgba(148, 163, 184, .17);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .02);
+    }
+
+    .event-team-item h3 {
+        margin: 0 0 7px;
+        font-size: 15px;
+        overflow-wrap: anywhere;
+    }
+
+    .event-team-item p {
+        color: #94a3b8;
+        font-size: 12px;
+        line-height: 1.7;
+        margin: 0 0 12px;
+    }
+
+    .event-status-message {
+        padding: 13px;
+        border-radius: 10px;
+        background: rgba(34, 197, 94, .09);
+        border: 1px solid rgba(74, 222, 128, .2);
+        color: #86efac;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
+
+    .event-alert {
+        padding: 12px 14px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        background: rgba(59, 130, 246, .10);
+        border: 1px solid rgba(96, 165, 250, .22);
+        color: #bfdbfe;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .event-external-link {
+        color: #93c5fd;
+        font-size: 13px;
+        font-weight: 750;
+        text-decoration: none;
+    }
+
+    .event-external-link:hover {
+        color: white;
+    }
+
+    @media (max-width: 720px) {
+        .event-detail-page {
+            padding: 15px;
+        }
+
+        .event-detail-hero {
+            padding: 23px 19px;
+        }
+
+        .event-detail-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .event-detail-card {
+            padding: 19px;
+        }
+    }
+</style>
+
+<div class="event-detail-page">
+
+    <a href="{% url 'events:event_list' %}" class="event-back-link">
+        ← Back to Events
+    </a>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="event-alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="event-detail-hero">
+        <span class="event-detail-label">
+            {{ event.get_status_display }}
+        </span>
+
+        <h1>{{ event.title }}</h1>
+
+        <p>
+            Organized by {{ event.organizer }}.
+            Discover the details, check the schedule, and participate
+            in this campus opportunity.
+        </p>
+
+        {% if event.image %}
+            <div class="event-detail-banner">
+                <img src="{{ event.image }}"
+                     alt="{{ event.title }}"
+                     loading="lazy">
+            </div>
+        {% endif %}
+    </section>
+
+    <div class="event-detail-layout">
+
+        <div>
+
+            <section class="event-detail-card">
+                <h2>About this event</h2>
+
+                <div class="event-description-full">
+                    {{ event.description|linebreaks }}
+                </div>
+
+                {% if event.registration_link %}
+                    <p style="margin-top: 22px;">
+                        <a class="event-external-link"
+                           href="{{ event.registration_link }}"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            Open external registration page ↗
+                        </a>
+                    </p>
+                {% endif %}
+            </section>
+
+            <section class="event-detail-card">
+                <h2>Event information</h2>
+
+                <div class="event-info-list">
+
+                    <div class="event-info-item">
+                        <div class="event-info-icon">📅</div>
+                        <div>
+                            <div class="event-info-label">STARTS</div>
+                            <div class="event-info-value">
+                                {{ event.start_date|date:"l, d F Y · h:i A" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-info-item">
+                        <div class="event-info-icon">🏁</div>
+                        <div>
+                            <div class="event-info-label">ENDS</div>
+                            <div class="event-info-value">
+                                {{ event.end_date|date:"l, d F Y · h:i A" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-info-item">
+                        <div class="event-info-icon">📍</div>
+                        <div>
+                            <div class="event-info-label">VENUE</div>
+                            <div class="event-info-value">
+                                {{ event.venue|default:"To be announced" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-info-item">
+                        <div class="event-info-icon">👥</div>
+                        <div>
+                            <div class="event-info-label">PARTICIPATION</div>
+                            <div class="event-info-value">
+                                {{ event.get_participation_type_display }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="event-info-item">
+                        <div class="event-info-icon">⏳</div>
+                        <div>
+                            <div class="event-info-label">REGISTRATION DEADLINE</div>
+                            <div class="event-info-value">
+                                {{ event.registration_deadline|date:"d M Y · h:i A" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if event.max_participants %}
+                        <div class="event-info-item">
+                            <div class="event-info-icon">🎟️</div>
+                            <div>
+                                <div class="event-info-label">MAXIMUM PARTICIPANTS</div>
+                                <div class="event-info-value">
+                                    {{ event.max_participants }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if event.participation_type != "individual" %}
+                        <div class="event-info-item">
+                            <div class="event-info-icon">🤝</div>
+                            <div>
+                                <div class="event-info-label">TEAM SIZE</div>
+                                <div class="event-info-value">
+                                    {{ event.min_team_size }}–{{ event.max_team_size }} members
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </section>
+
+            {% if event.participation_type != "individual" %}
+                <section class="event-detail-card">
+                    <h2>Find your team</h2>
+
+                    {% if teams %}
+                        <div class="event-team-list">
+                            {% for team in teams %}
+                                <div class="event-team-item">
+                                    <h3>{{ team.name }}</h3>
+
+                                    <p>
+                                        Team leader: {{ team.leader }}
+                                        <br>
+                                        Members: {{ team.member_count }}/{{ event.max_team_size }}
+                                    </p>
+
+                                    {% if user_team and user_team.id == team.id %}
+                                        <div class="event-status-message">
+                                            You are a member of this team.
+                                        </div>
+                                    {% elif not registration and event.is_registration_open and team.member_count < event.max_team_size %}
+                                        <form method="post"
+                                              action="{% url 'events:join_team' event.slug team.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="event-action-btn">
+                                                Join this team
+                                            </button>
+                                        </form>
+                                    {% elif team.member_count >= event.max_team_size %}
+                                        <p>This team is full.</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="event-action-note">
+                            No teams have been created for this event yet.
+                            You can start the first one if registration is open.
+                        </p>
+                    {% endif %}
+
+                </section>
+            {% endif %}
+
+        </div>
+
+        <aside>
+
+            <section class="event-detail-card">
+                <h2>Participation</h2>
+
+                {% if registration %}
+                    <div class="event-status-message">
+                        ✓ You are registered for this event.
+                        {% if registration.registration_type == "team" %}
+                            <br>Your registration is for team participation.
+                        {% else %}
+                            <br>Your registration is individual.
+                        {% endif %}
+                    </div>
+
+                    {% if user_team %}
+                        <p class="event-action-note">
+                            Your team: <strong>{{ user_team.name }}</strong>
+                        </p>
+                    {% endif %}
+
+                    <form method="post"
+                          action="{% url 'events:cancel_registration' event.slug %}"
+                          onsubmit="return confirm('Are you sure you want to cancel your registration?');">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="event-action-btn event-action-danger">
+                            Cancel Registration
+                        </button>
+                    </form>
+
+                {% elif not event.is_registration_open %}
+                    <div class="event-alert">
+                        Registration is currently closed for this event.
+                    </div>
+
+                {% elif event.participation_type == "individual" %}
+                    <p class="event-action-note" style="margin-bottom: 15px;">
+                        Register individually to participate in this event.
+                    </p>
+
+                    <form method="post"
+                          action="{% url 'events:register_event' event.slug %}">
+                        {% csrf_token %}
+                        <button type="submit" class="event-action-btn">
+                            Register Now →
+                        </button>
+                    </form>
+
+                {% elif event.participation_type == "team" %}
+                    <p class="event-action-note">
+                        Create a team or join an existing one to participate.
+                    </p>
+
+                    <form method="post"
+                          action="{% url 'events:create_team' event.slug %}"
+                          class="event-inline-form">
+                        {% csrf_token %}
+
+                        <label class="event-form-label" for="team_name">
+                            Create a team
+                        </label>
+
+                        <input
+                            class="event-form-input"
+                            type="text"
+                            id="team_name"
+                            name="team_name"
+                            maxlength="100"
+                            placeholder="Enter your team name"
+                            required
+                        >
+
+                        <button type="submit" class="event-action-btn">
+                            Create Team →
+                        </button>
+                    </form>
+
+                {% else %}
+                    <p class="event-action-note" style="margin-bottom: 15px;">
+                        Choose how you want to participate.
+                    </p>
+
+                    <form method="post"
+                          action="{% url 'events:register_event' event.slug %}">
+                        {% csrf_token %}
+                        <button type="submit" class="event-action-btn">
+                            Register Individually
+                        </button>
+                    </form>
+
+                    <form method="post"
+                          action="{% url 'events:create_team' event.slug %}"
+                          class="event-inline-form">
+                        {% csrf_token %}
+
+                        <label class="event-form-label" for="team_name">
+                            Or create a team
+                        </label>
+
+                        <input
+                            class="event-form-input"
+                            type="text"
+                            id="team_name"
+                            name="team_name"
+                            maxlength="100"
+                            placeholder="Enter your team name"
+                            required
+                        >
+
+                        <button type="submit"
+                                class="event-action-btn event-action-secondary">
+                            Create Team
+                        </button>
+                    </form>
+
+                {% endif %}
+
+                <a href="{% url 'events:my_events' %}"
+                   class="event-action-btn event-action-secondary"
+                   style="margin-top: 13px;">
+                    View My Events
+                </a>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+</div>
+
+{% endblock %}

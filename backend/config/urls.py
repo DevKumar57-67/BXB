@@ -140,6 +140,8 @@ urlpatterns = [
 
     # AI Studio dashboard
     path("ai-studio/", include("ai_studio.urls")),
+    # Events 
+    path("events/", include("events.urls")),
 ]
 
 

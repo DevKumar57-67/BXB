@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'handshake',
     'notifications',
     'ai_studio',
+    'events',
 ]
 
 MIDDLEWARE = [
