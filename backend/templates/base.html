@@ -2792,20 +2792,25 @@
                 </a>
 
 
-                <a
-                    href="#"
-                    class="nav-item"
-                >
+            
+<a
+    href="/events/"
+    class="
+        nav-item
+        {% if request.path == '/events/' or '/events/' in request.path %}
+            active
+        {% endif %}
+    "
+>
+    <span class="nav-item-icon">
+        ◷
+    </span>
 
-                    <span class="nav-item-icon">
-                        ◷
-                    </span>
+    <span class="nav-item-label">
+        Events
+    </span>
+</a>
 
-                    <span class="nav-item-label">
-                        Events
-                    </span>
-
-                </a>
 
 
                 <a

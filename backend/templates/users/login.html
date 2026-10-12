@@ -180,7 +180,7 @@
             <input
                 type="hidden"
                 name="next"
-                value="{{ next|default:request.GET.next|default:'' }}"
+                value="{{ next|default:'' }}"
             >
 
             {% if form.non_field_errors %}
