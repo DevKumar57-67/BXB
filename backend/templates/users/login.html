@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Sign In | BitsXBytes{% endblock %}
@@ -6,6 +5,56 @@
 {% block content %}
 
 <style>
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] or .light-theme is active */
+    :root {
+        --auth-bg-card: #101521;
+        --auth-border-card: rgba(255, 255, 255, .09);
+        --auth-shadow-card: 0 24px 70px rgba(0, 0, 0, .3);
+        
+        --auth-text-title: #f8fafc;
+        --auth-text-subtitle: #94a3b8;
+        --auth-text-label: #cbd5e1;
+        --auth-text-footer: #94a3b8;
+        
+        --auth-input-bg: #0b0f19;
+        --auth-input-text: #f8fafc;
+        --auth-input-border: #273247;
+        --auth-input-focus-border: #3b82f6;
+        --auth-input-focus-shadow: rgba(59, 130, 246, .14);
+        
+        --auth-link: #60a5fa;
+        --auth-link-hover: #93c5fd;
+        
+        --auth-note-bg: rgba(59, 130, 246, .07);
+        --auth-note-border: rgba(59, 130, 246, .16);
+        --auth-note-text: #94a3b8;
+    }
+
+    /* Light Theme Overrides */
+    [data-theme="light"], .light-theme {
+        --auth-bg-card: #ffffff;
+        --auth-border-card: #cbd5e1;
+        --auth-shadow-card: 0 20px 40px rgba(0, 0, 0, .06);
+        
+        --auth-text-title: #0f172a;
+        --auth-text-subtitle: #475569;
+        --auth-text-label: #334155;
+        --auth-text-footer: #64748b;
+        
+        --auth-input-bg: #ffffff;
+        --auth-input-text: #0f172a;
+        --auth-input-border: #cbd5e1;
+        --auth-input-focus-border: #2563eb;
+        --auth-input-focus-shadow: rgba(37, 99, 235, .15);
+        
+        --auth-link: #2563eb;
+        --auth-link-hover: #1d4ed8;
+        
+        --auth-note-bg: rgba(37, 99, 235, .06);
+        --auth-note-border: rgba(37, 99, 235, .18);
+        --auth-note-text: #475569;
+    }
+
     .auth-wrapper {
         min-height: calc(100vh - 110px);
         display: flex;
@@ -18,10 +67,10 @@
         width: 100%;
         max-width: 460px;
         padding: 36px;
-        background: #101521;
-        border: 1px solid rgba(255, 255, 255, .09);
+        background: var(--auth-bg-card);
+        border: 1px solid var(--auth-border-card);
         border-radius: 20px;
-        box-shadow: 0 24px 70px rgba(0, 0, 0, .3);
+        box-shadow: var(--auth-shadow-card);
     }
 
     .auth-logo {
@@ -38,14 +87,14 @@
     }
 
     .auth-card h1 {
-        color: #f8fafc;
+        color: var(--auth-text-title);
         font-size: 30px;
         margin: 0 0 10px;
         letter-spacing: -1px;
     }
 
     .auth-subtitle {
-        color: #94a3b8;
+        color: var(--auth-text-subtitle);
         font-size: 14px;
         line-height: 1.7;
         margin: 0 0 28px;
@@ -57,7 +106,7 @@
 
     .auth-form label {
         display: block;
-        color: #cbd5e1;
+        color: var(--auth-text-label);
         font-size: 13px;
         font-weight: 600;
         margin-bottom: 8px;
@@ -67,9 +116,9 @@
         width: 100%;
         box-sizing: border-box;
         padding: 13px 14px;
-        color: #f8fafc;
-        background: #0b0f19;
-        border: 1px solid #273247;
+        color: var(--auth-input-text);
+        background: var(--auth-input-bg);
+        border: 1px solid var(--auth-input-border);
         border-radius: 10px;
         outline: none;
         font: inherit;
@@ -77,8 +126,8 @@
     }
 
     .auth-form input:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, .14);
+        border-color: var(--auth-input-focus-border);
+        box-shadow: 0 0 0 3px var(--auth-input-focus-shadow);
     }
 
     .auth-errors {
@@ -125,27 +174,27 @@
     .auth-footer {
         margin-top: 24px;
         text-align: center;
-        color: #94a3b8;
+        color: var(--auth-text-footer);
         font-size: 13px;
     }
 
     .auth-footer a {
-        color: #60a5fa;
+        color: var(--auth-link);
         font-weight: 700;
         text-decoration: none;
     }
 
     .auth-footer a:hover {
-        color: #93c5fd;
+        color: var(--auth-link-hover);
     }
 
     .auth-note {
         margin-top: 22px;
         padding: 13px;
-        background: rgba(59, 130, 246, .07);
-        border: 1px solid rgba(59, 130, 246, .16);
+        background: var(--auth-note-bg);
+        border: 1px solid var(--auth-note-border);
         border-radius: 10px;
-        color: #94a3b8;
+        color: var(--auth-note-text);
         font-size: 12px;
         line-height: 1.7;
     }
@@ -203,12 +252,12 @@
             {% endfor %}
 
             <button class="auth-button" type="submit">
-                Sign in to BitsXBytes →
+                Sign in to BitsXBytes &rarr;
             </button>
         </form>
 
         <div class="auth-note">
-            🔒 Your account, your community. Sign in securely with your
+            &#128274; Your account, your community. Sign in securely with your
             registered username and password.
         </div>
 

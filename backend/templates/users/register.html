@@ -5,6 +5,69 @@
 {% block content %}
 
 <style>
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] or .light-theme is active */
+    :root {
+        --reg-page-bg: transparent;
+        --reg-blur-glow: rgba(59, 130, 246, 0.10);
+        
+        --reg-card-bg: rgba(16, 21, 33, 0.94);
+        --reg-card-border: var(--border, rgba(255, 255, 255, 0.09));
+        --reg-card-shadow: 0 25px 70px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+        
+        --reg-text-primary: var(--text-primary, #f8fafc);
+        --reg-text-secondary: var(--text-secondary, #94a3b8);
+        --reg-text-label: #cbd5e1;
+        --reg-text-muted: #64748b;
+        
+        --reg-input-bg: #0b0f19;
+        --reg-input-text: #f8fafc;
+        --reg-input-border: rgba(255,255,255,.09);
+        --reg-input-focus-border: rgba(59,130,246,.65);
+        --reg-input-focus-bg: #0d1320;
+        
+        --reg-step-bg: #1e293b;
+        --reg-step-active: #3b82f6;
+        
+        --reg-divider-line: rgba(255,255,255,.07);
+        
+        --reg-link: var(--blue-light, #60a5fa);
+        
+        --reg-note-bg: rgba(59,130,246,.06);
+        --reg-note-border: rgba(59,130,246,.12);
+        --reg-note-icon-bg: rgba(59,130,246,.12);
+    }
+
+    /* Light Theme Overrides */
+    [data-theme="light"], .light-theme {
+        --reg-blur-glow: rgba(37, 99, 235, 0.06);
+        
+        --reg-card-bg: rgba(255, 255, 255, 0.96);
+        --reg-card-border: #cbd5e1;
+        --reg-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 1);
+        
+        --reg-text-primary: #0f172a;
+        --reg-text-secondary: #475569;
+        --reg-text-label: #334155;
+        --reg-text-muted: #64748b;
+        
+        --reg-input-bg: #ffffff;
+        --reg-input-text: #0f172a;
+        --reg-input-border: #cbd5e1;
+        --reg-input-focus-border: #2563eb;
+        --reg-input-focus-bg: #ffffff;
+        
+        --reg-step-bg: #e2e8f0;
+        --reg-step-active: #2563eb;
+        
+        --reg-divider-line: #e2e8f0;
+        
+        --reg-link: #2563eb;
+        
+        --reg-note-bg: rgba(37, 99, 235, 0.04);
+        --reg-note-border: rgba(37, 99, 235, 0.15);
+        --reg-note-icon-bg: rgba(37, 99, 235, 0.1);
+    }
+
     .auth-page {
         min-height: calc(100vh - 72px);
         display: flex;
@@ -20,7 +83,7 @@
         position: absolute;
         width: 520px;
         height: 520px;
-        background: rgba(59, 130, 246, 0.10);
+        background: var(--reg-blur-glow);
         filter: blur(110px);
         border-radius: 50%;
         top: 0;
@@ -37,7 +100,6 @@
     }
 
     /* Brand */
-
     .auth-brand {
         text-align: center;
         margin-bottom: 28px;
@@ -47,35 +109,21 @@
         width: 58px;
         height: 58px;
         margin: 0 auto 16px;
-
         display: flex;
         align-items: center;
         justify-content: center;
-
         border-radius: 16px;
-
-        background: linear-gradient(
-            135deg,
-            #3b82f6,
-            #2563eb
-        );
-
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
-
         font-family: "Space Grotesk", sans-serif;
         font-size: 25px;
         font-weight: 800;
-
-        box-shadow:
-            0 12px 35px rgba(37, 99, 235, 0.35),
-            inset 0 1px 0 rgba(255,255,255,.2);
+        box-shadow: 0 12px 35px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255,255,255,.2);
     }
 
     .auth-brand h1 {
         margin: 0 0 7px;
-
-        color: var(--text-primary);
-
+        color: var(--reg-text-primary);
         font-family: "Space Grotesk", sans-serif;
         font-size: 26px;
         font-weight: 700;
@@ -83,25 +131,17 @@
 
     .auth-brand p {
         margin: 0;
-
-        color: var(--text-secondary);
+        color: var(--reg-text-secondary);
         font-size: 14px;
     }
 
     /* Card */
-
     .auth-card {
-        background: rgba(16, 21, 33, 0.94);
-
-        border: 1px solid var(--border);
+        background: var(--reg-card-bg);
+        border: 1px solid var(--reg-card-border);
         border-radius: 20px;
-
         padding: 32px;
-
-        box-shadow:
-            0 25px 70px rgba(0,0,0,.35),
-            inset 0 1px 0 rgba(255,255,255,.03);
-
+        box-shadow: var(--reg-card-shadow);
         backdrop-filter: blur(18px);
     }
 
@@ -111,65 +151,53 @@
 
     .auth-card-header h2 {
         margin: 0 0 7px;
-
-        color: var(--text-primary);
-
+        color: var(--reg-text-primary);
         font-family: "Space Grotesk", sans-serif;
         font-size: 21px;
     }
 
     .auth-card-header p {
         margin: 0;
-
-        color: var(--text-secondary);
+        color: var(--reg-text-secondary);
         font-size: 13px;
         line-height: 1.6;
     }
 
     /* Progress */
-
     .signup-progress {
         display: flex;
         align-items: center;
         gap: 8px;
-
         margin-bottom: 26px;
     }
 
     .progress-step {
         height: 4px;
         flex: 1;
-
         border-radius: 999px;
-
-        background: #1e293b;
+        background: var(--reg-step-bg);
     }
 
     .progress-step.active {
-        background: #3b82f6;
+        background: var(--reg-step-active);
     }
 
     .progress-label {
         margin-left: 4px;
-
-        color: #64748b;
+        color: var(--reg-text-muted);
         font-size: 11px;
         white-space: nowrap;
     }
 
     /* Form */
-
     .register-form p {
         margin: 0 0 18px;
     }
 
     .register-form label {
         display: block;
-
         margin-bottom: 7px;
-
-        color: #cbd5e1;
-
+        color: var(--reg-text-label);
         font-size: 13px;
         font-weight: 600;
     }
@@ -177,120 +205,76 @@
     .register-form input {
         width: 100%;
         box-sizing: border-box;
-
         padding: 12px 14px;
-
-        background: #0b0f19;
-
-        border: 1px solid rgba(255,255,255,.09);
+        background: var(--reg-input-bg);
+        border: 1px solid var(--reg-input-border);
         border-radius: 10px;
-
-        color: var(--text-primary);
-
+        color: var(--reg-input-text);
         font-family: inherit;
         font-size: 14px;
-
         outline: none;
-
         transition: all 180ms ease;
     }
 
     .register-form input::placeholder {
-        color: #475569;
+        color: #64748b;
     }
 
     .register-form input:focus {
-        border-color: rgba(59,130,246,.65);
-
-        box-shadow:
-            0 0 0 3px rgba(59,130,246,.10);
-
-        background: #0d1320;
+        border-color: var(--reg-input-focus-border);
+        box-shadow: 0 0 0 3px rgba(59,130,246,.10);
+        background: var(--reg-input-focus-bg);
     }
 
     /* Errors */
-
     .errorlist {
         list-style: none;
-
         padding: 0;
         margin: 7px 0 0;
-
         color: #f87171;
-
         font-size: 12px;
         line-height: 1.5;
     }
 
     .form-errors {
         background: rgba(239,68,68,.08);
-
         border: 1px solid rgba(239,68,68,.18);
-
         border-radius: 10px;
-
         padding: 12px 14px;
-
         margin-bottom: 20px;
-
         color: #fca5a5;
-
         font-size: 13px;
     }
 
     /* Password help */
-
     .helptext {
         display: block;
-
         margin-top: 7px;
-
-        color: #64748b;
-
+        color: var(--reg-text-muted);
         font-size: 11px;
         line-height: 1.5;
     }
 
     /* Submit */
-
     .register-btn {
         width: 100%;
-
         border: none;
         border-radius: 10px;
-
         padding: 13px 16px;
-
-        background: linear-gradient(
-            135deg,
-            #3b82f6,
-            #2563eb
-        );
-
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         color: white;
-
         font-family: inherit;
         font-size: 14px;
         font-weight: 700;
-
         cursor: pointer;
-
-        box-shadow:
-            0 8px 25px rgba(37,99,235,.25);
-
-        transition:
-            transform 180ms ease,
-            box-shadow 180ms ease,
-            filter 180ms ease;
+        box-shadow: 0 8px 25px rgba(37,99,235,.25);
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
     }
 
     .register-btn:hover {
         transform: translateY(-1px);
-
         filter: brightness(1.08);
-
-        box-shadow:
-            0 12px 30px rgba(37,99,235,.35);
+        box-shadow: 0 12px 30px rgba(37,99,235,.35);
     }
 
     .register-btn:active {
@@ -298,51 +282,38 @@
     }
 
     /* Divider */
-
     .auth-divider {
         display: flex;
         align-items: center;
         gap: 12px;
-
         margin: 25px 0;
-
-        color: #475569;
-
+        color: var(--reg-text-muted);
         font-size: 11px;
     }
 
     .auth-divider::before,
     .auth-divider::after {
         content: "";
-
         height: 1px;
-
         flex: 1;
-
-        background: rgba(255,255,255,.07);
+        background: var(--reg-divider-line);
     }
 
     /* Login */
-
     .login-box {
         text-align: center;
     }
 
     .login-box p {
         margin: 0;
-
-        color: var(--text-secondary);
-
+        color: var(--reg-text-secondary);
         font-size: 13px;
     }
 
     .login-box a {
-        color: var(--blue-light);
-
+        color: var(--reg-link);
         text-decoration: none;
-
         font-weight: 600;
-
         margin-left: 4px;
     }
 
@@ -351,60 +322,43 @@
     }
 
     /* Verification note */
-
     .verification-note {
         display: flex;
         align-items: flex-start;
         gap: 10px;
-
         margin-top: 20px;
-
         padding: 12px 14px;
-
-        background: rgba(59,130,246,.06);
-
-        border: 1px solid rgba(59,130,246,.12);
-
+        background: var(--reg-note-bg);
+        border: 1px solid var(--reg-note-border);
         border-radius: 10px;
     }
 
     .verification-icon {
         width: 24px;
         height: 24px;
-
         flex-shrink: 0;
-
         display: flex;
         align-items: center;
         justify-content: center;
-
         border-radius: 7px;
-
-        background: rgba(59,130,246,.12);
-
+        background: var(--reg-note-icon-bg);
         color: #60a5fa;
-
         font-size: 12px;
     }
 
     .verification-note p {
         margin: 0;
-
-        color: #64748b;
-
+        color: var(--reg-text-muted);
         font-size: 11px;
-
         line-height: 1.55;
     }
 
     .verification-note strong {
-        color: #94a3b8;
+        color: var(--reg-text-secondary);
     }
 
     /* Mobile */
-
     @media (max-width: 520px) {
-
         .auth-page {
             padding: 25px 14px;
         }
@@ -435,7 +389,6 @@
     <div class="auth-container">
 
         <!-- Brand -->
-
         <div class="auth-brand">
 
             <div class="auth-logo">
@@ -450,9 +403,7 @@
 
         </div>
 
-
         <!-- Registration Card -->
-
         <div class="auth-card">
 
             <div class="auth-card-header">
@@ -466,9 +417,7 @@
 
             </div>
 
-
             <!-- Registration Progress -->
-
             <div class="signup-progress">
 
                 <div class="progress-step active"></div>
@@ -481,25 +430,18 @@
 
             </div>
 
-
             {% if form.non_field_errors %}
-
                 <div class="form-errors">
                     {{ form.non_field_errors }}
                 </div>
-
             {% endif %}
-
 
             <form method="post" class="register-form">
 
                 {% csrf_token %}
 
-
                 <!-- Username -->
-
                 <p>
-
                     <label for="{{ form.username.id_for_label }}">
                         Username
                     </label>
@@ -513,14 +455,10 @@
                             {{ form.username.help_text }}
                         </span>
                     {% endif %}
-
                 </p>
 
-
                 <!-- Email -->
-
                 <p>
-
                     <label for="{{ form.email.id_for_label }}">
                         Email address
                     </label>
@@ -532,14 +470,10 @@
                     <span class="helptext">
                         We'll send a verification OTP to this email.
                     </span>
-
                 </p>
 
-
                 <!-- Password -->
-
                 <p>
-
                     <label for="{{ form.password1.id_for_label }}">
                         Password
                     </label>
@@ -547,14 +481,10 @@
                     {{ form.password1 }}
 
                     {{ form.password1.errors }}
-
                 </p>
 
-
                 <!-- Confirm Password -->
-
                 <p>
-
                     <label for="{{ form.password2.id_for_label }}">
                         Confirm password
                     </label>
@@ -562,52 +492,39 @@
                     {{ form.password2 }}
 
                     {{ form.password2.errors }}
-
                 </p>
 
-
                 <button type="submit" class="register-btn">
-                    Continue to verification →
+                    Continue to verification &rarr;
                 </button>
 
             </form>
-
 
             <div class="auth-divider">
                 ALREADY A MEMBER?
             </div>
 
-
             <div class="login-box">
-
                 <p>
-
                     Already have an account?
-
                     <a href="{% url 'login' %}">
                         Sign in
                     </a>
-
                 </p>
-
             </div>
 
-
             <!-- OTP Information -->
-
             <div class="verification-note">
-
                 <div class="verification-icon">
-                    ✉
+                    &#9993;
                 </div>
 
                 <p>
                     <strong>Email verification required.</strong>
                     After submitting this form, you'll receive a
-                    6-digit OTP. Your account will be created after
+                    6-digit OTP.Please check your email including spam folder.Your account will be created after
                     successful verification.
                 </p>
-
             </div>
 
         </div>

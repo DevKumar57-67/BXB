@@ -1,44 +1,308 @@
 {% extends "base.html" %}
 
-{% block title %}
-Verify Email | BitsXBytes
-{% endblock %}
+{% block title %}Verify Email | BitsXBytes{% endblock %}
 
 {% block content %}
 
-<h1>Verify Your Email</h1>
+<style>
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] or .light-theme is active */
+    :root {
+        --otp-blur-glow: rgba(59, 130, 246, 0.10);
+        
+        --otp-card-bg: rgba(16, 21, 33, 0.94);
+        --otp-card-border: rgba(255, 255, 255, 0.09);
+        --otp-card-shadow: 0 25px 70px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+        
+        --otp-text-primary: #f8fafc;
+        --otp-text-secondary: #94a3b8;
+        --otp-text-label: #cbd5e1;
+        --otp-text-muted: #64748b;
+        
+        --otp-input-bg: #0b0f19;
+        --otp-input-text: #f8fafc;
+        --otp-input-border: rgba(255,255,255,.09);
+        --otp-input-focus-border: rgba(59,130,246,.65);
+        --otp-input-focus-bg: #0d1320;
+        
+        --otp-step-bg: #3b82f6;
+        --otp-step-inactive: #1e293b;
+    }
 
-<p>
-    We've sent a 6-digit OTP to your email address.
-</p>
+    /* Light Theme Overrides */
+    [data-theme="light"], .light-theme {
+        --otp-blur-glow: rgba(37, 99, 235, 0.06);
+        
+        --otp-card-bg: rgba(255, 255, 255, 0.96);
+        --otp-card-border: #cbd5e1;
+        --otp-card-shadow: 0 20px 50px rgba(0, 0, 0, 0.07), inset 0 1px 0 rgba(255, 255, 255, 1);
+        
+        --otp-text-primary: #0f172a;
+        --otp-text-secondary: #475569;
+        --otp-text-label: #334155;
+        --otp-text-muted: #64748b;
+        
+        --otp-input-bg: #ffffff;
+        --otp-input-text: #0f172a;
+        --otp-input-border: #cbd5e1;
+        --otp-input-focus-border: #2563eb;
+        --otp-input-focus-bg: #ffffff;
+        
+        --otp-step-bg: #2563eb;
+        --otp-step-inactive: #e2e8f0;
+    }
 
-{% if error %}
-    <p>
-        {{ error }}
-    </p>
-{% endif %}
+    .auth-page {
+        min-height: calc(100vh - 72px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
+    }
 
-<form method="POST">
+    .auth-page::before {
+        content: "";
+        position: absolute;
+        width: 520px;
+        height: 520px;
+        background: var(--otp-blur-glow);
+        filter: blur(110px);
+        border-radius: 50%;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
 
-    {% csrf_token %}
+    .auth-container {
+        width: 100%;
+        max-width: 480px;
+        position: relative;
+        z-index: 2;
+    }
 
-    <label for="otp">
-        Enter OTP
-    </label>
+    .auth-brand {
+        text-align: center;
+        margin-bottom: 28px;
+    }
 
-    <input
-        type="text"
-        id="otp"
-        name="otp"
-        maxlength="6"
-        minlength="6"
-        required
-    >
+    .auth-logo {
+        width: 58px;
+        height: 58px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 25px;
+        font-weight: 800;
+        box-shadow: 0 12px 35px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255,255,255,.2);
+    }
 
-    <button type="submit">
-        Verify Email
-    </button>
+    .auth-brand h1 {
+        margin: 0 0 7px;
+        color: var(--otp-text-primary);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+    }
 
-</form>
+    .auth-brand p {
+        margin: 0;
+        color: var(--otp-text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .auth-card {
+        background: var(--otp-card-bg);
+        border: 1px solid var(--otp-card-border);
+        border-radius: 20px;
+        padding: 32px;
+        box-shadow: var(--otp-card-shadow);
+        backdrop-filter: blur(18px);
+    }
+
+    /* Progress (Step 2 Active) */
+    .signup-progress {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 26px;
+    }
+
+    .progress-step {
+        height: 4px;
+        flex: 1;
+        border-radius: 999px;
+        background: var(--otp-step-bg);
+    }
+
+    .progress-step.inactive {
+        background: var(--otp-step-inactive);
+    }
+
+    .progress-label {
+        margin-left: 4px;
+        color: var(--otp-text-muted);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .form-errors {
+        background: rgba(239,68,68,.08);
+        border: 1px solid rgba(239,68,68,.18);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 20px;
+        color: #fca5a5;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .verify-form p {
+        margin: 0 0 20px;
+    }
+
+    .verify-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--otp-text-label);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .verify-form input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 16px;
+        background: var(--otp-input-bg);
+        border: 1px solid var(--otp-input-border);
+        border-radius: 10px;
+        color: var(--otp-input-text);
+        font-family: inherit;
+        font-size: 20px;
+        letter-spacing: 6px;
+        text-align: center;
+        outline: none;
+        transition: all 180ms ease;
+    }
+
+    .verify-form input::placeholder {
+        letter-spacing: normal;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .verify-form input:focus {
+        border-color: var(--otp-input-focus-border);
+        box-shadow: 0 0 0 3px rgba(59,130,246,.10);
+        background: var(--otp-input-focus-bg);
+    }
+
+    .verify-btn {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 13px 16px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(37,99,235,.25);
+        transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    }
+
+    .verify-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.08);
+        box-shadow: 0 12px 30px rgba(37,99,235,.35);
+    }
+
+    .verify-btn:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 520px) {
+        .auth-page {
+            padding: 25px 14px;
+        }
+
+        .auth-card {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+        .progress-label {
+            display: none;
+        }
+    }
+</style>
+
+<div class="auth-page">
+    <div class="auth-container">
+
+        <!-- Brand Header -->
+        <div class="auth-brand">
+            <div class="auth-logo">B</div>
+            <h1>Verify Your Email.</h1>
+            <p>
+                We've sent a secure 6-digit OTP to your registered email address.
+            </p>
+        </div>
+
+        <!-- Card Container -->
+        <div class="auth-card">
+
+            <!-- Progress Indicator -->
+            <div class="signup-progress">
+                <div class="progress-step"></div>
+                <div class="progress-step"></div>
+                <span class="progress-label">
+                    Account verification
+                </span>
+            </div>
+
+            {% if error %}
+                <div class="form-errors">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="verify-form">
+                {% csrf_token %}
+
+                <p>
+                    <label for="otp">
+                        Enter 6-digit OTP
+                    </label>
+
+                    <input
+                        type="text"
+                        id="otp"
+                        name="otp"
+                        maxlength="6"
+                        minlength="6"
+                        placeholder="------"
+                        autocomplete="one-time-code"
+                        required
+                    >
+                </p>
+
+                <button type="submit" class="verify-btn">
+                    Verify Email &rarr;
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}
