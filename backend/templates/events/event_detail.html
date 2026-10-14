@@ -4,291 +4,580 @@
 
 {% block content %}
 
+{% endblock %}
+
+
 <style>
-    .event-detail-page {
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] is present on <html> or <body> */
+    :root {
+        --ev-bg-page-start: #10192b;
+        --ev-bg-page-end: #0b1120;
+        --ev-text-primary: #e8eefc;
+        --ev-text-secondary: #94a3b8;
+        --ev-text-muted: #8291a9;
+        --ev-back-link: #91a7d7;
+        --ev-back-link-hover: #60a5fa;
+        
+        --ev-card-bg: linear-gradient(145deg, #10192b, #0b1120);
+        --ev-card-border: #24334d;
+        --ev-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        
+        --ev-input-bg: #080e1b;
+        --ev-input-text: #f1f5f9;
+        --ev-input-border: #293953;
+        --ev-input-focus-border: #3b82f6;
+        --ev-input-focus-shadow: rgba(59, 130, 246, 0.13);
+        
+        --ev-upload-card-bg: rgba(8, 14, 27, 0.7);
+        --ev-upload-btn-bg: #1d3154;
+        --ev-upload-btn-border: #365582;
+        --ev-upload-btn-text: #dbeafe;
+        
+        --ev-cancel-bg: #172236;
+        --ev-cancel-border: #2b3a53;
+        --ev-cancel-text: #cbd5e1;
+        --ev-cancel-hover: #202e45;
+        
+        --ev-divider: #24334d;
+    }
+
+    /* Light Theme Overrides (adjust selector if your base uses .light, body.light-mode, etc.) */
+    [data-theme="light"], .light-theme {
+        --ev-bg-page-start: #f8fafc;
+        --ev-bg-page-end: #f1f5f9;
+        --ev-text-primary: #0f172a;
+        --ev-text-secondary: #475569;
+        --ev-text-muted: #64748b;
+        --ev-back-link: #2563eb;
+        --ev-back-link-hover: #1d4ed8;
+        
+        --ev-card-bg: linear-gradient(145deg, #ffffff, #f8fafc);
+        --ev-card-border: #cbd5e1;
+        --ev-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        
+        --ev-input-bg: #ffffff;
+        --ev-input-text: #0f172a;
+        --ev-input-border: #cbd5e1;
+        --ev-input-focus-border: #2563eb;
+        --ev-input-focus-shadow: rgba(37, 99, 235, 0.15);
+        
+        --ev-upload-card-bg: rgba(241, 245, 249, 0.7);
+        --ev-upload-btn-bg: #e2e8f0;
+        --ev-upload-btn-border: #cbd5e1;
+        --ev-upload-btn-text: #1e293b;
+        
+        --ev-cancel-bg: #e2e8f0;
+        --ev-cancel-border: #cbd5e1;
+        --ev-cancel-text: #334155;
+        --ev-cancel-hover: #cbd5e1;
+        
+        --ev-divider: #e2e8f0;
+    }
+
+    .create-event-page {
         max-width: 1000px;
         margin: 0 auto;
-        padding: 24px;
-        color: #e2e8f0;
+        padding: 28px 20px 60px;
+        color: var(--ev-text-primary);
     }
 
     .event-back-link {
-        display: inline-block;
-        margin-bottom: 20px;
-        color: #93c5fd;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        color: var(--ev-back-link);
         text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 14px;
     }
 
-    .event-detail-hero {
-        padding: 32px;
-        border-radius: 22px;
-        border: 1px solid rgba(96, 165, 250, 0.25);
-        background:
-            radial-gradient(circle at 90% 5%, rgba(37, 99, 235, .25), transparent 40%),
-            linear-gradient(135deg, #111d35, #090d18);
-        margin-bottom: 22px;
-    }
+    .event-back-link:hover { color: var(--ev-back-link-hover); }
 
-    .event-detail-label {
-        display: inline-block;
-        color: #93c5fd;
-        background: rgba(59, 130, 246, .12);
-        padding: 6px 10px;
-        border-radius: 7px;
-        font-size: 10px;
+    .create-event-heading { margin-bottom: 26px; }
+
+    .create-event-heading h1 {
+        margin: 0 0 10px;
+        font-size: clamp(28px, 4vw, 38px);
         font-weight: 800;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
-
-    .event-detail-hero h1 {
-        font-size: clamp(27px, 4vw, 40px);
-        line-height: 1.2;
         letter-spacing: -1px;
-        margin: 17px 0 12px;
-        overflow-wrap: anywhere;
+        color: var(--ev-text-primary);
     }
 
-    .event-detail-hero p {
-        color: #a8b5ca;
-        font-size: 14px;
-        line-height: 1.8;
+    .create-event-heading p {
         margin: 0;
+        color: var(--ev-text-secondary);
+        line-height: 1.7;
     }
 
-    .event-detail-banner {
-        margin-top: 24px;
-        overflow: hidden;
-        border-radius: 14px;
-        max-height: 340px;
+    .event-form-card {
+        padding: clamp(20px, 4vw, 36px);
+        background: var(--ev-card-bg);
+        border: 1px solid var(--ev-card-border);
+        border-radius: 22px;
+        box-shadow: var(--ev-card-shadow);
     }
 
-    .event-detail-banner img {
-        display: block;
-        width: 100%;
-        max-height: 340px;
-        object-fit: cover;
+    .event-form-section { margin-bottom: 30px; }
+
+    .event-form-section h2 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        font-weight: 750;
+        color: var(--ev-text-primary);
     }
 
-    .event-detail-layout {
+    .event-form-section > p {
+        margin: 0 0 20px;
+        color: var(--ev-text-muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .event-form-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
-        align-items: start;
     }
 
-    .event-detail-card {
-        background: #0d1423;
-        border: 1px solid rgba(148, 163, 184, .16);
-        border-radius: 17px;
-        padding: 23px;
-        margin-bottom: 20px;
+    .event-form-field {
         min-width: 0;
-    }
-
-    .event-detail-card h2 {
-        margin: 0 0 18px;
-        font-size: 19px;
-        font-weight: 800;
-    }
-
-    .event-description-full {
-        color: #b7c3d6;
-        font-size: 14px;
-        line-height: 1.9;
-        overflow-wrap: anywhere;
-    }
-
-    .event-info-list {
-        display: grid;
-        gap: 18px;
-    }
-
-    .event-info-item {
         display: flex;
-        gap: 12px;
-        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .event-info-icon {
-        width: 38px;
-        height: 38px;
-        flex-shrink: 0;
-        display: grid;
-        place-items: center;
-        background: rgba(59, 130, 246, .12);
-        border-radius: 11px;
-    }
+    .event-form-field.full-width { grid-column: 1 / -1; }
 
-    .event-info-label {
-        color: #8190a7;
-        font-size: 11px;
-        margin-bottom: 5px;
-    }
-
-    .event-info-value {
-        color: #e2e8f0;
+    .event-form-field label {
+        color: var(--ev-text-primary);
         font-size: 13px;
         font-weight: 650;
-        overflow-wrap: anywhere;
     }
 
-    .event-action-btn {
+    .event-form-field input,
+    .event-form-field select,
+    .event-form-field textarea {
         width: 100%;
-        display: block;
+        min-width: 0;
         box-sizing: border-box;
-        padding: 12px 15px;
-        border: 0;
+        padding: 12px 14px;
+        color: var(--ev-input-text);
+        background: var(--ev-input-bg);
+        border: 1px solid var(--ev-input-border);
         border-radius: 10px;
-        background: #2563eb;
-        color: white;
+        outline: none;
         font: inherit;
-        font-size: 13px;
-        font-weight: 800;
-        text-align: center;
-        text-decoration: none;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .event-form-field input:focus,
+    .event-form-field select:focus,
+    .event-form-field textarea:focus {
+        border-color: var(--ev-input-focus-border);
+        box-shadow: 0 0 0 3px var(--ev-input-focus-shadow);
+    }
+
+    .event-form-field input[type="datetime-local"] {
+        color-scheme: light dark;
+    }
+
+    .event-form-field textarea {
+        resize: vertical;
+        min-height: 130px;
+    }
+
+    .event-form-field select option {
+        background: var(--ev-input-bg);
+        color: var(--ev-input-text);
+    }
+
+    .event-form-field input[type="file"] {
+        padding: 10px;
         cursor: pointer;
-        transition: background .2s ease;
     }
 
-    .event-action-btn:hover {
-        background: #3b82f6;
+    .event-form-field input[type="file"]::file-selector-button {
+        margin-right: 12px;
+        padding: 8px 12px;
+        color: var(--ev-upload-btn-text);
+        background: var(--ev-upload-btn-bg);
+        border: 1px solid var(--ev-upload-btn-border);
+        border-radius: 7px;
+        cursor: pointer;
     }
 
-    .event-action-secondary {
-        background: rgba(255, 255, 255, .05);
-        border: 1px solid rgba(148, 163, 184, .25);
+    .field-help {
+        color: var(--ev-text-muted);
+        font-size: 12px;
+        line-height: 1.5;
     }
 
-    .event-action-secondary:hover {
-        background: rgba(255, 255, 255, .09);
-    }
-
-    .event-action-danger {
-        background: rgba(239, 68, 68, .10);
-        border: 1px solid rgba(248, 113, 113, .3);
+    .field-error {
         color: #fca5a5;
-    }
-
-    .event-action-danger:hover {
-        background: rgba(239, 68, 68, .2);
-    }
-
-    .event-action-note {
-        color: #94a3b8;
         font-size: 12px;
-        line-height: 1.7;
-        margin: 12px 0 0;
+        line-height: 1.5;
     }
 
-    .event-inline-form {
-        margin-top: 14px;
+    .field-error ul,
+    .form-error-summary ul {
+        margin: 0;
+        padding-left: 18px;
     }
 
-    .event-form-label {
+    .form-error-summary {
+        margin-bottom: 24px;
+        padding: 15px 18px;
+        color: #fecaca;
+        background: rgba(127, 29, 29, 0.2);
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        border-radius: 12px;
+        font-size: 13px;
+    }
+
+    .form-error-summary strong {
         display: block;
-        color: #b7c3d6;
-        font-size: 12px;
-        font-weight: 700;
         margin-bottom: 8px;
     }
 
-    .event-form-input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-        background: #080d18;
-        border: 1px solid rgba(148, 163, 184, .25);
-        border-radius: 9px;
-        color: #f1f5f9;
-        font: inherit;
-        font-size: 13px;
-        margin-bottom: 12px;
+    .event-form-divider {
+        height: 1px;
+        margin: 28px 0;
+        background: var(--ev-divider);
+        border: 0;
     }
 
-    .event-form-input:focus {
-        outline: 2px solid rgba(59, 130, 246, .5);
-        border-color: #3b82f6;
-    }
-
-    .event-team-list {
+    .upload-grid {
         display: grid;
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
     }
 
-    .event-team-item {
-        padding: 16px;
-        border: 1px solid rgba(148, 163, 184, .17);
-        border-radius: 12px;
-        background: rgba(255, 255, 255, .02);
+    .upload-card {
+        min-width: 0;
+        padding: 20px;
+        background: var(--ev-upload-card-bg);
+        border: 1px solid var(--ev-input-border);
+        border-radius: 14px;
     }
 
-    .event-team-item h3 {
-        margin: 0 0 7px;
+    .upload-card h3 {
+        margin: 0 0 8px;
+        color: var(--ev-text-primary);
         font-size: 15px;
-        overflow-wrap: anywhere;
     }
 
-    .event-team-item p {
-        color: #94a3b8;
+    .upload-card > p {
+        margin: 0 0 16px;
+        color: var(--ev-text-muted);
         font-size: 12px;
-        line-height: 1.7;
-        margin: 0 0 12px;
+        line-height: 1.6;
     }
 
-    .event-status-message {
-        padding: 13px;
+    .event-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 10px;
+    }
+
+    .event-cancel-button,
+    .event-publish-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 20px;
         border-radius: 10px;
-        background: rgba(34, 197, 94, .09);
-        border: 1px solid rgba(74, 222, 128, .2);
-        color: #86efac;
-        font-size: 13px;
-        line-height: 1.7;
-        margin-bottom: 15px;
-    }
-
-    .event-alert {
-        padding: 12px 14px;
-        margin-bottom: 12px;
-        border-radius: 10px;
-        background: rgba(59, 130, 246, .10);
-        border: 1px solid rgba(96, 165, 250, .22);
-        color: #bfdbfe;
-        font-size: 13px;
-        line-height: 1.7;
-    }
-
-    .event-external-link {
-        color: #93c5fd;
-        font-size: 13px;
-        font-weight: 750;
+        font-size: 14px;
+        font-weight: 700;
         text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.2s, background 0.2s;
     }
 
-    .event-external-link:hover {
+    .event-cancel-button {
+        color: var(--ev-cancel-text);
+        background: var(--ev-cancel-bg);
+        border: 1px solid var(--ev-cancel-border);
+    }
+
+    .event-cancel-button:hover { background: var(--ev-cancel-hover); }
+
+    .event-publish-button {
         color: white;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        border: 0;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
     }
 
-    @media (max-width: 720px) {
-        .event-detail-page {
-            padding: 15px;
+    .event-publish-button:hover {
+        transform: translateY(-1px);
+        background: linear-gradient(135deg, #1d4ed8, #4338ca);
+    }
+
+    @media (max-width: 650px) {
+        .create-event-page { padding: 20px 12px 40px; }
+
+        .event-form-grid,
+        .upload-grid {
+            grid-template-columns: minmax(0, 1fr);
         }
 
-        .event-detail-hero {
-            padding: 23px 19px;
+        .event-form-field.full-width { grid-column: auto; }
+
+        .event-form-actions {
+            flex-direction: column-reverse;
+            align-items: stretch;
         }
 
-        .event-detail-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .event-detail-card {
-            padding: 19px;
+        .event-cancel-button,
+        .event-publish-button {
+            width: 100%;
+            box-sizing: border-box;
         }
     }
 </style>
+
+<div class="create-event-page">
+
+    <a href="{% url 'events:event_list' %}" class="event-back-link">
+        &#8592; Back to Events
+    </a>
+
+    <div class="create-event-heading">
+        <h1>Create an Event</h1>
+        <p>
+            Organising a hackathon, workshop, competition, or campus meetup?
+            Share it with the BitsXBytes community.
+        </p>
+    </div>
+
+    <div class="event-form-card">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-error-summary">
+                    <strong>Please fix the following errors:</strong>
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="form-error-summary">
+                    <strong>Some fields need your attention.</strong>
+                    Please review the highlighted fields below.
+                </div>
+            {% endif %}
+
+            <section class="event-form-section">
+                <h2>Event Information</h2>
+                <p>Tell students what your event is about.</p>
+
+                <div class="event-form-grid">
+                    {% for field in form %}
+                        {% if field.name == "title" or field.name == "description" or field.name == "organizer" or field.name == "venue" %}
+                            <div class="event-form-field {% if field.name == 'description' %}full-width{% endif %}">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="field-help">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <hr class="event-form-divider">
+
+            <section class="event-form-section">
+                <h2>Schedule & Registration</h2>
+                <p>Set the event timings and when registrations close.</p>
+
+                <div class="event-form-grid">
+                    {% for field in form %}
+                        {% if field.name == "start_date" or field.name == "end_date" or field.name == "registration_deadline" or field.name == "participation_type" or field.name == "max_participants" %}
+                            <div class="event-form-field">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="field-help">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <hr class="event-form-divider">
+
+            <section class="event-form-section">
+                <h2>Team Settings</h2>
+                <p>Configure team sizes if your event supports team participation.</p>
+
+                <div class="event-form-grid">
+                    {% for field in form %}
+                        {% if field.name == "min_team_size" or field.name == "max_team_size" %}
+                            <div class="event-form-field">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <div class="field-help">{{ field.help_text }}</div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <hr class="event-form-divider">
+
+            <section class="event-form-section">
+                <h2>Event Visuals</h2>
+                <p>
+                    Give your event a professional look with a banner and a
+                    promotional poster. Both uploads are optional.
+                </p>
+
+                <div class="upload-grid">
+
+                    <div class="upload-card">
+                        <h3>Event Banner</h3>
+                        <p>
+                            Best for wide images displayed at the top of event
+                            pages and on event cards.
+                        </p>
+
+                        {% with field=form.banner %}
+                            <div class="event-form-field">
+                                <label for="{{ field.id_for_label }}">
+                                    Upload banner image
+                                </label>
+
+                                {{ field }}
+
+                                <div class="field-help">
+                                    Choose an image from your device.
+                                </div>
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endwith %}
+                    </div>
+
+                    <div class="upload-card">
+                        <h3>Event Poster</h3>
+                        <p>
+                            Best for promotional artwork, event announcements,
+                            and detailed poster designs.
+                        </p>
+
+                        {% with field=form.poster %}
+                            <div class="event-form-field">
+                                <label for="{{ field.id_for_label }}">
+                                    Upload poster image
+                                </label>
+
+                                {{ field }}
+
+                                <div class="field-help">
+                                    Choose your event poster from your device.
+                                </div>
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endwith %}
+                    </div>
+
+                </div>
+            </section>
+
+            <hr class="event-form-divider">
+
+            <section class="event-form-section">
+                <h2>External Links</h2>
+                <p>Add a public image URL for compatibility with older events or an external registration page.</p>
+
+                <div class="event-form-grid">
+                    {% for field in form %}
+                        {% if field.name == "image" or field.name == "registration_link" %}
+                            <div class="event-form-field full-width">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.name == "image" %}
+                                    <div class="field-help">
+                                        Optional legacy image URL. You can leave it blank when uploading a banner above.
+                                    </div>
+                                {% elif field.name == "registration_link" %}
+                                    <div class="field-help">
+                                        Optional. Add an external registration page if needed.
+                                    </div>
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <div class="field-error">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+
+            <div class="event-form-actions">
+                <a href="{% url 'events:event_list' %}" class="event-cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit" class="event-publish-button">
+                    Publish Event &#8594;
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
 
 <div class="event-detail-page">
 
@@ -606,5 +895,3 @@
     </div>
 
 </div>
-
-{% endblock %}

@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Create Event | BitsXBytes{% endblock %}
@@ -6,11 +5,77 @@
 {% block content %}
 
 <style>
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] is present on <html> or <body> */
+    :root {
+        --ev-bg-page-start: #10192b;
+        --ev-bg-page-end: #0b1120;
+        --ev-text-primary: #e8eefc;
+        --ev-text-secondary: #94a3b8;
+        --ev-text-muted: #8291a9;
+        --ev-back-link: #91a7d7;
+        --ev-back-link-hover: #60a5fa;
+        
+        --ev-card-bg: linear-gradient(145deg, #10192b, #0b1120);
+        --ev-card-border: #24334d;
+        --ev-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        
+        --ev-input-bg: #080e1b;
+        --ev-input-text: #f1f5f9;
+        --ev-input-border: #293953;
+        --ev-input-focus-border: #3b82f6;
+        --ev-input-focus-shadow: rgba(59, 130, 246, 0.13);
+        
+        --ev-upload-card-bg: rgba(8, 14, 27, 0.7);
+        --ev-upload-btn-bg: #1d3154;
+        --ev-upload-btn-border: #365582;
+        --ev-upload-btn-text: #dbeafe;
+        
+        --ev-cancel-bg: #172236;
+        --ev-cancel-border: #2b3a53;
+        --ev-cancel-text: #cbd5e1;
+        --ev-cancel-hover: #202e45;
+        
+        --ev-divider: #24334d;
+    }
+
+    /* Light Theme Overrides (adjust selector if your base uses .light, body.light-mode, etc.) */
+    [data-theme="light"], .light-theme {
+        --ev-bg-page-start: #f8fafc;
+        --ev-bg-page-end: #f1f5f9;
+        --ev-text-primary: #0f172a;
+        --ev-text-secondary: #475569;
+        --ev-text-muted: #64748b;
+        --ev-back-link: #2563eb;
+        --ev-back-link-hover: #1d4ed8;
+        
+        --ev-card-bg: linear-gradient(145deg, #ffffff, #f8fafc);
+        --ev-card-border: #cbd5e1;
+        --ev-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        
+        --ev-input-bg: #ffffff;
+        --ev-input-text: #0f172a;
+        --ev-input-border: #cbd5e1;
+        --ev-input-focus-border: #2563eb;
+        --ev-input-focus-shadow: rgba(37, 99, 235, 0.15);
+        
+        --ev-upload-card-bg: rgba(241, 245, 249, 0.7);
+        --ev-upload-btn-bg: #e2e8f0;
+        --ev-upload-btn-border: #cbd5e1;
+        --ev-upload-btn-text: #1e293b;
+        
+        --ev-cancel-bg: #e2e8f0;
+        --ev-cancel-border: #cbd5e1;
+        --ev-cancel-text: #334155;
+        --ev-cancel-hover: #cbd5e1;
+        
+        --ev-divider: #e2e8f0;
+    }
+
     .create-event-page {
         max-width: 1000px;
         margin: 0 auto;
         padding: 28px 20px 60px;
-        color: #e8eefc;
+        color: var(--ev-text-primary);
     }
 
     .event-back-link {
@@ -18,12 +83,12 @@
         align-items: center;
         gap: 8px;
         margin-bottom: 24px;
-        color: #91a7d7;
+        color: var(--ev-back-link);
         text-decoration: none;
         font-size: 14px;
     }
 
-    .event-back-link:hover { color: #60a5fa; }
+    .event-back-link:hover { color: var(--ev-back-link-hover); }
 
     .create-event-heading { margin-bottom: 26px; }
 
@@ -32,20 +97,21 @@
         font-size: clamp(28px, 4vw, 38px);
         font-weight: 800;
         letter-spacing: -1px;
+        color: var(--ev-text-primary);
     }
 
     .create-event-heading p {
         margin: 0;
-        color: #94a3b8;
+        color: var(--ev-text-secondary);
         line-height: 1.7;
     }
 
     .event-form-card {
         padding: clamp(20px, 4vw, 36px);
-        background: linear-gradient(145deg, #10192b, #0b1120);
-        border: 1px solid #24334d;
+        background: var(--ev-card-bg);
+        border: 1px solid var(--ev-card-border);
         border-radius: 22px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        box-shadow: var(--ev-card-shadow);
     }
 
     .event-form-section { margin-bottom: 30px; }
@@ -54,11 +120,12 @@
         margin: 0 0 6px;
         font-size: 18px;
         font-weight: 750;
+        color: var(--ev-text-primary);
     }
 
     .event-form-section > p {
         margin: 0 0 20px;
-        color: #8494ad;
+        color: var(--ev-text-muted);
         font-size: 13px;
         line-height: 1.6;
     }
@@ -79,7 +146,7 @@
     .event-form-field.full-width { grid-column: 1 / -1; }
 
     .event-form-field label {
-        color: #dbe7fb;
+        color: var(--ev-text-primary);
         font-size: 13px;
         font-weight: 650;
     }
@@ -91,9 +158,9 @@
         min-width: 0;
         box-sizing: border-box;
         padding: 12px 14px;
-        color: #f1f5f9;
-        background: #080e1b;
-        border: 1px solid #293953;
+        color: var(--ev-input-text);
+        background: var(--ev-input-bg);
+        border: 1px solid var(--ev-input-border);
         border-radius: 10px;
         outline: none;
         font: inherit;
@@ -104,12 +171,12 @@
     .event-form-field input:focus,
     .event-form-field select:focus,
     .event-form-field textarea:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.13);
+        border-color: var(--ev-input-focus-border);
+        box-shadow: 0 0 0 3px var(--ev-input-focus-shadow);
     }
 
     .event-form-field input[type="datetime-local"] {
-        color-scheme: dark;
+        color-scheme: light dark;
     }
 
     .event-form-field textarea {
@@ -118,8 +185,8 @@
     }
 
     .event-form-field select option {
-        background: #0b1120;
-        color: #f1f5f9;
+        background: var(--ev-input-bg);
+        color: var(--ev-input-text);
     }
 
     .event-form-field input[type="file"] {
@@ -130,15 +197,15 @@
     .event-form-field input[type="file"]::file-selector-button {
         margin-right: 12px;
         padding: 8px 12px;
-        color: #dbeafe;
-        background: #1d3154;
-        border: 1px solid #365582;
+        color: var(--ev-upload-btn-text);
+        background: var(--ev-upload-btn-bg);
+        border: 1px solid var(--ev-upload-btn-border);
         border-radius: 7px;
         cursor: pointer;
     }
 
     .field-help {
-        color: #8291a9;
+        color: var(--ev-text-muted);
         font-size: 12px;
         line-height: 1.5;
     }
@@ -173,7 +240,7 @@
     .event-form-divider {
         height: 1px;
         margin: 28px 0;
-        background: #24334d;
+        background: var(--ev-divider);
         border: 0;
     }
 
@@ -186,20 +253,20 @@
     .upload-card {
         min-width: 0;
         padding: 20px;
-        background: rgba(8, 14, 27, 0.7);
-        border: 1px solid #293953;
+        background: var(--ev-upload-card-bg);
+        border: 1px solid var(--ev-input-border);
         border-radius: 14px;
     }
 
     .upload-card h3 {
         margin: 0 0 8px;
-        color: #e8eefc;
+        color: var(--ev-text-primary);
         font-size: 15px;
     }
 
     .upload-card > p {
         margin: 0 0 16px;
-        color: #8291a9;
+        color: var(--ev-text-muted);
         font-size: 12px;
         line-height: 1.6;
     }
@@ -229,12 +296,12 @@
     }
 
     .event-cancel-button {
-        color: #cbd5e1;
-        background: #172236;
-        border: 1px solid #2b3a53;
+        color: var(--ev-cancel-text);
+        background: var(--ev-cancel-bg);
+        border: 1px solid var(--ev-cancel-border);
     }
 
-    .event-cancel-button:hover { background: #202e45; }
+    .event-cancel-button:hover { background: var(--ev-cancel-hover); }
 
     .event-publish-button {
         color: white;
@@ -282,6 +349,7 @@
         <p>
             Organising a hackathon, workshop, competition, or campus meetup?
             Share it with the BitsXBytes community.
+            Please don't create fake events because we verify every event organisation community or club. Maintain the credibility of your community and our platform.
         </p>
     </div>
 

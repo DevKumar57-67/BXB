@@ -5,20 +5,74 @@
 {% block content %}
 
 <style>
+    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] or .light-theme is active */
+    :root {
+        --ev-page-text: #f1f5f9;
+        
+        --ev-hero-bg: radial-gradient(circle at top right, rgba(37, 99, 235, 0.24), transparent 45%), linear-gradient(135deg, #101a31, #090d18);
+        --ev-hero-border: rgba(96, 165, 250, 0.24);
+        --ev-hero-p: #aab7cc;
+        
+        --ev-card-bg: #0d1423;
+        --ev-card-border: rgba(148, 163, 184, 0.15);
+        --ev-card-border-hover: rgba(96, 165, 250, 0.55);
+        
+        --ev-banner-bg: radial-gradient(circle at 75% 20%, rgba(59, 130, 246, 0.4), transparent 35%), linear-gradient(135deg, #172554, #101827);
+        
+        --ev-text-primary: #f1f5f9;
+        --ev-text-secondary: #94a3b8;
+        --ev-text-muted: #aab7cc;
+        
+        --ev-meta-border: rgba(148, 163, 184, 0.12);
+        
+        --ev-empty-bg: rgba(15, 23, 42, 0.55);
+        --ev-empty-border: rgba(148, 163, 184, 0.25);
+        
+        --ev-btn-secondary-bg: rgba(255, 255, 255, 0.04);
+        --ev-btn-secondary-border: rgba(148, 163, 184, 0.25);
+        --ev-btn-secondary-hover: rgba(255, 255, 255, 0.09);
+    }
+
+    /* Light Theme Overrides */
+    [data-theme="light"], .light-theme {
+        --ev-page-text: #0f172a;
+        
+        --ev-hero-bg: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 45%), linear-gradient(135deg, #ffffff, #f8fafc);
+        --ev-hero-border: #cbd5e1;
+        --ev-hero-p: #475569;
+        
+        --ev-card-bg: #ffffff;
+        --ev-card-border: #cbd5e1;
+        --ev-card-border-hover: #2563eb;
+        
+        --ev-banner-bg: radial-gradient(circle at 75% 20%, rgba(59, 130, 246, 0.15), transparent 35%), linear-gradient(135deg, #e2e8f0, #f1f5f9);
+        
+        --ev-text-primary: #0f172a;
+        --ev-text-secondary: #64748b;
+        --ev-text-muted: #475569;
+        
+        --ev-meta-border: #e2e8f0;
+        
+        --ev-empty-bg: #f8fafc;
+        --ev-empty-border: #cbd5e1;
+        
+        --ev-btn-secondary-bg: #f1f5f9;
+        --ev-btn-secondary-border: #cbd5e1;
+        --ev-btn-secondary-hover: #e2e8f0;
+    }
+
     .events-page {
         max-width: 1250px;
         margin: 0 auto;
         padding: 24px;
-        color: var(--text-primary, #f1f5f9);
+        color: var(--ev-page-text);
     }
 
     .events-hero {
         padding: 32px;
-        border: 1px solid rgba(96, 165, 250, 0.24);
+        border: 1px solid var(--ev-hero-border);
         border-radius: 22px;
-        background:
-            radial-gradient(circle at top right, rgba(37, 99, 235, 0.24), transparent 45%),
-            linear-gradient(135deg, #101a31, #090d18);
+        background: var(--ev-hero-bg);
         margin-bottom: 30px;
     }
 
@@ -35,10 +89,11 @@
         font-size: clamp(28px, 4vw, 42px);
         font-weight: 850;
         letter-spacing: -1px;
+        color: var(--ev-text-primary);
     }
 
     .events-hero p {
-        color: #aab7cc;
+        color: var(--ev-hero-p);
         line-height: 1.7;
         max-width: 650px;
         margin-bottom: 0;
@@ -73,12 +128,13 @@
     }
 
     .events-btn-secondary {
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(148, 163, 184, 0.25);
+        background: var(--ev-btn-secondary-bg);
+        border-color: var(--ev-btn-secondary-border);
+        color: var(--ev-text-primary) !important;
     }
 
     .events-btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.09);
+        background: var(--ev-btn-secondary-hover);
     }
 
     /* Create Event CTA */
@@ -86,6 +142,7 @@
         background: linear-gradient(135deg, #2563eb, #4f46e5);
         border-color: rgba(147, 197, 253, 0.25);
         box-shadow: 0 6px 20px rgba(37, 99, 235, 0.2);
+        color: #fff !important;
     }
 
     .events-btn-create:hover {
@@ -114,10 +171,11 @@
         margin: 0;
         font-size: 21px;
         font-weight: 800;
+        color: var(--ev-text-primary);
     }
 
     .events-count {
-        color: #94a3b8;
+        color: var(--ev-text-secondary);
         font-size: 12px;
     }
 
@@ -131,21 +189,19 @@
         min-width: 0;
         overflow: hidden;
         border-radius: 17px;
-        background: #0d1423;
-        border: 1px solid rgba(148, 163, 184, 0.15);
+        background: var(--ev-card-bg);
+        border: 1px solid var(--ev-card-border);
         transition: border-color 0.2s ease, transform 0.2s ease;
     }
 
     .event-card:hover {
-        border-color: rgba(96, 165, 250, 0.55);
+        border-color: var(--ev-card-border-hover);
         transform: translateY(-3px);
     }
 
     .event-banner {
         height: 155px;
-        background:
-            radial-gradient(circle at 75% 20%, rgba(59, 130, 246, 0.4), transparent 35%),
-            linear-gradient(135deg, #172554, #101827);
+        background: var(--ev-banner-bg);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -182,8 +238,12 @@
     }
 
     .event-tag-ongoing {
-        color: #86efac;
+        color: #16a34a;
         background: rgba(34, 197, 94, 0.12);
+    }
+
+    [data-theme="dark"] .event-tag-ongoing, body:not([data-theme="light"]):not(.light-theme) .event-tag-ongoing {
+        color: #86efac;
     }
 
     .event-card h3 {
@@ -195,16 +255,16 @@
     }
 
     .event-card h3 a {
-        color: #f1f5f9;
+        color: var(--ev-text-primary);
         text-decoration: none;
     }
 
     .event-card h3 a:hover {
-        color: #93c5fd;
+        color: #60a5fa;
     }
 
     .event-description {
-        color: #94a3b8;
+        color: var(--ev-text-secondary);
         font-size: 13px;
         line-height: 1.7;
         min-height: 44px;
@@ -216,8 +276,8 @@
         gap: 10px;
         padding: 15px 0;
         margin-top: 12px;
-        border-top: 1px solid rgba(148, 163, 184, 0.12);
-        color: #aab7cc;
+        border-top: 1px solid var(--ev-meta-border);
+        color: var(--ev-text-muted);
         font-size: 12px;
     }
 
@@ -241,26 +301,34 @@
     }
 
     .event-participation {
-        color: #94a3b8;
+        color: var(--ev-text-secondary);
         font-size: 11px;
     }
 
     .event-link {
-        color: #93c5fd;
+        color: #3b82f6;
         text-decoration: none;
         font-size: 12px;
         font-weight: 800;
     }
 
+    [data-theme="dark"] .event-link, body:not([data-theme="light"]):not(.light-theme) .event-link {
+        color: #93c5fd;
+    }
+
     .event-link:hover {
+        color: #2563eb;
+    }
+
+    [data-theme="dark"] .event-link:hover, body:not([data-theme="light"]):not(.light-theme) .event-link:hover {
         color: #fff;
     }
 
     .events-empty {
         padding: 38px 20px;
         text-align: center;
-        background: rgba(15, 23, 42, 0.55);
-        border: 1px dashed rgba(148, 163, 184, 0.25);
+        background: var(--ev-empty-bg);
+        border: 1px dashed var(--ev-empty-border);
         border-radius: 16px;
     }
 
@@ -272,11 +340,12 @@
     .events-empty h3 {
         margin: 0 0 8px;
         font-size: 17px;
+        color: var(--ev-text-primary);
     }
 
     .events-empty p {
         margin: 0;
-        color: #94a3b8;
+        color: var(--ev-text-secondary);
         font-size: 13px;
         line-height: 1.7;
     }
@@ -338,12 +407,12 @@
         <div class="events-actions">
 
             <a href="#upcoming-events" class="events-btn">
-                Explore Events →
+                Explore Events &rarr;
             </a>
 
             <a href="{% url 'events:create_event' %}"
                class="events-btn events-btn-create">
-                <span class="create-event-plus" aria-hidden="true">＋</span>
+                <span class="create-event-plus" aria-hidden="true">&#xFFB;</span>
                 Create Event
             </a>
 
@@ -357,7 +426,7 @@
 
     <section class="events-section" id="upcoming-events">
         <div class="events-section-header">
-            <h2>🚀 Upcoming Events</h2>
+            <h2>&#128640; Upcoming Events</h2>
             <span class="events-count">{{ upcoming_events|length }} events</span>
         </div>
 
@@ -372,7 +441,7 @@
                                      alt="{{ event.title }}"
                                      loading="lazy">
                             {% else %}
-                                <span aria-hidden="true">✦</span>
+                                <span aria-hidden="true">&#10022;</span>
                             {% endif %}
                         </div>
 
@@ -396,17 +465,17 @@
 
                             <div class="event-meta">
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">📅</span>
-                                    <span>{{ event.start_date|date:"D, d M Y · h:i A" }}</span>
+                                    <span class="event-meta-icon">&#128197;</span>
+                                    <span>{{ event.start_date|date:"D, d M Y &middot; h:i A" }}</span>
                                 </div>
 
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">📍</span>
+                                    <span class="event-meta-icon">&#128205;</span>
                                     <span>{{ event.venue|default:"Venue to be announced" }}</span>
                                 </div>
 
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">🏢</span>
+                                    <span class="event-meta-icon">&#127970;</span>
                                     <span>{{ event.organizer }}</span>
                                 </div>
                             </div>
@@ -422,7 +491,7 @@
 
                                 <a class="event-link"
                                    href="{% url 'events:event_detail' event.slug %}">
-                                    View Details →
+                                    View Details &rarr;
                                 </a>
                             </div>
 
@@ -432,7 +501,7 @@
             </div>
         {% else %}
             <div class="events-empty">
-                <div class="events-empty-icon">🗓️</div>
+                <div class="events-empty-icon">&#128197;&#65039;</div>
                 <h3>No upcoming events yet</h3>
                 <p>
                     New opportunities will appear here when college events
@@ -441,7 +510,7 @@
                 <div class="events-actions" style="justify-content: center;">
                     <a href="{% url 'events:create_event' %}"
                        class="events-btn events-btn-create">
-                        <span class="create-event-plus" aria-hidden="true">＋</span>
+                        <span class="create-event-plus" aria-hidden="true">&#xFFB;</span>
                         Publish the First Event
                     </a>
                 </div>
@@ -452,7 +521,7 @@
     {% if ongoing_events %}
         <section class="events-section">
             <div class="events-section-header">
-                <h2>⚡ Happening Now</h2>
+                <h2>&#9889; Happening Now</h2>
                 <span class="events-count">{{ ongoing_events|length }} events</span>
             </div>
 
@@ -465,7 +534,7 @@
                                      alt="{{ event.title }}"
                                      loading="lazy">
                             {% else %}
-                                <span aria-hidden="true">⚡</span>
+                                <span aria-hidden="true">&#9889;</span>
                             {% endif %}
                         </div>
 
@@ -488,19 +557,19 @@
 
                             <div class="event-meta">
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">📍</span>
+                                    <span class="event-meta-icon">&#128205;</span>
                                     <span>{{ event.venue|default:"Venue to be announced" }}</span>
                                 </div>
 
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">🏢</span>
+                                    <span class="event-meta-icon">&#127970;</span>
                                     <span>{{ event.organizer }}</span>
                                 </div>
                             </div>
 
                             <a class="event-link"
                                href="{% url 'events:event_detail' event.slug %}">
-                                View Details →
+                                View Details &rarr;
                             </a>
                         </div>
                     </article>
@@ -512,7 +581,7 @@
     {% if past_events %}
         <section class="events-section">
             <div class="events-section-header">
-                <h2>📚 Past Events</h2>
+                <h2>&#128218; Past Events</h2>
                 <span class="events-count">{{ past_events|length }} events</span>
             </div>
 
@@ -536,12 +605,12 @@
 
                             <div class="event-meta">
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">📅</span>
+                                    <span class="event-meta-icon">&#128197;</span>
                                     <span>{{ event.start_date|date:"d M Y" }}</span>
                                 </div>
 
                                 <div class="event-meta-row">
-                                    <span class="event-meta-icon">🏢</span>
+                                    <span class="event-meta-icon">&#127970;</span>
                                     <span>{{ event.organizer }}</span>
                                 </div>
                             </div>

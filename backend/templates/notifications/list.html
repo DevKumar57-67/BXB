@@ -9,14 +9,42 @@
 
 <style>
     /* =====================================================
-       NOTIFICATIONS PAGE
+       NOTIFICATIONS — DARK/LIGHT THEME SUPPORT
     ===================================================== */
 
     .notifications-page {
+        --notification-surface: var(--bg-card, #101827);
+        --notification-surface-hover: var(--bg-card-hover, #151f30);
+        --notification-border: var(--border, rgba(148,163,184,0.18));
+        --notification-border-hover: var(--border-hover, rgba(148,163,184,0.32));
+        --notification-text: var(--text-primary, #f1f5f9);
+        --notification-text-secondary: var(--text-secondary, #cbd5e1);
+        --notification-text-muted: var(--text-muted, #94a3b8);
+
         max-width: 850px;
         margin: 0 auto;
         padding-bottom: 40px;
+        color: var(--notification-text);
     }
+
+    /* LIGHT THEME */
+
+    html[data-theme="light"] .notifications-page,
+    body[data-theme="light"] .notifications-page,
+    html.light-theme .notifications-page,
+    body.light-theme .notifications-page,
+    html[data-bs-theme="light"] .notifications-page,
+    body.light .notifications-page {
+        --notification-surface: #ffffff;
+        --notification-surface-hover: #f8fafc;
+        --notification-border: #e2e8f0;
+        --notification-border-hover: #cbd5e1;
+        --notification-text: #0f172a;
+        --notification-text-secondary: #334155;
+        --notification-text-muted: #64748b;
+    }
+
+    /* HEADER */
 
     .notifications-header {
         display: flex;
@@ -28,6 +56,7 @@
 
     .notifications-title {
         margin: 0;
+        color: var(--notification-text);
         font-family: "Space Grotesk", sans-serif;
         font-size: 30px;
         font-weight: 700;
@@ -36,7 +65,7 @@
 
     .notifications-subtitle {
         margin-top: 7px;
-        color: var(--text-secondary);
+        color: var(--notification-text-secondary);
         font-size: 13px;
         line-height: 1.6;
     }
@@ -44,20 +73,21 @@
     .mark-all-button {
         min-height: 36px;
         padding: 0 13px;
-        border: 1px solid var(--border);
+        border: 1px solid var(--notification-border);
         border-radius: 9px;
-        color: var(--text-secondary);
-        background: rgba(255,255,255,0.035);
+        color: var(--notification-text-secondary);
+        background: var(--notification-surface);
+        font-family: inherit;
         font-size: 11px;
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition);
+        transition: all var(--transition, 180ms ease);
     }
 
     .mark-all-button:hover {
-        color: var(--text-primary);
-        border-color: var(--border-hover);
-        background: rgba(59,130,246,0.07);
+        color: var(--notification-text);
+        border-color: var(--notification-border-hover);
+        background: rgba(59,130,246,0.08);
     }
 
     .mark-all-button:disabled {
@@ -65,12 +95,14 @@
         cursor: not-allowed;
     }
 
+    /* SUMMARY */
+
     .notifications-summary {
         display: flex;
         align-items: center;
         gap: 8px;
         margin-bottom: 14px;
-        color: var(--text-muted);
+        color: var(--notification-text-muted);
         font-size: 11px;
     }
 
@@ -78,17 +110,15 @@
         min-width: 24px;
         padding: 3px 7px;
         border-radius: 20px;
-        color: var(--blue-light);
+        color: var(--blue-light, #60a5fa);
         background: rgba(59,130,246,0.10);
-        border: 1px solid rgba(59,130,246,0.16);
+        border: 1px solid rgba(59,130,246,0.20);
         text-align: center;
         font-size: 10px;
         font-weight: 700;
     }
 
-    /* =====================================================
-       NOTIFICATION LIST
-    ===================================================== */
+    /* NOTIFICATION LIST */
 
     .notification-list {
         display: flex;
@@ -103,24 +133,30 @@
         gap: 13px;
         width: 100%;
         padding: 15px 16px;
-        border: 1px solid var(--border);
+        border: 1px solid var(--notification-border);
         border-radius: 14px;
-        background: var(--bg-card);
-        transition: all var(--transition);
+        background: var(--notification-surface);
+        color: var(--notification-text);
+        transition:
+            border-color var(--transition, 180ms ease),
+            background var(--transition, 180ms ease),
+            opacity 180ms ease,
+            transform 180ms ease;
     }
 
     .notification-item:hover {
-        border-color: rgba(255,255,255,0.12);
-        background: var(--bg-card-hover);
+        border-color: var(--notification-border-hover);
+        background: var(--notification-surface-hover);
     }
 
     .notification-item.unread {
-        border-color: rgba(59,130,246,0.18);
-        background: linear-gradient(
-            90deg,
-            rgba(59,130,246,0.07),
-            rgba(16,21,33,0.96)
-        );
+        border-color: rgba(59,130,246,0.35);
+        background:
+            linear-gradient(
+                90deg,
+                rgba(59,130,246,0.10),
+                var(--notification-surface) 82%
+            );
     }
 
     .notification-unread-dot {
@@ -130,13 +166,11 @@
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: var(--blue);
-        box-shadow: 0 0 9px rgba(59,130,246,0.65);
+        background: var(--blue, #3b82f6);
+        box-shadow: 0 0 9px rgba(59,130,246,0.45);
     }
 
-    /* =====================================================
-       ACTOR AVATAR
-    ===================================================== */
+    /* ACTOR AVATAR */
 
     .notification-avatar {
         width: 44px;
@@ -147,8 +181,12 @@
         justify-content: center;
         overflow: hidden;
         border-radius: 50%;
-        color: white;
-        background: linear-gradient(135deg, var(--blue), #7c3aed);
+        color: #ffffff;
+        background: linear-gradient(
+            135deg,
+            var(--blue, #3b82f6),
+            #7c3aed
+        );
         font-family: "Space Grotesk", sans-serif;
         font-size: 15px;
         font-weight: 700;
@@ -161,9 +199,7 @@
         object-fit: cover;
     }
 
-    /* =====================================================
-       TYPE ICON
-    ===================================================== */
+    /* TYPE ICON */
 
     .notification-type-icon {
         position: absolute;
@@ -174,17 +210,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 2px solid var(--bg-card);
+        border: 2px solid var(--notification-surface);
         border-radius: 50%;
-        background: var(--blue-dark);
-        color: white;
+        background: var(--blue-dark, #1d4ed8);
+        color: #ffffff;
         font-size: 9px;
         line-height: 1;
     }
 
-    /* =====================================================
-       CONTENT
-    ===================================================== */
+    /* CONTENT */
 
     .notification-content {
         min-width: 0;
@@ -193,19 +227,20 @@
     }
 
     .notification-message {
-        color: var(--text-secondary);
+        color: var(--notification-text-secondary);
         font-size: 13px;
-        line-height: 1.55;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
     }
 
     .notification-message strong {
-        color: var(--text-primary);
+        color: var(--notification-text);
         font-weight: 700;
     }
 
     .notification-time {
         margin-top: 5px;
-        color: var(--text-muted);
+        color: var(--notification-text-muted);
         font-size: 10px;
     }
 
@@ -219,7 +254,7 @@
 
     .notification-action {
         display: inline-block;
-        color: var(--blue-light);
+        color: var(--blue-light, #60a5fa);
         font-size: 10px;
         font-weight: 600;
         text-decoration: none;
@@ -227,7 +262,8 @@
     }
 
     .notification-action:hover {
-        color: var(--text-primary);
+        color: var(--blue, #3b82f6);
+        text-decoration: underline;
     }
 
     .mark-read-button {
@@ -235,20 +271,20 @@
         align-items: center;
         justify-content: center;
         padding: 5px 9px;
-        border: 1px solid rgba(59,130,246,0.25);
+        border: 1px solid rgba(59,130,246,0.30);
         border-radius: 7px;
         background: rgba(59,130,246,0.08);
-        color: var(--blue-light);
+        color: var(--blue-light, #60a5fa);
         font-family: inherit;
         font-size: 10px;
         font-weight: 600;
         cursor: pointer;
-        transition: all var(--transition);
+        transition: all var(--transition, 180ms ease);
     }
 
     .mark-read-button:hover {
-        border-color: var(--blue);
-        background: rgba(59,130,246,0.16);
+        border-color: var(--blue, #3b82f6);
+        background: rgba(59,130,246,0.15);
     }
 
     .mark-read-button:disabled {
@@ -262,9 +298,7 @@
         pointer-events: none;
     }
 
-    /* =====================================================
-       TYPE ACCENTS
-    ===================================================== */
+    /* NOTIFICATION TYPE COLORS */
 
     .notification-like .notification-type-icon {
         background: #e11d48;
@@ -286,16 +320,15 @@
         background: #059669;
     }
 
-    /* =====================================================
-       EMPTY STATE
-    ===================================================== */
+    /* EMPTY STATE */
 
     .notifications-empty {
         padding: 65px 25px;
         text-align: center;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
+        color: var(--notification-text);
+        background: var(--notification-surface);
+        border: 1px solid var(--notification-border);
+        border-radius: var(--radius-lg, 18px);
     }
 
     .notifications-empty-icon {
@@ -307,12 +340,14 @@
         margin: 0 auto 16px;
         border-radius: 18px;
         background: rgba(59,130,246,0.09);
-        border: 1px solid rgba(59,130,246,0.15);
-        color: var(--blue-light);
+        border: 1px solid rgba(59,130,246,0.18);
+        color: var(--blue-light, #60a5fa);
         font-size: 26px;
     }
 
     .notifications-empty h3 {
+        margin: 0;
+        color: var(--notification-text);
         font-family: "Space Grotesk", sans-serif;
         font-size: 19px;
     }
@@ -320,14 +355,12 @@
     .notifications-empty p {
         max-width: 390px;
         margin: 8px auto 0;
-        color: var(--text-muted);
+        color: var(--notification-text-secondary);
         font-size: 12px;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
-    /* =====================================================
-       RESPONSIVE
-    ===================================================== */
+    /* RESPONSIVE */
 
     @media (max-width: 600px) {
         .notifications-page {
@@ -348,6 +381,7 @@
         }
 
         .notification-item {
+            gap: 11px;
             padding: 14px 13px;
         }
 
@@ -362,6 +396,14 @@
 
         .notification-content {
             padding-right: 5px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .notification-item,
+        .mark-all-button,
+        .mark-read-button {
+            transition: none;
         }
     }
 </style>
@@ -404,7 +446,9 @@
             {{ unread_count }}
         </span>
 
-        unread notification{{ unread_count|pluralize }}
+        <span id="unread-summary-text">
+            unread notification{{ unread_count|pluralize }}
+        </span>
     </div>
 
     <!-- NOTIFICATIONS -->
@@ -432,6 +476,7 @@
                     <a
                         href="{% url 'public_profile' notification.actor.username %}"
                         class="notification-avatar"
+                        aria-label="View @{{ notification.actor.username }}'s profile"
                     >
                         {% if notification.actor.profile.avatar %}
                             <img
@@ -444,7 +489,7 @@
                     </a>
 
                     <!-- TYPE ICON -->
-                    <span class="notification-type-icon">
+                    <span class="notification-type-icon" aria-hidden="true">
                         {% if notification.notification_type == "like" %}
                             ♥
                         {% elif notification.notification_type == "comment" %}
@@ -544,7 +589,7 @@
     {% else %}
 
         <div class="notifications-empty">
-            <div class="notifications-empty-icon">
+            <div class="notifications-empty-icon" aria-hidden="true">
                 ♢
             </div>
 
@@ -579,26 +624,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const csrfToken = csrfInput ? csrfInput.value : "";
 
+
     /* =================================================
        UPDATE UNREAD COUNT
     ================================================= */
 
     function updateUnreadCount(value) {
-        const countElement = document.getElementById("unread-count");
+
+        const numericValue = Number(value) || 0;
+
+        const countElement = document.getElementById(
+            "unread-count"
+        );
+
+        const summaryText = document.getElementById(
+            "unread-summary-text"
+        );
 
         if (countElement) {
-            countElement.textContent = value;
+            countElement.textContent = numericValue;
         }
 
-        const summary = document.querySelector(".notifications-summary");
-
-        if (summary) {
-            summary.lastChild.textContent =
-                " unread notification" + (Number(value) === 1 ? "" : "s");
+        if (summaryText) {
+            summaryText.textContent =
+                "unread notification" +
+                (numericValue === 1 ? "" : "s");
         }
 
-        if (Number(value) === 0) {
-            const markAll = document.getElementById("mark-all-read");
+        if (numericValue === 0) {
+
+            const markAll = document.getElementById(
+                "mark-all-read"
+            );
 
             if (markAll) {
                 markAll.remove();
@@ -606,43 +663,64 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+
     /* =================================================
        SHOW EMPTY STATE
     ================================================= */
 
     function showEmptyState() {
-        const list = document.querySelector(".notification-list");
 
-        if (!list || list.querySelector(".notification-item")) {
+        const list = document.querySelector(
+            ".notification-list"
+        );
+
+        if (list && list.querySelector(".notification-item")) {
             return;
         }
 
-        list.remove();
+        if (list) {
+            list.remove();
+        }
+
+        if (document.querySelector(".notifications-empty")) {
+            return;
+        }
 
         const empty = document.createElement("div");
         empty.className = "notifications-empty";
 
-        empty.innerHTML = `
-            <div class="notifications-empty-icon">♢</div>
-            <h3>You're all caught up.</h3>
-            <p>
-                When someone likes, comments, reposts,
-                or sends you a Handshake, you'll see it here.
-            </p>
-        `;
+        const icon = document.createElement("div");
+        icon.className = "notifications-empty-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = "♢";
 
-        const page = document.querySelector(".notifications-page");
+        const heading = document.createElement("h3");
+        heading.textContent = "You're all caught up.";
+
+        const paragraph = document.createElement("p");
+        paragraph.textContent =
+            "When someone likes, comments, reposts, or sends you a Handshake, you'll see it here.";
+
+        empty.appendChild(icon);
+        empty.appendChild(heading);
+        empty.appendChild(paragraph);
+
+        const page = document.querySelector(
+            ".notifications-page"
+        );
 
         if (page) {
             page.appendChild(empty);
         }
     }
 
+
     /* =================================================
        SEND MARK-AS-READ REQUEST
     ================================================= */
 
     async function markAsRead(notificationId) {
+
         const item = document.getElementById(
             "notification-" + notificationId
         );
@@ -652,10 +730,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
+
             const response = await fetch(
                 "{% url 'mark_as_read' 0 %}".replace(
                     "/0/",
-                    "/" + notificationId + "/"
+                    "/" + encodeURIComponent(notificationId) + "/"
                 ),
                 {
                     method: "POST",
@@ -670,146 +749,189 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!response.ok || !data.success) {
                 throw new Error(
-                    data.error || "Could not mark notification as read."
+                    data.error ||
+                    "Could not mark notification as read."
                 );
             }
 
+            item.dataset.read = "true";
             item.classList.add("removing");
 
             updateUnreadCount(data.unread_count);
 
             window.setTimeout(function () {
+
                 item.remove();
                 showEmptyState();
+
             }, 180);
 
             return true;
 
         } catch (error) {
-            console.error("Notification error:", error);
+
+            console.error(
+                "Notification error:",
+                error
+            );
+
             return false;
         }
     }
+
 
     /* =================================================
        INDIVIDUAL MARK-AS-READ BUTTON
     ================================================= */
 
-    document.addEventListener("click", async function (event) {
-        const button = event.target.closest("[data-mark-read]");
+    document.addEventListener(
+        "click",
+        async function (event) {
 
-        if (!button) {
-            return;
-        }
+            const button = event.target.closest(
+                "[data-mark-read]"
+            );
 
-        event.preventDefault();
-        event.stopPropagation();
+            if (!button) {
+                return;
+            }
 
-        if (button.disabled) {
-            return;
-        }
+            event.preventDefault();
+            event.stopPropagation();
 
-        const notificationId = button.dataset.markRead;
+            if (button.disabled) {
+                return;
+            }
 
-        button.disabled = true;
-        button.textContent = "Marking...";
+            const notificationId =
+                button.dataset.markRead;
 
-        const success = await markAsRead(notificationId);
+            button.disabled = true;
+            button.textContent = "Marking...";
 
-        if (!success && document.body.contains(button)) {
-            button.disabled = false;
-            button.textContent = "Mark as read ✓";
-        }
-    });
+            const success = await markAsRead(
+                notificationId
+            );
 
-    /* =================================================
-       CLICK VIEW POST / VIEW PROFILE
-    ================================================= */
+            if (
+                !success &&
+                document.body.contains(button)
+            ) {
 
-    document.querySelectorAll("[data-notification-target]").forEach(
-        function (link) {
-            link.addEventListener("click", function () {
-                const item = link.closest(".notification-item");
-
-                if (!item) {
-                    return;
-                }
-
-                const id = item.dataset.notificationId;
-
-                /*
-                 * Preserve normal link navigation.
-                 * Individual Mark as read buttons provide the
-                 * reliable wait-for-response behavior.
-                 */
-                markAsRead(id);
-            });
+                button.disabled = false;
+                button.textContent = "Mark as read ✓";
+            }
         }
     );
+
+
+    /* =================================================
+       VIEW POST / VIEW PROFILE
+    ================================================= */
+
+    document.querySelectorAll(
+        "[data-notification-target]"
+    ).forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            const item = link.closest(
+                ".notification-item"
+            );
+
+            if (
+                !item ||
+                item.dataset.read === "true"
+            ) {
+                return;
+            }
+
+            /*
+             * Preserve normal navigation while attempting
+             * to update the notification's read status.
+             */
+            markAsRead(
+                item.dataset.notificationId
+            );
+        });
+    });
+
 
     /* =================================================
        MARK ALL AS READ
     ================================================= */
 
-    const markAllButton = document.getElementById("mark-all-read");
+    const markAllButton = document.getElementById(
+        "mark-all-read"
+    );
 
     if (markAllButton) {
-        markAllButton.addEventListener("click", async function () {
-            if (markAllButton.disabled) {
-                return;
-            }
 
-            markAllButton.disabled = true;
-            markAllButton.textContent = "Marking...";
+        markAllButton.addEventListener(
+            "click",
+            async function () {
 
-            try {
-                const response = await fetch(
-                    "{% url 'mark_all_as_read' %}",
-                    {
-                        method: "POST",
-                        headers: {
-                            "X-CSRFToken": csrfToken,
-                            "X-Requested-With": "XMLHttpRequest"
+                if (markAllButton.disabled) {
+                    return;
+                }
+
+                markAllButton.disabled = true;
+                markAllButton.textContent = "Marking...";
+
+                try {
+
+                    const response = await fetch(
+                        "{% url 'mark_all_as_read' %}",
+                        {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": csrfToken,
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
                         }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(
+                            data.error ||
+                            "Could not mark notifications as read."
+                        );
                     }
-                );
 
-                const data = await response.json();
-
-                if (!response.ok || !data.success) {
-                    throw new Error(
-                        data.error || "Could not mark notifications as read."
+                    const list = document.querySelector(
+                        ".notification-list"
                     );
-                }
 
-                /*
-                 * The list displays unread notifications only.
-                 * Once all are read, remove their cards.
-                 */
-                const list = document.querySelector(".notification-list");
+                    if (list) {
 
-                if (list) {
-                    list.querySelectorAll(".notification-item").forEach(
-                        function (item) {
+                        list.querySelectorAll(
+                            ".notification-item"
+                        ).forEach(function (item) {
                             item.remove();
-                        }
+                        });
+                    }
+
+                    updateUnreadCount(0);
+                    showEmptyState();
+
+                } catch (error) {
+
+                    console.error(
+                        "Mark all error:",
+                        error
                     );
+
+                    markAllButton.disabled = false;
+                    markAllButton.textContent =
+                        "Mark all as read";
                 }
-
-                updateUnreadCount(0);
-                showEmptyState();
-
-            } catch (error) {
-                console.error("Mark all error:", error);
-
-                markAllButton.disabled = false;
-                markAllButton.textContent = "Mark all as read";
             }
-        });
+        );
     }
 
 });
 </script>
 
 {% endblock %}
-1
