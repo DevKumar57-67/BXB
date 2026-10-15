@@ -2941,9 +2941,7 @@
     Profile
 </span>
 
-                    <span class="nav-item-label">
-                        Profile
-                    </span>
+                    
 
                 </a>
 
@@ -3574,20 +3572,21 @@
 
 
             <a
-                href="{% url 'my_profile' %}"
+                href="{% url 'events:event_list' %}"
                 class="
-                    {% if request.resolver_match.url_name == 'my_profile' %}
+                    {% if request.resolver_match.url_name == 'events:event_list' %}
                         active
                     {% endif %}
                 "
             >
 
                 <span>
-                    ◉
+                     ◷
+                    
                 </span>
 
                 <small>
-                    Profile
+                    Events
                 </small>
 
             </a>
