@@ -1,16 +1,11 @@
+
 {% extends "base.html" %}
 
-{% block title %}
-Feed | BitsXBytes
-{% endblock %}
-
+{% block title %}Feed | BitsXBytes{% endblock %}
 
 {% block content %}
 
 <style>
-
-    
-
 /* =====================================================
    BXB FEED — LIGHT + DARK THEME SUPPORT
 ===================================================== */
@@ -81,9 +76,7 @@ Feed | BitsXBytes
     box-shadow: 0 0 8px rgba(34, 197, 94, 0.45);
 }
 
-/* =====================================================
-   CREATE POST
-===================================================== */
+/* CREATE POST */
 
 .create-post {
     margin-bottom: 22px;
@@ -110,11 +103,7 @@ Feed | BitsXBytes
     padding: 0 15px;
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 3%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
     color: var(--text-secondary);
     font-size: 13px;
     cursor: text;
@@ -124,11 +113,7 @@ Feed | BitsXBytes
 
 .create-post-input:hover {
     border-color: var(--border-hover);
-    background: color-mix(
-        in srgb,
-        var(--blue) 6%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--blue) 6%, transparent);
 }
 
 .create-post-form {
@@ -153,11 +138,7 @@ Feed | BitsXBytes
 
 .create-post-form textarea:focus {
     border-color: var(--blue);
-    outline: 2px solid color-mix(
-        in srgb,
-        var(--blue) 20%,
-        transparent
-    );
+    outline: 2px solid color-mix(in srgb, var(--blue) 20%, transparent);
     outline-offset: 1px;
 }
 
@@ -177,11 +158,7 @@ Feed | BitsXBytes
     border: 1px solid var(--border);
     border-radius: 9px;
     color: var(--text-secondary);
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 3%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
     font-size: 12px;
     cursor: pointer;
     transition: all var(--transition);
@@ -205,9 +182,7 @@ Feed | BitsXBytes
     outline-offset: 3px;
 }
 
-/* =====================================================
-   POST CARD
-===================================================== */
+/* POST CARD */
 
 .post-card {
     position: relative;
@@ -251,6 +226,7 @@ Feed | BitsXBytes
     font-size: 13px;
     font-weight: 700;
     overflow-wrap: anywhere;
+    text-decoration: none;
 }
 
 .post-author-name:hover {
@@ -262,6 +238,85 @@ Feed | BitsXBytes
     color: var(--text-muted);
     font-size: 11px;
     line-height: 1.5;
+}
+
+/* CLICKABLE PROFILE LINKS */
+
+.post-author-profile-link,
+.comment-profile-link,
+.create-post-profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-author-profile-link:hover,
+.comment-profile-link:hover,
+.create-post-profile-link:hover {
+    text-decoration: none;
+}
+
+.post-author-profile-link:focus-visible,
+.comment-profile-link:focus-visible,
+.create-post-profile-link:focus-visible,
+.feed-my-profile:focus-visible,
+.comment-avatar:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+.comment-user a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.comment-user a:hover {
+    color: var(--blue-light, var(--blue));
+    text-decoration: underline;
+}
+
+.feed-my-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--card-bg, var(--surface, transparent));
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: border-color var(--transition);
+}
+
+.feed-my-profile:hover {
+    border-color: var(--blue);
+}
+
+.feed-my-profile-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.feed-my-profile-title {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.feed-my-profile-subtitle {
+    margin-top: 3px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
+
+.feed-profile-arrow {
+    color: var(--blue-light, var(--blue));
+    font-size: 18px;
 }
 
 .post-menu {
@@ -281,15 +336,11 @@ Feed | BitsXBytes
 
 .post-menu:hover {
     color: var(--text-primary);
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 7%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 7%, transparent);
     border-color: var(--border);
 }
 
-/* The most important fix: post text follows the active theme. */
+/* POST CONTENT */
 
 .post-content {
     margin-top: 16px;
@@ -315,16 +366,10 @@ Feed | BitsXBytes
     object-fit: contain;
     border-radius: 12px;
     border: 1px solid var(--border);
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 4%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 4%, transparent);
 }
 
-/* =====================================================
-   POST INTERACTION BAR
-===================================================== */
+/* POST INTERACTION BAR */
 
 .post-footer {
     display: flex;
@@ -356,16 +401,8 @@ Feed | BitsXBytes
 
 .post-action:hover {
     color: var(--blue-light, var(--blue));
-    background: color-mix(
-        in srgb,
-        var(--blue) 9%,
-        transparent
-    );
-    border-color: color-mix(
-        in srgb,
-        var(--blue) 15%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--blue) 9%, transparent);
+    border-color: color-mix(in srgb, var(--blue) 15%, transparent);
 }
 
 .post-action:focus-visible,
@@ -391,11 +428,7 @@ Feed | BitsXBytes
 
 .post-action.active {
     color: var(--blue-light, var(--blue));
-    background: color-mix(
-        in srgb,
-        var(--blue) 10%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--blue) 10%, transparent);
 }
 
 .like-button.active {
@@ -423,9 +456,7 @@ Feed | BitsXBytes
     background: rgba(239, 68, 68, 0.09);
 }
 
-/* =====================================================
-   COMMENTS
-===================================================== */
+/* COMMENTS */
 
 .comments-section {
     display: none;
@@ -466,6 +497,7 @@ Feed | BitsXBytes
     font-family: "Space Grotesk", sans-serif;
     font-size: 11px;
     font-weight: 700;
+    text-decoration: none;
 }
 
 .comment-avatar img {
@@ -474,17 +506,17 @@ Feed | BitsXBytes
     object-fit: cover;
 }
 
+.comment-avatar:hover {
+    text-decoration: none;
+}
+
 .comment-body {
     min-width: 0;
     flex: 1;
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 3%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
     color: var(--text-primary);
 }
 
@@ -547,11 +579,7 @@ Feed | BitsXBytes
 
 .comment-input:focus {
     border-color: var(--blue) !important;
-    outline: 2px solid color-mix(
-        in srgb,
-        var(--blue) 20%,
-        transparent
-    );
+    outline: 2px solid color-mix(in srgb, var(--blue) 20%, transparent);
     outline-offset: 1px;
 }
 
@@ -570,9 +598,7 @@ Feed | BitsXBytes
     line-height: 1.5;
 }
 
-/* =====================================================
-   EMPTY FEED
-===================================================== */
+/* EMPTY FEED */
 
 .empty-feed {
     padding: 55px 25px;
@@ -589,16 +615,8 @@ Feed | BitsXBytes
     margin: 0 auto 16px;
     border-radius: 18px;
     color: var(--blue-light, var(--blue));
-    background: color-mix(
-        in srgb,
-        var(--blue) 10%,
-        transparent
-    );
-    border: 1px solid color-mix(
-        in srgb,
-        var(--blue) 20%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--blue) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
     font-size: 25px;
 }
 
@@ -616,9 +634,7 @@ Feed | BitsXBytes
     line-height: 1.7;
 }
 
-/* =====================================================
-   RIGHT SIDEBAR
-===================================================== */
+/* RIGHT SIDEBAR */
 
 .feed-sidebar {
     position: sticky;
@@ -653,9 +669,7 @@ Feed | BitsXBytes
     font-weight: 600;
 }
 
-/* =====================================================
-   WELCOME CARD — THEME ADAPTIVE
-===================================================== */
+/* WELCOME CARD */
 
 .welcome-card {
     position: relative;
@@ -687,11 +701,7 @@ Feed | BitsXBytes
     font-family: "Space Grotesk", sans-serif;
     font-size: 120px;
     font-weight: 700;
-    color: color-mix(
-        in srgb,
-        var(--blue) 7%,
-        transparent
-    );
+    color: color-mix(in srgb, var(--blue) 7%, transparent);
     pointer-events: none;
 }
 
@@ -722,9 +732,7 @@ Feed | BitsXBytes
     line-height: 1.7;
 }
 
-/* =====================================================
-   COMMUNITY STATS
-===================================================== */
+/* COMMUNITY STATS */
 
 .stats-grid {
     display: grid;
@@ -736,11 +744,7 @@ Feed | BitsXBytes
     padding: 12px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    background: color-mix(
-        in srgb,
-        var(--text-primary) 3%,
-        transparent
-    );
+    background: color-mix(in srgb, var(--text-primary) 3%, transparent);
 }
 
 .stat-number {
@@ -759,9 +763,7 @@ Feed | BitsXBytes
     letter-spacing: 0.5px;
 }
 
-/* =====================================================
-   RESPONSIVE
-===================================================== */
+/* RESPONSIVE */
 
 @media (max-width: 1000px) {
     .feed-layout {
@@ -829,195 +831,139 @@ Feed | BitsXBytes
         transform: none;
     }
 }
+</style>
 
-
-
-   </style>
-
-
-<!-- =====================================================
-     FEED HEADER
-====================================================== -->
+<!-- FEED HEADER -->
 
 <div class="feed-header">
-
     <div class="feed-header-top">
-
         <div>
-
-            <h1 class="feed-title">
-                Community Feed
-            </h1>
-
+            <h1 class="feed-title">Community Feed</h1>
             <p class="feed-subtitle">
                 See what builders, creators and students are sharing.
             </p>
-
         </div>
-
 
         <div class="feed-status">
-
             <span class="feed-status-dot"></span>
-
             BxB Community Live
-
         </div>
-
     </div>
-
 </div>
 
+<!-- MY PROFILE SHORTCUT -->
 
-<!-- =====================================================
-     FEED LAYOUT
-====================================================== -->
+<a href="{% url 'my_profile' %}" class="feed-my-profile">
+    <div class="avatar avatar-small">
+        {% if user.profile.avatar %}
+            <img
+                src="{{ user.profile.avatar.url }}"
+                alt="{{ user.username }}'s profile"
+            >
+        {% else %}
+            <span>{{ user.username|first|upper }}</span>
+        {% endif %}
+    </div>
+
+    <div class="feed-my-profile-info">
+        <div class="feed-my-profile-title">My Profile</div>
+        <div class="feed-my-profile-subtitle">
+            @{{ user.username }} · View your profile
+        </div>
+    </div>
+
+    <span class="feed-profile-arrow" aria-hidden="true">→</span>
+</a>
+
+<!-- FEED LAYOUT -->
 
 <div class="feed-layout">
 
-
-    <!-- =================================================
-         MAIN FEED
-    ================================================== -->
+    <!-- MAIN FEED -->
 
     <section>
 
-
-        <!-- =================================================
-             CREATE POST
-        ================================================== -->
+        <!-- CREATE POST -->
 
         <div class="card create-post">
-
-
             <div class="create-post-header">
 
-                <div
-                    class="avatar avatar-small create-post-avatar"
+                <a
+                    href="{% url 'my_profile' %}"
+                    class="avatar avatar-small create-post-avatar create-post-profile-link"
+                    aria-label="View your profile"
                 >
-
                     {% if user.profile.avatar %}
-
                         <img
                             src="{{ user.profile.avatar.url }}"
-                            alt="{{ user.username }}"
+                            alt="{{ user.username }}'s profile"
                         >
-
                     {% else %}
-
-                        <span>
-                            {{ user.username|first|upper }}
-                        </span>
-
+                        <span>{{ user.username|first|upper }}</span>
                     {% endif %}
-
-                </div>
-
+                </a>
 
                 <div class="create-post-input">
-
                     Share something with the BxB community...
-
                 </div>
-
             </div>
-
 
             <form
                 method="POST"
                 enctype="multipart/form-data"
                 class="create-post-form"
             >
-
                 {% csrf_token %}
 
-
                 <div>
-
                     {{ form.content }}
-
                 </div>
-
 
                 <div class="create-post-actions">
-
-
                     <label class="file-upload">
-
-                        <span>
-                            ◫
-                        </span>
-
+                        <span>◫</span>
                         Add image
-
                         {{ form.image }}
-
                     </label>
 
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                    >
-
+                    <button type="submit" class="btn btn-primary">
                         Publish
-
                     </button>
-
-
                 </div>
-
             </form>
-
         </div>
 
-
-        <!-- =================================================
-             POSTS
-        ================================================== -->
+        <!-- POSTS -->
 
         {% if posts %}
 
-
             {% for post in posts %}
-
 
                 <article
                     class="card post-card"
                     id="post-{{ post.id }}"
                 >
 
-
-                    <!-- Post Header -->
+                    <!-- POST HEADER -->
 
                     <div class="post-header">
 
-
                         <div class="post-author">
-
 
                             <a
                                 href="{% url 'public_profile' post.author.username %}"
                                 class="avatar avatar-small"
+                                aria-label="View {{ post.author.username }}'s profile"
                             >
-
                                 {% if post.author.profile.avatar %}
-
                                     <img
                                         src="{{ post.author.profile.avatar.url }}"
-                                        alt="{{ post.author.username }}"
+                                        alt="{{ post.author.username }}'s avatar"
                                     >
-
                                 {% else %}
-
-                                    <span>
-                                        {{ post.author.username|first|upper }}
-                                    </span>
-
+                                    <span>{{ post.author.username|first|upper }}</span>
                                 {% endif %}
-
                             </a>
-
 
                             <div class="post-author-info">
 
@@ -1025,108 +971,64 @@ Feed | BitsXBytes
                                     href="{% url 'public_profile' post.author.username %}"
                                     class="post-author-name"
                                 >
-
-                                    {{ post.author.username }}
-
+                                    {{ post.author.get_full_name|default:post.author.username }}
                                 </a>
 
-
                                 <span class="post-time">
-
-                                    {{ post.created_at|timesince }} ago
-
+                                    @{{ post.author.username }}
+                                    · {{ post.created_at|timesince }} ago
                                 </span>
 
                             </div>
-
-
                         </div>
-
 
                         <button
                             type="button"
                             class="post-menu"
                             title="More options"
+                            aria-label="More post options"
                         >
                             ···
                         </button>
 
-
                     </div>
 
-
-                    <!-- =================================================
-                         POST CONTENT
-                    ================================================== -->
+                    <!-- POST CONTENT -->
 
                     {% if post.content %}
-
-                        <div class="post-content">
-
-                            {{ post.content }}
-
-                        </div>
-
+                        <div class="post-content">{{ post.content }}</div>
                     {% endif %}
 
-
-                    <!-- Post Image -->
+                    <!-- POST IMAGE -->
 
                     {% if post.image %}
-
                         <img
                             src="{{ post.image.url }}"
                             alt="Post image"
                             class="post-image"
                         >
-
                     {% endif %}
 
-
-                    <!-- =================================================
-                         POST ACTIONS
-                    ================================================== -->
+                    <!-- POST ACTIONS -->
 
                     <div class="post-footer">
-
 
                         <!-- LIKE -->
 
                         <button
                             type="button"
-                            class="
-                                post-action
-                                interaction-button
-                                like-button
-                                {% for like in post.likes.all %}
-                                    {% if like.user_id == user.id %}
-                                        active
-                                    {% endif %}
-                                {% endfor %}
-                            "
+                            class="post-action interaction-button like-button {% for like in post.likes.all %}{% if like.user_id == user.id %}active{% endif %}{% endfor %}"
                             data-url="{% url 'like_post' post.id %}"
                             data-action="like"
                             data-post-id="{{ post.id }}"
                             title="Like"
                         >
-
-                            <span class="post-action-icon">
-                                ♥
-                            </span>
-
-                            <span>
-                                Like
-                            </span>
-
-                            <span
-                                class="post-action-count"
-                                data-count="like"
-                            >
+                            <span class="post-action-icon">♥</span>
+                            <span>Like</span>
+                            <span class="post-action-count" data-count="like">
                                 {{ post.likes.count }}
                             </span>
-
                         </button>
-
 
                         <!-- COMMENT -->
 
@@ -1136,61 +1038,28 @@ Feed | BitsXBytes
                             data-target="comments-{{ post.id }}"
                             title="Comment"
                         >
-
-                            <span class="post-action-icon">
-                                ◌
-                            </span>
-
-                            <span>
-                                Comment
-                            </span>
-
-                            <span
-                                class="post-action-count"
-                                data-count="comment"
-                            >
+                            <span class="post-action-icon">◌</span>
+                            <span>Comment</span>
+                            <span class="post-action-count" data-count="comment">
                                 {{ post.comments.count }}
                             </span>
-
                         </button>
-
 
                         <!-- REPOST -->
 
                         <button
                             type="button"
-                            class="
-                                post-action
-                                interaction-button
-                                repost-button
-                                {% for repost in post.reposts.all %}
-                                    {% if repost.user_id == user.id %}
-                                        active
-                                    {% endif %}
-                                {% endfor %}
-                            "
+                            class="post-action interaction-button repost-button {% for repost in post.reposts.all %}{% if repost.user_id == user.id %}active{% endif %}{% endfor %}"
                             data-url="{% url 'repost_post' post.id %}"
                             data-action="repost"
                             title="Repost"
                         >
-
-                            <span class="post-action-icon">
-                                ↻
-                            </span>
-
-                            <span>
-                                Repost
-                            </span>
-
-                            <span
-                                class="post-action-count"
-                                data-count="repost"
-                            >
+                            <span class="post-action-icon">↻</span>
+                            <span>Repost</span>
+                            <span class="post-action-count" data-count="repost">
                                 {{ post.reposts.count }}
                             </span>
-
                         </button>
-
 
                         <!-- SHARE -->
 
@@ -1200,58 +1069,31 @@ Feed | BitsXBytes
                             data-post-id="{{ post.id }}"
                             title="Share"
                         >
-
-                            <span class="post-action-icon">
-                                ↗
-                            </span>
-
-                            <span>
-                                Share
-                            </span>
-
+                            <span class="post-action-icon">↗</span>
+                            <span>Share</span>
                         </button>
-
 
                         <!-- SAVE -->
 
                         <button
                             type="button"
-                            class="
-                                post-action
-                                interaction-button
-                                save-button
-                                {% for save in post.saves.all %}
-                                    {% if save.user_id == user.id %}
-                                        active
-                                    {% endif %}
-                                {% endfor %}
-                            "
+                            class="post-action interaction-button save-button {% for save in post.saves.all %}{% if save.user_id == user.id %}active{% endif %}{% endfor %}"
                             data-url="{% url 'save_post' post.id %}"
                             data-action="save"
                             title="Save"
                         >
-
-                            <span class="post-action-icon">
-                                🔖
-                            </span>
-
-                            <span>
-                                Save
-                            </span>
-
+                            <span class="post-action-icon">🔖</span>
+                            <span>Save</span>
                         </button>
-
 
                         <!-- DELETE -->
 
                         {% if post.author == user %}
-
                             <form
                                 method="POST"
                                 action="{% url 'delete_post' post.id %}"
                                 class="post-delete"
                             >
-
                                 {% csrf_token %}
 
                                 <button
@@ -1259,34 +1101,20 @@ Feed | BitsXBytes
                                     class="post-action post-delete"
                                     onclick="return confirm('Delete this post?')"
                                 >
-
-                                    <span class="post-action-icon">
-                                        ♲
-                                    </span>
-
-                                    <span>
-                                        Delete
-                                    </span>
-
+                                    <span class="post-action-icon">♲</span>
+                                    <span>Delete</span>
                                 </button>
-
                             </form>
-
                         {% endif %}
-
 
                     </div>
 
-
-                    <!-- =================================================
-                         COMMENTS SECTION
-                    ================================================== -->
+                    <!-- COMMENTS SECTION -->
 
                     <div
                         id="comments-{{ post.id }}"
                         class="comments-section"
                     >
-
 
                         <div
                             class="comment-list"
@@ -1297,49 +1125,45 @@ Feed | BitsXBytes
 
                                 <div class="comment">
 
-                                    <div class="comment-avatar">
+                                    <!-- CLICKABLE COMMENT AVATAR -->
 
+                                    <a
+                                        href="{% url 'public_profile' comment.user.username %}"
+                                        class="comment-avatar"
+                                        aria-label="View @{{ comment.user.username }}'s profile"
+                                    >
                                         {% if comment.user.profile.avatar %}
-
                                             <img
                                                 src="{{ comment.user.profile.avatar.url }}"
-                                                alt="{{ comment.user.username }}"
+                                                alt="{{ comment.user.username }}'s avatar"
                                             >
-
                                         {% else %}
-
                                             {{ comment.user.username|first|upper }}
-
                                         {% endif %}
-
-                                    </div>
-
+                                    </a>
 
                                     <div class="comment-body">
 
+                                        <!-- CLICKABLE COMMENT USERNAME -->
+
                                         <div class="comment-user">
-
-                                            @{{ comment.user.username }}
-
+                                            <a
+                                                href="{% url 'public_profile' comment.user.username %}"
+                                                class="comment-profile-link"
+                                            >
+                                                @{{ comment.user.username }}
+                                            </a>
                                         </div>
-
 
                                         <div class="comment-text">
-
                                             {{ comment.content }}
-
                                         </div>
 
-
                                         <div class="comment-time">
-
-                                            {{ comment.created_at|timesince }}
-                                            ago
-
+                                            {{ comment.created_at|timesince }} ago
                                         </div>
 
                                     </div>
-
                                 </div>
 
                             {% empty %}
@@ -1347,11 +1171,7 @@ Feed | BitsXBytes
                                 <div
                                     class="comment-empty"
                                     data-empty-comments="{{ post.id }}"
-                                    style="
-                                        color: var(--text-muted);
-                                        font-size: 11px;
-                                        padding: 5px 0;
-                                    "
+                                    style="color:var(--text-muted);font-size:11px;padding:5px 0;"
                                 >
                                     No comments yet. Start the conversation.
                                 </div>
@@ -1360,17 +1180,14 @@ Feed | BitsXBytes
 
                         </div>
 
-
-                        <!-- Comment Form -->
+                        <!-- COMMENT FORM -->
 
                         <form
                             class="comment-form"
                             data-post-id="{{ post.id }}"
                             data-url="{% url 'comment_post' post.id %}"
                         >
-
                             {% csrf_token %}
-
 
                             <textarea
                                 name="content"
@@ -1380,874 +1197,437 @@ Feed | BitsXBytes
                                 rows="1"
                             ></textarea>
 
-
                             <button
                                 type="submit"
                                 class="btn btn-primary comment-submit"
                             >
                                 Send
                             </button>
-
                         </form>
-
 
                         <div
                             class="interaction-error"
                             data-error="{{ post.id }}"
                         ></div>
 
-
                     </div>
-
 
                 </article>
 
-
             {% endfor %}
-
 
         {% else %}
 
-
-            <!-- =================================================
-                 EMPTY FEED
-            ================================================== -->
+            <!-- EMPTY FEED -->
 
             <div class="card empty-feed">
 
+                <div class="empty-feed-icon">✦</div>
 
-                <div class="empty-feed-icon">
-                    ✦
-                </div>
-
-
-                <h3>
-                    Your community starts here.
-                </h3>
-
+                <h3>Your community starts here.</h3>
 
                 <p>
-
                     Be the first person to share something.
                     Post a project, idea, achievement or anything
                     worth discussing with the BxB community.
-
                 </p>
-
 
             </div>
 
-
         {% endif %}
-
 
     </section>
 
-
-    <!-- =================================================
-         RIGHT SIDEBAR
-    ================================================== -->
+    <!-- RIGHT SIDEBAR -->
 
     <aside class="feed-sidebar">
 
+        <!-- WELCOME CARD -->
 
-        <!-- Welcome -->
+        <div class="card sidebar-card welcome-card">
 
-        <div
-            class="card sidebar-card welcome-card"
-        >
-
-            <span class="welcome-label">
-                Welcome to BxB
-            </span>
-
+            <span class="welcome-label">Welcome to BxB</span>
 
             <h2 class="welcome-title">
-
-                Build something
-                worth sharing.
-
+                Build something worth sharing.
             </h2>
 
-
             <p class="welcome-text">
-
                 Connect with students, developers,
                 creators and builders from your community.
-
             </p>
 
         </div>
 
-
-        <!-- Community Stats -->
+        <!-- COMMUNITY STATS -->
 
         <div class="card sidebar-card">
 
-
             <div class="sidebar-card-header">
-
-                <h3 class="sidebar-card-title">
-                    Community
-                </h3>
-
-                <span class="sidebar-card-link">
-                    Live
-                </span>
-
+                <h3 class="sidebar-card-title">Community</h3>
+                <span class="sidebar-card-link">Live</span>
             </div>
-
 
             <div class="stats-grid">
 
-
                 <div class="stat-box">
-
-                    <div class="stat-number">
-                        {{ posts|length }}
-                    </div>
-
-                    <div class="stat-label">
-                        Posts
-                    </div>
-
+                    <div class="stat-number">{{ posts|length }}</div>
+                    <div class="stat-label">Posts</div>
                 </div>
 
-
                 <div class="stat-box">
-
-                    <div class="stat-number">
-                        BxB
-                    </div>
-
-                    <div class="stat-label">
-                        Network
-                    </div>
-
+                    <div class="stat-number">BxB</div>
+                    <div class="stat-label">Network</div>
                 </div>
-
 
             </div>
 
         </div>
 
+    </aside>
 
-        
-
+</div>
 
 <!-- =====================================================
      POST INTERACTION JAVASCRIPT
 ====================================================== -->
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    /* CSRF */
 
+    function getCSRFToken() {
+        const tokenInput = document.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+        );
 
-        /* =================================================
-           CSRF
-        ================================================= */
+        return tokenInput ? tokenInput.value : "";
+    }
 
-        function getCSRFToken() {
+    const csrfToken = getCSRFToken();
 
-            const tokenInput =
-                document.querySelector(
-                    'input[name="csrfmiddlewaretoken"]'
-                );
+    /* GENERIC POST REQUEST */
 
-            if (tokenInput) {
-
-                return tokenInput.value;
+    async function postRequest(url, body = null) {
+        const options = {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "X-Requested-With": "XMLHttpRequest"
             }
+        };
 
-            return "";
+        if (body) {
+            options.body = body;
         }
 
+        const response = await fetch(url, options);
+        const data = await response.json();
 
-        const csrfToken =
-            getCSRFToken();
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong.");
+        }
 
+        return data;
+    }
 
-        /* =================================================
-           GENERIC POST REQUEST
-        ================================================= */
+    /* LIKE / SAVE / REPOST */
 
-        async function postRequest(
-            url,
-            body = null
-        ) {
+    document.querySelectorAll(".interaction-button").forEach(function (button) {
 
-            const options = {
+        button.addEventListener("click", async function () {
 
-                method: "POST",
+            if (button.dataset.loading === "true") {
+                return;
+            }
 
-                headers: {
+            button.dataset.loading = "true";
 
-                    "X-CSRFToken":
-                        csrfToken,
+            try {
+                const data = await postRequest(button.dataset.url);
 
-                    "X-Requested-With":
-                        "XMLHttpRequest"
+                if (!data.success) {
+                    return;
                 }
+
+                const action = button.dataset.action;
+
+                if (action === "like") {
+                    button.classList.toggle("active", data.is_liked);
+
+                    const count = button.querySelector('[data-count="like"]');
+
+                    if (count) {
+                        count.textContent = data.like_count;
+                    }
+                }
+
+                if (action === "save") {
+                    button.classList.toggle("active", data.is_saved);
+                }
+
+                if (action === "repost") {
+                    button.classList.toggle("active", data.is_reposted);
+
+                    const count = button.querySelector('[data-count="repost"]');
+
+                    if (count) {
+                        count.textContent = data.repost_count;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Interaction error:", error);
+
+            } finally {
+                button.dataset.loading = "false";
+            }
+
+        });
+
+    });
+
+    /* COMMENT TOGGLE */
+
+    document.querySelectorAll(".comment-toggle").forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const target = document.getElementById(button.dataset.target);
+
+            if (target) {
+                target.classList.toggle("visible");
+            }
+
+        });
+
+    });
+
+    /* COMMENT SUBMIT */
+
+    document.querySelectorAll(".comment-form").forEach(function (form) {
+
+        form.addEventListener("submit", async function (event) {
+
+            event.preventDefault();
+
+            const textarea = form.querySelector(".comment-input");
+            const content = textarea.value.trim();
+
+            if (!content) {
+                textarea.focus();
+                return;
+            }
+
+            const submitButton = form.querySelector(".comment-submit");
+            const postId = form.dataset.postId;
+
+            const errorBox = document.querySelector(
+                `[data-error="${postId}"]`
+            );
+
+            submitButton.disabled = true;
+            submitButton.textContent = "Sending...";
+
+            if (errorBox) {
+                errorBox.style.display = "none";
+                errorBox.textContent = "";
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append("content", content);
+
+                const data = await postRequest(form.dataset.url, formData);
+
+                if (!data.success) {
+                    throw new Error(data.error || "Could not add comment.");
+                }
+
+                const commentList = document.querySelector(
+                    `[data-comment-list="${postId}"]`
+                );
+
+                if (commentList) {
+
+                    /* Remove empty message */
+
+                    const emptyMessage = document.querySelector(
+                        `[data-empty-comments="${postId}"]`
+                    );
+
+                    if (emptyMessage) {
+                        emptyMessage.remove();
+                    }
+
+                    /* New comment */
+
+                    const comment = document.createElement("div");
+                    comment.className = "comment";
+
+                    /* Clickable avatar for the current commenter */
+
+                    const avatar = document.createElement("a");
+                    avatar.className = "comment-avatar";
+                    avatar.href = "{% url 'public_profile' user.username %}";
+                    avatar.setAttribute("aria-label", "View your profile");
+
+                    avatar.textContent = data.comment.username
+                        .charAt(0)
+                        .toUpperCase();
+
+                    /* Comment body */
+
+                    const body = document.createElement("div");
+                    body.className = "comment-body";
+
+                    /* Clickable username */
+
+                    const username = document.createElement("div");
+                    username.className = "comment-user";
+
+                    const usernameLink = document.createElement("a");
+                    usernameLink.className = "comment-profile-link";
+                    usernameLink.href = "{% url 'public_profile' user.username %}";
+                    usernameLink.textContent = "@" + data.comment.username;
+
+                    username.appendChild(usernameLink);
+
+                    /* Comment text */
+
+                    const commentText = document.createElement("div");
+                    commentText.className = "comment-text";
+                    commentText.textContent = data.comment.content;
+
+                    /* Comment timestamp */
+
+                    const time = document.createElement("div");
+                    time.className = "comment-time";
+                    time.textContent = "Just now";
+
+                    body.appendChild(username);
+                    body.appendChild(commentText);
+                    body.appendChild(time);
+
+                    comment.appendChild(avatar);
+                    comment.appendChild(body);
+
+                    commentList.appendChild(comment);
+                }
+
+                /* Update comment count */
+
+                const countButton = document.querySelector(
+                    `#comments-${postId}`
+                )?.closest(".post-card")
+                 ?.querySelector('[data-count="comment"]');
+
+                if (countButton) {
+                    countButton.textContent = data.comment_count;
+                }
+
+                textarea.value = "";
+
+                /* Keep comments open */
+
+                const section = document.getElementById(
+                    "comments-" + postId
+                );
+
+                if (section) {
+                    section.classList.add("visible");
+                }
+
+            } catch (error) {
+
+                console.error("Comment error:", error);
+
+                if (errorBox) {
+                    errorBox.textContent = error.message;
+                    errorBox.style.display = "block";
+                }
+
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = "Send";
+            }
+
+        });
+
+    });
+
+    /* SHARE */
+
+    document.querySelectorAll(".share-button").forEach(function (button) {
+
+        button.addEventListener("click", async function () {
+
+            const postId = button.dataset.postId;
+
+            const shareUrl =
+                window.location.origin +
+                "{% url 'feed' %}" +
+                "#post-" +
+                postId;
+
+            const shareData = {
+                title: "BitsXBytes",
+                text: "Check out this post on BitsXBytes.",
+                url: shareUrl
             };
 
+            try {
 
-            if (body) {
+                if (navigator.share) {
+                    await navigator.share(shareData);
 
-                options.body =
-                    body;
+                } else if (navigator.clipboard) {
+
+                    await navigator.clipboard.writeText(shareUrl);
+
+                    const original = button.innerHTML;
+
+                    button.innerHTML =
+                        '<span class="post-action-icon">✓</span><span>Copied</span>';
+
+                    setTimeout(function () {
+                        button.innerHTML = original;
+                    }, 1500);
+
+                } else {
+
+                    window.prompt("Copy this link:", shareUrl);
+                }
+
+            } catch (error) {
+
+                if (error.name !== "AbortError") {
+                    console.error("Share error:", error);
+                }
+
             }
 
+        });
 
-            const response =
-                await fetch(
-                    url,
-                    options
-                );
+    });
 
+    /* AUTO-EXPAND COMMENT BOX */
 
-            const data =
-                await response.json();
+    document.querySelectorAll(".comment-input").forEach(function (textarea) {
 
+        textarea.addEventListener("input", function () {
 
-            if (!response.ok) {
+            textarea.style.height = "40px";
 
-                throw new Error(
-                    data.error ||
-                    "Something went wrong."
-                );
-            }
+            textarea.style.height =
+                Math.min(textarea.scrollHeight, 110) + "px";
 
+        });
 
-            return data;
-        }
+    });
 
-
-        /* =================================================
-           LIKE / SAVE / REPOST
-        ================================================= */
-
-        document
-            .querySelectorAll(
-                ".interaction-button"
-            )
-            .forEach(
-                function (button) {
-
-
-                    button.addEventListener(
-                        "click",
-                        async function () {
-
-                            if (
-                                button.dataset.loading
-                                === "true"
-                            ) {
-
-                                return;
-                            }
-
-
-                            button.dataset.loading =
-                                "true";
-
-
-                            try {
-
-                                const data =
-                                    await postRequest(
-                                        button.dataset.url
-                                    );
-
-
-                                if (
-                                    !data.success
-                                ) {
-
-                                    return;
-                                }
-
-
-                                const action =
-                                    button.dataset.action;
-
-
-                                /* LIKE */
-
-                                if (
-                                    action
-                                    === "like"
-                                ) {
-
-                                    button.classList.toggle(
-                                        "active",
-                                        data.is_liked
-                                    );
-
-
-                                    const count =
-                                        button
-                                            .querySelector(
-                                                '[data-count="like"]'
-                                            );
-
-
-                                    if (count) {
-
-                                        count.textContent =
-                                            data.like_count;
-                                    }
-                                }
-
-
-                                /* SAVE */
-
-                                if (
-                                    action
-                                    === "save"
-                                ) {
-
-                                    button.classList.toggle(
-                                        "active",
-                                        data.is_saved
-                                    );
-                                }
-
-
-                                /* REPOST */
-
-                                if (
-                                    action
-                                    === "repost"
-                                ) {
-
-                                    button.classList.toggle(
-                                        "active",
-                                        data.is_reposted
-                                    );
-
-
-                                    const count =
-                                        button
-                                            .querySelector(
-                                                '[data-count="repost"]'
-                                            );
-
-
-                                    if (count) {
-
-                                        count.textContent =
-                                            data.repost_count;
-                                    }
-                                }
-
-                            } catch (error) {
-
-                                console.error(
-                                    "Interaction error:",
-                                    error
-                                );
-
-                            } finally {
-
-                                button.dataset.loading =
-                                    "false";
-                            }
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =================================================
-           COMMENT TOGGLE
-        ================================================= */
-
-        document
-            .querySelectorAll(
-                ".comment-toggle"
-            )
-            .forEach(
-                function (button) {
-
-                    button.addEventListener(
-                        "click",
-                        function () {
-
-                            const target =
-                                document.getElementById(
-                                    button.dataset.target
-                                );
-
-
-                            if (!target) {
-                                return;
-                            }
-
-
-                            target.classList.toggle(
-                                "visible"
-                            );
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =================================================
-           COMMENT SUBMIT
-        ================================================= */
-
-        document
-            .querySelectorAll(
-                ".comment-form"
-            )
-            .forEach(
-                function (form) {
-
-                    form.addEventListener(
-                        "submit",
-                        async function (event) {
-
-                            event.preventDefault();
-
-
-                            const textarea =
-                                form.querySelector(
-                                    ".comment-input"
-                                );
-
-
-                            const content =
-                                textarea
-                                    .value
-                                    .trim();
-
-
-                            if (!content) {
-
-                                textarea.focus();
-
-                                return;
-                            }
-
-
-                            const submitButton =
-                                form.querySelector(
-                                    ".comment-submit"
-                                );
-
-
-                            const postId =
-                                form.dataset.postId;
-
-
-                            const errorBox =
-                                document.querySelector(
-                                    `[data-error="${postId}"]`
-                                );
-
-
-                            submitButton.disabled =
-                                true;
-
-
-                            submitButton.textContent =
-                                "Sending...";
-
-
-                            if (errorBox) {
-
-                                errorBox.style.display =
-                                    "none";
-
-                                errorBox.textContent =
-                                    "";
-                            }
-
-
-                            try {
-
-                                const formData =
-                                    new FormData();
-
-                                formData.append(
-                                    "content",
-                                    content
-                                );
-
-
-                                const data =
-                                    await postRequest(
-                                        form.dataset.url,
-                                        formData
-                                    );
-
-
-                                if (
-                                    !data.success
-                                ) {
-
-                                    throw new Error(
-                                        data.error ||
-                                        "Could not add comment."
-                                    );
-                                }
-
-
-                                const commentList =
-                                    document.querySelector(
-                                        `[data-comment-list="${postId}"]`
-                                    );
-
-
-                                if (commentList) {
-
-
-                                    /* Remove empty message */
-
-                                    const emptyMessage =
-                                        document.querySelector(
-                                            `[data-empty-comments="${postId}"]`
-                                        );
-
-
-                                    if (
-                                        emptyMessage
-                                    ) {
-
-                                        emptyMessage.remove();
-                                    }
-
-
-                                    /* New comment */
-
-                                    const comment =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    comment.className =
-                                        "comment";
-
-
-                                    const avatar =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    avatar.className =
-                                        "comment-avatar";
-
-                                    avatar.textContent =
-                                        data.comment
-                                            .username
-                                            .charAt(0)
-                                            .toUpperCase();
-
-
-                                    const body =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    body.className =
-                                        "comment-body";
-
-
-                                    const username =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    username.className =
-                                        "comment-user";
-
-                                    username.textContent =
-                                        "@"
-                                        +
-                                        data.comment.username;
-
-
-                                    const commentText =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    commentText.className =
-                                        "comment-text";
-
-                                    commentText.textContent =
-                                        data.comment.content;
-
-
-                                    const time =
-                                        document.createElement(
-                                            "div"
-                                        );
-
-                                    time.className =
-                                        "comment-time";
-
-                                    time.textContent =
-                                        "Just now";
-
-
-                                    body.appendChild(
-                                        username
-                                    );
-
-                                    body.appendChild(
-                                        commentText
-                                    );
-
-                                    body.appendChild(
-                                        time
-                                    );
-
-
-                                    comment.appendChild(
-                                        avatar
-                                    );
-
-                                    comment.appendChild(
-                                        body
-                                    );
-
-
-                                    commentList.appendChild(
-                                        comment
-                                    );
-                                }
-
-
-                                /* Update count */
-
-                                const countButton =
-                                    document.querySelector(
-                                        `#comments-${postId}`
-                                    )
-                                        ?.closest(
-                                            ".post-card"
-                                        )
-                                        ?.querySelector(
-                                            '[data-count="comment"]'
-                                        );
-
-
-                                if (countButton) {
-
-                                    countButton.textContent =
-                                        data.comment_count;
-                                }
-
-
-                                textarea.value =
-                                    "";
-
-
-                                /* Keep comments open */
-
-                                const section =
-                                    document.getElementById(
-                                        "comments-" + postId
-                                    );
-
-
-                                if (section) {
-
-                                    section.classList.add(
-                                        "visible"
-                                    );
-                                }
-
-                            } catch (error) {
-
-                                console.error(
-                                    "Comment error:",
-                                    error
-                                );
-
-
-                                if (errorBox) {
-
-                                    errorBox.textContent =
-                                        error.message;
-
-                                    errorBox.style.display =
-                                        "block";
-                                }
-
-                            } finally {
-
-                                submitButton.disabled =
-                                    false;
-
-                                submitButton.textContent =
-                                    "Send";
-                            }
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =================================================
-           SHARE
-        ================================================= */
-
-        document
-            .querySelectorAll(
-                ".share-button"
-            )
-            .forEach(
-                function (button) {
-
-                    button.addEventListener(
-                        "click",
-                        async function () {
-
-                            const postId =
-                                button.dataset.postId;
-
-
-                            const shareUrl =
-                                window.location.origin
-                                +
-                                "{% url 'feed' %}"
-                                +
-                                "#post-"
-                                +
-                                postId;
-
-
-                            const shareData = {
-
-                                title:
-                                    "BitsXBytes",
-
-                                text:
-                                    "Check out this post on BitsXBytes.",
-
-                                url:
-                                    shareUrl
-                            };
-
-
-                            try {
-
-                                if (
-                                    navigator.share
-                                ) {
-
-                                    await navigator.share(
-                                        shareData
-                                    );
-
-                                } else if (
-                                    navigator.clipboard
-                                ) {
-
-                                    await navigator.clipboard.writeText(
-                                        shareUrl
-                                    );
-
-
-                                    const original =
-                                        button.innerHTML;
-
-
-                                    button.innerHTML =
-                                        '<span class="post-action-icon">✓</span><span>Copied</span>';
-
-
-                                    setTimeout(
-                                        function () {
-
-                                            button.innerHTML =
-                                                original;
-
-                                        },
-                                        1500
-                                    );
-
-                                } else {
-
-                                    window.prompt(
-                                        "Copy this link:",
-                                        shareUrl
-                                    );
-                                }
-
-                            } catch (error) {
-
-                                /*
-                                 * User closing the native
-                                 * share sheet is not an error.
-                                 */
-                                if (
-                                    error.name
-                                    !== "AbortError"
-                                ) {
-
-                                    console.error(
-                                        "Share error:",
-                                        error
-                                    );
-                                }
-
-                            }
-
-                        }
-                    );
-
-                }
-            );
-
-
-        /* =================================================
-           AUTO-EXPAND COMMENT BOX
-        ================================================= */
-
-        document
-            .querySelectorAll(
-                ".comment-input"
-            )
-            .forEach(
-                function (textarea) {
-
-                    textarea.addEventListener(
-                        "input",
-                        function () {
-
-                            textarea.style.height =
-                                "40px";
-
-                            textarea.style.height =
-                                Math.min(
-                                    textarea.scrollHeight,
-                                    110
-                                )
-                                +
-                                "px";
-                        }
-                    );
-
-                }
-            );
-
-
-    }
-);
-
+});
 </script>
 
 {% endblock %}

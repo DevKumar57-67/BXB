@@ -2,7 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 <head>
 
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
     >
 
     <title>
-        {% block title %}BitsXBytes{% endblock %}
+        {% block title %}BxB{% endblock %}
     </title>
 
     <!-- Apply the saved theme before the page renders to avoid a flash. -->
@@ -2929,9 +2929,17 @@
                     "
                 >
 
-                    <span class="nav-item-icon">
-                        ◉
-                    </span>
+                    <span class="nav-item-icon profile-nav-avatar">
+    {% if user.profile.avatar %}
+        <img src="{{ user.profile.avatar.url }}" alt="My profile">
+    {% else %}
+        <span class="profile-nav-fallback">👤</span>
+    {% endif %}
+</span>
+
+<span class="nav-item-label">
+    Profile
+</span>
 
                     <span class="nav-item-label">
                         Profile
@@ -3189,13 +3197,13 @@
                 <div class="brand-mark brand-mark-small">
 
                     <span>
-                        B
+                        BxB
                     </span>
 
                 </div>
 
                 <span>
-                    BitsXBytes
+                    
                 </span>
 
             </div>
