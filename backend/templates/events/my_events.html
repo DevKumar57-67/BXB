@@ -5,8 +5,36 @@
 {% block content %}
 
 <style>
-    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] or .light-theme is active */
+    /* ==========================================================================
+       Theme Variables (Light / Dark)
+       ========================================================================== */
     :root {
+        --me-page-text: #1e293b;
+        
+        --me-hero-bg: radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 42%), linear-gradient(135deg, #ffffff, #f8fafc);
+        --me-hero-border: #cbd5e1;
+        --me-hero-p: #475569;
+        
+        --me-card-bg: #ffffff;
+        --me-card-border: #cbd5e1;
+        --me-card-border-hover: #2563eb;
+        
+        --me-text-primary: #0f172a;
+        --me-text-secondary: #64748b;
+        --me-text-muted: #475569;
+        
+        --me-meta-border: #e2e8f0;
+        
+        --me-empty-bg: #f8fafc;
+        --me-empty-border: #cbd5e1;
+        
+        --me-btn-secondary-bg: #f1f5f9;
+        --me-btn-secondary-border: #cbd5e1;
+        --me-btn-secondary-hover: #e2e8f0;
+    }
+
+    /* Dark Mode Overrides */
+    [data-theme="dark"] {
         --me-page-text: #e2e8f0;
         
         --me-hero-bg: radial-gradient(circle at top right, rgba(37, 99, 235, .2), transparent 42%), linear-gradient(135deg, #111d35, #090d18);
@@ -31,37 +59,12 @@
         --me-btn-secondary-hover: rgba(255, 255, 255, .09);
     }
 
-    /* Light Theme Overrides */
-    [data-theme="light"], .light-theme {
-        --me-page-text: #0f172a;
-        
-        --me-hero-bg: radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 42%), linear-gradient(135deg, #ffffff, #f8fafc);
-        --me-hero-border: #cbd5e1;
-        --me-hero-p: #475569;
-        
-        --me-card-bg: #ffffff;
-        --me-card-border: #cbd5e1;
-        --me-card-border-hover: #2563eb;
-        
-        --me-text-primary: #0f172a;
-        --me-text-secondary: #64748b;
-        --me-text-muted: #475569;
-        
-        --me-meta-border: #e2e8f0;
-        
-        --me-empty-bg: #f8fafc;
-        --me-empty-border: #cbd5e1;
-        
-        --me-btn-secondary-bg: #f1f5f9;
-        --me-btn-secondary-border: #cbd5e1;
-        --me-btn-secondary-hover: #e2e8f0;
-    }
-
     .my-events-page {
         max-width: 1150px;
         margin: 0 auto;
         padding: 24px;
         color: var(--me-page-text);
+        transition: color 0.3s ease;
     }
 
     .my-events-hero {
@@ -70,6 +73,7 @@
         border: 1px solid var(--me-hero-border);
         background: var(--me-hero-bg);
         margin-bottom: 26px;
+        transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .my-events-eyebrow {
@@ -114,7 +118,7 @@
         font-size: 12px;
         font-weight: 800;
         border: 1px solid transparent;
-        transition: .2s ease;
+        transition: background 0.2s ease;
     }
 
     .my-events-btn:hover {
@@ -168,7 +172,7 @@
         border: 1px solid var(--me-card-border);
         border-radius: 16px;
         min-width: 0;
-        transition: border-color .2s ease, transform .2s ease;
+        transition: border-color .2s ease, transform .2s ease, background-color 0.3s ease;
     }
 
     .my-event-card:hover {
@@ -188,7 +192,7 @@
         letter-spacing: .5px;
     }
 
-    [data-theme="dark"] .my-event-status, body:not([data-theme="light"]):not(.light-theme) .my-event-status {
+    [data-theme="dark"] .my-event-status {
         color: #93c5fd;
     }
 
@@ -197,7 +201,7 @@
         color: #9333ea;
     }
 
-    [data-theme="dark"] .my-event-status-team, body:not([data-theme="light"]):not(.light-theme) .my-event-status-team {
+    [data-theme="dark"] .my-event-status-team {
         color: #d8b4fe;
     }
 
@@ -212,13 +216,14 @@
     .my-event-card h3 a {
         color: var(--me-text-primary);
         text-decoration: none;
+        transition: color 0.2s;
     }
 
     .my-event-card h3 a:hover {
         color: #3b82f6;
     }
 
-    [data-theme="dark"] .my-event-card h3 a:hover, body:not([data-theme="light"]):not(.light-theme) .my-event-card h3 a:hover {
+    [data-theme="dark"] .my-event-card h3 a:hover {
         color: #93c5fd;
     }
 
@@ -240,6 +245,7 @@
     .my-event-card-footer {
         padding-top: 15px;
         border-top: 1px solid var(--me-meta-border);
+        transition: border-color 0.3s ease;
     }
 
     .my-event-link {
@@ -247,9 +253,10 @@
         font-size: 12px;
         font-weight: 800;
         text-decoration: none;
+        transition: color 0.2s;
     }
 
-    [data-theme="dark"] .my-event-link, body:not([data-theme="light"]):not(.light-theme) .my-event-link {
+    [data-theme="dark"] .my-event-link {
         color: #93c5fd;
     }
 
@@ -257,7 +264,7 @@
         color: #1d4ed8;
     }
 
-    [data-theme="dark"] .my-event-link:hover, body:not([data-theme="light"]):not(.light-theme) .my-event-link:hover {
+    [data-theme="dark"] .my-event-link:hover {
         color: #fff;
     }
 
@@ -267,6 +274,7 @@
         border: 1px dashed var(--me-empty-border);
         border-radius: 16px;
         background: var(--me-empty-bg);
+        transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .my-events-empty-icon {

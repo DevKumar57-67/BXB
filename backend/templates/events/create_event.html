@@ -5,41 +5,10 @@
 {% block content %}
 
 <style>
-    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] is present on <html> or <body> */
+    /* ==========================================================================
+       Theme Variables (Light / Dark)
+       ========================================================================== */
     :root {
-        --ev-bg-page-start: #10192b;
-        --ev-bg-page-end: #0b1120;
-        --ev-text-primary: #e8eefc;
-        --ev-text-secondary: #94a3b8;
-        --ev-text-muted: #8291a9;
-        --ev-back-link: #91a7d7;
-        --ev-back-link-hover: #60a5fa;
-        
-        --ev-card-bg: linear-gradient(145deg, #10192b, #0b1120);
-        --ev-card-border: #24334d;
-        --ev-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        
-        --ev-input-bg: #080e1b;
-        --ev-input-text: #f1f5f9;
-        --ev-input-border: #293953;
-        --ev-input-focus-border: #3b82f6;
-        --ev-input-focus-shadow: rgba(59, 130, 246, 0.13);
-        
-        --ev-upload-card-bg: rgba(8, 14, 27, 0.7);
-        --ev-upload-btn-bg: #1d3154;
-        --ev-upload-btn-border: #365582;
-        --ev-upload-btn-text: #dbeafe;
-        
-        --ev-cancel-bg: #172236;
-        --ev-cancel-border: #2b3a53;
-        --ev-cancel-text: #cbd5e1;
-        --ev-cancel-hover: #202e45;
-        
-        --ev-divider: #24334d;
-    }
-
-    /* Light Theme Overrides (adjust selector if your base uses .light, body.light-mode, etc.) */
-    [data-theme="light"], .light-theme {
         --ev-bg-page-start: #f8fafc;
         --ev-bg-page-end: #f1f5f9;
         --ev-text-primary: #0f172a;
@@ -71,11 +40,45 @@
         --ev-divider: #e2e8f0;
     }
 
+    /* Dark Mode Overrides */
+    [data-theme="dark"] {
+        --ev-bg-page-start: #10192b;
+        --ev-bg-page-end: #0b1120;
+        --ev-text-primary: #e8eefc;
+        --ev-text-secondary: #94a3b8;
+        --ev-text-muted: #8291a9;
+        --ev-back-link: #91a7d7;
+        --ev-back-link-hover: #60a5fa;
+        
+        --ev-card-bg: linear-gradient(145deg, #10192b, #0b1120);
+        --ev-card-border: #24334d;
+        --ev-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        
+        --ev-input-bg: #080e1b;
+        --ev-input-text: #f1f5f9;
+        --ev-input-border: #293953;
+        --ev-input-focus-border: #3b82f6;
+        --ev-input-focus-shadow: rgba(59, 130, 246, 0.13);
+        
+        --ev-upload-card-bg: rgba(8, 14, 27, 0.7);
+        --ev-upload-btn-bg: #1d3154;
+        --ev-upload-btn-border: #365582;
+        --ev-upload-btn-text: #dbeafe;
+        
+        --ev-cancel-bg: #172236;
+        --ev-cancel-border: #2b3a53;
+        --ev-cancel-text: #cbd5e1;
+        --ev-cancel-hover: #202e45;
+        
+        --ev-divider: #24334d;
+    }
+
     .create-event-page {
         max-width: 1000px;
         margin: 0 auto;
         padding: 28px 20px 60px;
         color: var(--ev-text-primary);
+        transition: color 0.3s ease;
     }
 
     .event-back-link {
@@ -86,6 +89,7 @@
         color: var(--ev-back-link);
         text-decoration: none;
         font-size: 14px;
+        transition: color 0.2s;
     }
 
     .event-back-link:hover { color: var(--ev-back-link-hover); }
@@ -112,6 +116,7 @@
         border: 1px solid var(--ev-card-border);
         border-radius: 22px;
         box-shadow: var(--ev-card-shadow);
+        transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .event-form-section { margin-bottom: 30px; }
@@ -165,7 +170,7 @@
         outline: none;
         font: inherit;
         font-size: 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease;
     }
 
     .event-form-field input:focus,
@@ -202,6 +207,7 @@
         border: 1px solid var(--ev-upload-btn-border);
         border-radius: 7px;
         cursor: pointer;
+        transition: background 0.2s;
     }
 
     .field-help {
@@ -242,6 +248,7 @@
         margin: 28px 0;
         background: var(--ev-divider);
         border: 0;
+        transition: background 0.3s ease;
     }
 
     .upload-grid {
@@ -256,6 +263,7 @@
         background: var(--ev-upload-card-bg);
         border: 1px solid var(--ev-input-border);
         border-radius: 14px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .upload-card h3 {

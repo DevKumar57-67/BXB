@@ -1,36 +1,77 @@
-
 {% extends "base.html" %}
 
 {% block title %}{{ event.title }} | BitsXBytes Events{% endblock %}
 
 {% block content %}
 <style>
+    /* ==========================================================================
+       Theme Variables (Light / Dark)
+       ========================================================================== */
+    :root {
+        --ed-page-text: #1e293b;
+        
+        --card-bg: #ffffff;
+        --border-color: #cbd5e1;
+        
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        
+        --input-bg: #f8fafc;
+        
+        --back-link-color: #2563eb;
+        --back-link-hover: #1d4ed8;
+    }
+
+    /* Dark Mode Overrides */
+    [data-theme="dark"] {
+        --ed-page-text: #e8eefc;
+        
+        --card-bg: #10192b;
+        --border-color: #24334d;
+        
+        --text-primary: #e8eefc;
+        --text-secondary: #94a3b8;
+        
+        --input-bg: #080e1b;
+        
+        --back-link-color: #60a5fa;
+        --back-link-hover: #93c5fd;
+    }
+
     .event-detail-page {
         max-width: 1100px;
         margin: 0 auto;
         padding: 28px 20px 60px;
-        color: var(--text-primary, #e8eefc);
+        color: var(--ed-page-text);
+        transition: color 0.3s ease;
     }
 
     .event-back-link {
         display: inline-block;
         margin-bottom: 22px;
-        color: #60a5fa;
+        color: var(--back-link-color);
         text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .event-back-link:hover {
+        color: var(--back-link-hover);
     }
 
     .event-detail-hero,
     .event-detail-card {
-        background: var(--card-bg, #10192b);
-        border: 1px solid var(--border-color, #24334d);
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
         border-radius: 18px;
         padding: 24px;
         margin-bottom: 20px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .event-detail-hero h1 {
         font-size: clamp(28px, 4vw, 42px);
         margin: 12px 0;
+        color: var(--text-primary);
     }
 
     .event-detail-label {
@@ -60,6 +101,7 @@
     .event-detail-card h2 {
         font-size: 19px;
         margin: 0 0 18px;
+        color: var(--text-primary);
     }
 
     .event-info-list {
@@ -78,7 +120,7 @@
     }
 
     .event-info-label {
-        color: var(--text-secondary, #94a3b8);
+        color: var(--text-secondary);
         font-size: 11px;
         font-weight: 700;
         margin-bottom: 5px;
@@ -87,6 +129,7 @@
     .event-info-value {
         overflow-wrap: anywhere;
         line-height: 1.5;
+        color: var(--text-primary);
     }
 
     .event-action-btn {
@@ -105,6 +148,7 @@
         font-weight: 700;
         text-decoration: none;
         cursor: pointer;
+        transition: background 0.2s;
     }
 
     .event-action-btn:hover {
@@ -112,9 +156,9 @@
     }
 
     .event-action-secondary {
-        color: var(--text-primary, #e8eefc);
+        color: var(--text-primary);
         background: transparent;
-        border: 1px solid var(--border-color, #334155);
+        border: 1px solid var(--border-color);
     }
 
     .event-action-secondary:hover {
@@ -125,8 +169,12 @@
         background: #991b1b;
     }
 
+    .event-action-danger:hover {
+        background: #7f1d1d;
+    }
+
     .event-action-note {
-        color: var(--text-secondary, #94a3b8);
+        color: var(--text-secondary);
         line-height: 1.6;
     }
 
@@ -155,6 +203,7 @@
         margin-bottom: 8px;
         font-size: 13px;
         font-weight: 650;
+        color: var(--text-primary);
     }
 
     .event-form-input {
@@ -162,9 +211,9 @@
         box-sizing: border-box;
         padding: 12px;
         border-radius: 9px;
-        border: 1px solid var(--border-color, #334155);
-        background: var(--input-bg, #080e1b);
-        color: var(--text-primary, #e8eefc);
+        border: 1px solid var(--border-color);
+        background: var(--input-bg);
+        color: var(--text-primary);
     }
 
     .event-team-list {
@@ -174,12 +223,13 @@
 
     .event-team-item {
         padding: 16px;
-        border: 1px solid var(--border-color, #334155);
+        border: 1px solid var(--border-color);
         border-radius: 12px;
     }
 
     .event-team-item h3 {
         margin-top: 0;
+        color: var(--text-primary);
     }
 
     .event-external-link {
@@ -218,7 +268,7 @@
         <span class="event-detail-label">{{ event.get_status_display }}</span>
         <h1>{{ event.title }}</h1>
 
-        <p>
+        <p class="event-action-note">
             Organized by {{ event.organizer }}.
             Discover the details, check the schedule, and participate
             in this campus opportunity.
@@ -239,10 +289,10 @@
         <div>
             <section class="event-detail-card">
                 <h2>About this event</h2>
-                <div>{{ event.description|linebreaks }}</div>
+                <div class="event-action-note">{{ event.description|linebreaks }}</div>
 
                 {% if event.registration_link %}
-                    <p>
+                    <p style="margin-top: 15px;">
                         <a class="event-external-link"
                            href="{{ event.registration_link }}"
                            target="_blank"
@@ -350,7 +400,7 @@
                             {% for team in teams %}
                                 <div class="event-team-item">
                                     <h3>{{ team.name }}</h3>
-                                    <p>
+                                    <p class="event-action-note">
                                         Team leader: {{ team.leader }}<br>
                                         Members: {{ team.member_count }}/{{ event.max_team_size }}
                                     </p>
@@ -368,7 +418,7 @@
                                             </button>
                                         </form>
                                     {% elif team.member_count >= event.max_team_size %}
-                                        <p>This team is full.</p>
+                                        <p class="event-action-note">This team is full.</p>
                                     {% endif %}
                                 </div>
                             {% endfor %}
@@ -484,12 +534,15 @@
                     </form>
                 {% endif %}
 
-                <a href="{% url 'events:my_events' %}"
-                   class="event-action-btn event-action-secondary">
-                    View My Events
-                </a>
+                <div style="margin-top: 15px;">
+                    <a href="{% url 'events:my_events' %}"
+                       class="event-action-btn event-action-secondary"
+                       style="text-align: center; display: block;">
+                        View My Events
+                    </a>
+                </div>
             </section>
         </aside>
     </div>
 </div>
-{% endblock %}
+{% endblock %}.

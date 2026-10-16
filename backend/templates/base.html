@@ -3605,499 +3605,1249 @@
 <!-- =====================================================
      DESKTOP SEARCH AUTOCOMPLETE
 ====================================================== -->
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector(".topbar-search");
-    const input = document.getElementById("global-search-input");
-    const suggestions = document.getElementById("search-suggestions");
 
-    if (!form || !input || !suggestions) return;
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    let debounceTimer;
-    let currentRequest;
-    let activeIndex = -1;
+        const form =
+            document.querySelector(
+                ".topbar-search"
+            );
 
-    const searchUrl = "{% url 'search' %}";
-    const suggestionsUrl = "{% url 'search_suggestions' %}";
+        const input =
+            document.getElementById(
+                "global-search-input"
+            );
 
-    function hideSuggestions() {
-        suggestions.classList.remove("visible");
-        suggestions.replaceChildren();
-        input.setAttribute("aria-expanded", "false");
-        activeIndex = -1;
-    }
+        const suggestions =
+            document.getElementById(
+                "search-suggestions"
+            );
 
-    function showSuggestions() {
-        suggestions.classList.add("visible");
-        input.setAttribute("aria-expanded", "true");
-    }
 
-    function makeElement(tag, className, text) {
-        const element = document.createElement(tag);
-        if (className) element.className = className;
-        if (text !== undefined) element.textContent = text;
-        return element;
-    }
+        if (
+            !form ||
+            !input ||
+            !suggestions
+        ) {
+            return;
+        }
 
-    function createSuggestion(item, index) {
-        const link = makeElement("a", "search-suggestion");
-        link.href = item.url || (searchUrl + "?q=" + encodeURIComponent(item.title || ""));
-        link.dataset.index = String(index);
-        link.setAttribute("role", "option");
-        link.setAttribute("aria-selected", "false");
 
-        const type = String(item.type || "search").toLowerCase();
-        const titleText = item.title || "Search";
-        const subtitleText = item.subtitle || "";
-        const avatarUrl = item.avatar || "";
+        let debounceTimer = null;
 
-        if (avatarUrl) {
-            const image = makeElement("img", "search-suggestion-avatar");
-            image.src = avatarUrl;
-            image.alt = "";
-            image.loading = "lazy";
-            image.onerror = function () {
-                const fallback = makeElement(
-                    "div",
-                    "search-suggestion-placeholder",
-                    titleText.charAt(0).toUpperCase() || "?"
+        let currentRequest = null;
+
+        let activeIndex = -1;
+
+
+        function hideSuggestions() {
+
+            suggestions.classList.remove(
+                "visible"
+            );
+
+            suggestions.innerHTML = "";
+
+            input.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            activeIndex = -1;
+        }
+
+
+        function showSuggestions() {
+
+            suggestions.classList.add(
+                "visible"
+            );
+
+            input.setAttribute(
+                "aria-expanded",
+                "true"
+            );
+        }
+
+
+        function createSuggestion(
+            item,
+            index
+        ) {
+
+            const link =
+                document.createElement("a");
+
+
+            link.href =
+                item.url;
+
+            link.className =
+                "search-suggestion";
+
+            link.dataset.index =
+                index;
+
+            link.setAttribute(
+                "role",
+                "option"
+            );
+
+
+            const avatarWrapper =
+                document.createElement("div");
+
+
+            if (item.avatar) {
+
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    item.avatar;
+
+                img.alt =
+                    item.title;
+
+                img.className =
+                    "search-suggestion-avatar";
+
+                avatarWrapper.appendChild(
+                    img
                 );
-                image.replaceWith(fallback);
-            };
-            link.appendChild(image);
-        } else {
-            const symbolByType = {
-                person: "👤",
-                post: "▤",
-                event: "◷",
-                history: "↺"
-            };
+
+            } else {
+
+                avatarWrapper.className =
+                    "search-suggestion-placeholder";
+
+                avatarWrapper.textContent =
+                    item.title
+                        .charAt(0)
+                        .toUpperCase();
+            }
+
+
+            const content =
+                document.createElement("div");
+
+            content.className =
+                "search-suggestion-content";
+
+
+            const title =
+                document.createElement("div");
+
+            title.className =
+                "search-suggestion-title";
+
+            title.textContent =
+                item.title;
+
+
+            const subtitle =
+                document.createElement("div");
+
+            subtitle.className =
+                "search-suggestion-subtitle";
+
+            subtitle.textContent =
+                item.subtitle;
+
+
+            content.appendChild(
+                title
+            );
+
+            content.appendChild(
+                subtitle
+            );
+
+
+            const type =
+                document.createElement("span");
+
+            type.className =
+                "search-suggestion-type";
+
+            type.textContent =
+                item.type;
+
+
             link.appendChild(
-                makeElement(
-                    "div",
-                    "search-suggestion-placeholder",
-                    symbolByType[type] || titleText.charAt(0).toUpperCase() || "⌕"
-                )
+                avatarWrapper
             );
+
+            link.appendChild(
+                content
+            );
+
+            link.appendChild(
+                type
+            );
+
+
+            return link;
         }
 
-        const content = makeElement("div", "search-suggestion-content");
-        content.appendChild(
-            makeElement("div", "search-suggestion-title", titleText)
-        );
-        content.appendChild(
-            makeElement("div", "search-suggestion-subtitle", subtitleText)
-        );
-        link.appendChild(content);
 
-        const typeLabels = {
-            person: "Person",
-            post: "Post",
-            event: "Event",
-            history: "Recent"
-        };
+        function renderSuggestions(
+            data,
+            query
+        ) {
 
-        link.appendChild(
-            makeElement(
-                "span",
-                "search-suggestion-type",
-                typeLabels[type] || type
-            )
-        );
+            suggestions.innerHTML = "";
 
-        return link;
-    }
+            activeIndex = -1;
 
-    function renderSuggestions(data, query) {
-        suggestions.replaceChildren();
-        activeIndex = -1;
 
-        const results = Array.isArray(data.results) ? data.results : [];
+            if (
+                !data.results ||
+                data.results.length === 0
+            ) {
 
-        if (!results.length) {
-            suggestions.appendChild(
-                makeElement(
-                    "div",
-                    "search-suggestions-empty",
-                    "No matching people, posts, events, or recent searches."
-                )
-            );
-        } else {
-            results.forEach(function (item, index) {
-                suggestions.appendChild(createSuggestion(item, index));
-            });
-        }
+                const empty =
+                    document.createElement("div");
 
-        const footer = makeElement("div", "search-suggestions-footer");
-        const viewAll = makeElement("a", "search-view-all", "View all results →");
-        viewAll.href = searchUrl + "?q=" + encodeURIComponent(query);
-        footer.appendChild(viewAll);
-        suggestions.appendChild(footer);
+                empty.className =
+                    "search-suggestions-empty";
 
-        showSuggestions();
-    }
+                empty.textContent =
+                    "No matching people or posts";
 
-    async function fetchSuggestions(query) {
-        if (currentRequest) currentRequest.abort();
+                suggestions.appendChild(
+                    empty
+                );
 
-        currentRequest = new AbortController();
+                showSuggestions();
 
-        try {
-            const response = await fetch(
-                suggestionsUrl + "?q=" + encodeURIComponent(query),
-                {
-                    signal: currentRequest.signal,
-                    headers: { "X-Requested-With": "XMLHttpRequest" },
-                    credentials: "same-origin"
+                return;
+            }
+
+
+            data.results.forEach(
+                function (
+                    item,
+                    index
+                ) {
+
+                    suggestions.appendChild(
+                        createSuggestion(
+                            item,
+                            index
+                        )
+                    );
+
                 }
             );
 
-            if (!response.ok) throw new Error("Suggestions request failed");
 
-            const data = await response.json();
+            const footer =
+                document.createElement("div");
 
-            if (input.value.trim() === query) {
-                renderSuggestions(data, query);
+            footer.className =
+                "search-suggestions-footer";
+
+
+            const viewAll =
+                document.createElement("a");
+
+            viewAll.className =
+                "search-view-all";
+
+            viewAll.href =
+                "{% url 'search' %}?q="
+                +
+                encodeURIComponent(
+                    query
+                );
+
+            viewAll.textContent =
+                "View all results →";
+
+
+            footer.appendChild(
+                viewAll
+            );
+
+            suggestions.appendChild(
+                footer
+            );
+
+
+            showSuggestions();
+        }
+
+
+        async function fetchSuggestions(
+            query
+        ) {
+
+            if (currentRequest) {
+
+                currentRequest.abort();
             }
-        } catch (error) {
-            if (error.name !== "AbortError") {
+
+
+            currentRequest =
+                new AbortController();
+
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "{% url 'search_suggestions' %}?q="
+                        +
+                        encodeURIComponent(
+                            query
+                        ),
+
+                        {
+                            signal:
+                                currentRequest.signal
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Suggestion request failed"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    input.value.trim()
+                    === query
+                ) {
+
+                    renderSuggestions(
+                        data,
+                        query
+                    );
+                }
+
+            } catch (error) {
+
+                if (
+                    error.name
+                    !== "AbortError"
+                ) {
+
+                    hideSuggestions();
+                }
+            }
+        }
+
+
+        input.addEventListener(
+            "input",
+            function () {
+
+                const query =
+                    input.value.trim();
+
+
+                clearTimeout(
+                    debounceTimer
+                );
+
+
+                if (
+                    query.length < 2
+                ) {
+
+                    hideSuggestions();
+
+                    return;
+                }
+
+
+                debounceTimer =
+                    setTimeout(
+                        function () {
+
+                            fetchSuggestions(
+                                query
+                            );
+
+                        },
+                        250
+                    );
+            }
+        );
+
+
+        input.addEventListener(
+            "keydown",
+            function (event) {
+
+                const items =
+                    suggestions.querySelectorAll(
+                        ".search-suggestion"
+                    );
+
+
+                if (
+                    !suggestions.classList
+                        .contains("visible")
+                ) {
+
+                    return;
+                }
+
+
+                if (
+                    event.key
+                    === "ArrowDown"
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        (
+                            activeIndex + 1
+                        )
+                        %
+                        items.length;
+                }
+
+
+                if (
+                    event.key
+                    === "ArrowUp"
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        activeIndex <= 0
+                            ? items.length - 1
+                            : activeIndex - 1;
+                }
+
+
+                if (
+                    event.key
+                    === "Escape"
+                ) {
+
+                    event.preventDefault();
+
+                    hideSuggestions();
+
+                    return;
+                }
+
+
+                items.forEach(
+                    function (
+                        item,
+                        index
+                    ) {
+
+                        item.classList.toggle(
+                            "active",
+                            index === activeIndex
+                        );
+
+                    }
+                );
+
+
+                if (
+                    (
+                        event.key
+                        === "ArrowDown"
+                        ||
+                        event.key
+                        === "ArrowUp"
+                    )
+                    &&
+                    activeIndex >= 0
+                ) {
+
+                    items[
+                        activeIndex
+                    ].scrollIntoView({
+                        block: "nearest"
+                    });
+                }
+
+
+                if (
+                    event.key
+                    === "Enter"
+                    &&
+                    activeIndex >= 0
+                    &&
+                    items[activeIndex]
+                ) {
+
+                    event.preventDefault();
+
+                    window.location.href =
+                        items[
+                            activeIndex
+                        ].href;
+                }
+
+            }
+        );
+
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                const query =
+                    input.value.trim();
+
+
+                if (!query) {
+
+                    event.preventDefault();
+
+                    input.focus();
+
+                    return;
+                }
+
+
                 hideSuggestions();
-                console.error("Search suggestions error:", error);
             }
-        }
+        );
+
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !form.contains(
+                        event.target
+                    )
+                ) {
+
+                    hideSuggestions();
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+
+                    event.key === "/"
+
+                    &&
+
+                    document.activeElement.tagName
+                    !== "INPUT"
+
+                    &&
+
+                    document.activeElement.tagName
+                    !== "TEXTAREA"
+
+                ) {
+
+                    event.preventDefault();
+
+                    input.focus();
+                }
+
+            }
+        );
+
     }
+);
 
-    input.addEventListener("input", function () {
-        const query = input.value.trim();
-        clearTimeout(debounceTimer);
-
-        if (query.length < 2) {
-            hideSuggestions();
-            return;
-        }
-
-        debounceTimer = setTimeout(function () {
-            fetchSuggestions(query);
-        }, 250);
-    });
-
-    input.addEventListener("keydown", function (event) {
-        const items = Array.from(
-            suggestions.querySelectorAll(".search-suggestion")
-        );
-
-        if (event.key === "Escape") {
-            hideSuggestions();
-            return;
-        }
-
-        if (!suggestions.classList.contains("visible") || !items.length) {
-            return;
-        }
-
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-            activeIndex = (activeIndex + 1) % items.length;
-        } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
-        } else if (event.key === "Enter" && activeIndex >= 0) {
-            event.preventDefault();
-            window.location.href = items[activeIndex].href;
-            return;
-        } else {
-            return;
-        }
-
-        items.forEach(function (item, index) {
-            const active = index === activeIndex;
-            item.classList.toggle("active", active);
-            item.setAttribute("aria-selected", String(active));
-        });
-
-        items[activeIndex].scrollIntoView({ block: "nearest" });
-    });
-
-    form.addEventListener("submit", function (event) {
-        if (!input.value.trim()) {
-            event.preventDefault();
-            input.focus();
-            return;
-        }
-        hideSuggestions();
-    });
-
-    document.addEventListener("click", function (event) {
-        if (!form.contains(event.target)) hideSuggestions();
-    });
-
-    document.addEventListener("keydown", function (event) {
-        const target = event.target;
-        const isTypingField = target.matches(
-            "input, textarea, select, [contenteditable='true']"
-        );
-
-        if (event.key === "/" && !isTypingField) {
-            event.preventDefault();
-            input.focus();
-        }
-    });
-});
 </script>
 
 
 <!-- =====================================================
      MOBILE SEARCH
 ====================================================== -->
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const trigger = document.getElementById("mobile-search-trigger");
-    const overlay = document.getElementById("mobile-search-overlay");
-    const backButton = document.getElementById("mobile-search-back");
-    const closeButton = document.getElementById("mobile-search-close");
-    const form = document.getElementById("mobile-search-form");
-    const input = document.getElementById("mobile-search-input");
-    const suggestions = document.getElementById("mobile-search-suggestions");
 
-    if (!trigger || !overlay || !backButton || !closeButton ||
-        !form || !input || !suggestions) return;
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    let debounceTimer;
-    let currentRequest;
-    let activeIndex = -1;
+        const trigger =
+            document.getElementById(
+                "mobile-search-trigger"
+            );
 
-    const searchUrl = "{% url 'search' %}";
-    const suggestionsUrl = "{% url 'search_suggestions' %}";
+        const overlay =
+            document.getElementById(
+                "mobile-search-overlay"
+            );
 
-    function openSearch() {
-        overlay.classList.add("visible");
-        document.body.style.overflow = "hidden";
-        setTimeout(function () {
-            input.focus();
-        }, 50);
-    }
+        const backButton =
+            document.getElementById(
+                "mobile-search-back"
+            );
 
-    function closeSearch() {
-        overlay.classList.remove("visible");
-        document.body.style.overflow = "";
-        input.value = "";
-        suggestions.replaceChildren();
-        suggestions.classList.remove("visible");
-        activeIndex = -1;
+        const closeButton =
+            document.getElementById(
+                "mobile-search-close"
+            );
 
-        clearTimeout(debounceTimer);
-        if (currentRequest) currentRequest.abort();
-    }
+        const form =
+            document.getElementById(
+                "mobile-search-form"
+            );
 
-    function makeElement(tag, className, text) {
-        const element = document.createElement(tag);
-        if (className) element.className = className;
-        if (text !== undefined) element.textContent = text;
-        return element;
-    }
+        const input =
+            document.getElementById(
+                "mobile-search-input"
+            );
 
-    function createResult(item, index) {
-        const link = makeElement("a", "mobile-search-suggestion");
-        const titleText = item.title || "Search";
-        const type = String(item.type || "search").toLowerCase();
+        const suggestions =
+            document.getElementById(
+                "mobile-search-suggestions"
+            );
 
-        link.href = item.url || (searchUrl + "?q=" + encodeURIComponent(titleText));
-        link.dataset.index = String(index);
 
-        if (item.avatar) {
-            const image = makeElement("img", "mobile-search-suggestion-avatar");
-            image.src = item.avatar;
-            image.alt = "";
-            image.loading = "lazy";
-            image.onerror = function () {
-                image.replaceWith(
-                    makeElement(
-                        "div",
-                        "mobile-search-suggestion-placeholder",
-                        titleText.charAt(0).toUpperCase() || "?"
-                    )
+        if (
+            !trigger ||
+            !overlay ||
+            !backButton ||
+            !closeButton ||
+            !form ||
+            !input ||
+            !suggestions
+        ) {
+            return;
+        }
+
+
+        let debounceTimer = null;
+
+        let currentRequest = null;
+
+        let activeIndex = -1;
+
+
+        /* =================================================
+           OPEN SEARCH
+        ================================================= */
+
+        function openSearch() {
+
+            overlay.classList.add(
+                "visible"
+            );
+
+            document.body.style.overflow =
+                "hidden";
+
+
+            setTimeout(
+                function () {
+
+                    input.focus();
+
+                },
+                50
+            );
+        }
+
+
+        /* =================================================
+           CLOSE SEARCH
+        ================================================= */
+
+        function closeSearch() {
+
+            overlay.classList.remove(
+                "visible"
+            );
+
+            document.body.style.overflow =
+                "";
+
+            input.value = "";
+
+            suggestions.innerHTML = "";
+
+            suggestions.classList.remove(
+                "visible"
+            );
+
+            activeIndex = -1;
+        }
+
+
+        /* =================================================
+           CREATE RESULT
+        ================================================= */
+
+        function createResult(
+            item,
+            index
+        ) {
+
+            const link =
+                document.createElement("a");
+
+
+            link.href =
+                item.url;
+
+            link.className =
+                "mobile-search-suggestion";
+
+            link.dataset.index =
+                index;
+
+
+            const avatar =
+                document.createElement("div");
+
+
+            if (item.avatar) {
+
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    item.avatar;
+
+                img.alt =
+                    item.title;
+
+                img.className =
+                    "mobile-search-suggestion-avatar";
+
+                avatar.appendChild(
+                    img
                 );
-            };
-            link.appendChild(image);
-        } else {
-            const symbols = {
-                person: "👤",
-                post: "▤",
-                event: "◷",
-                history: "↺"
-            };
+
+            } else {
+
+                avatar.className =
+                    "mobile-search-suggestion-placeholder";
+
+                avatar.textContent =
+                    item.title
+                        .charAt(0)
+                        .toUpperCase();
+            }
+
+
+            const content =
+                document.createElement("div");
+
+            content.className =
+                "mobile-search-suggestion-content";
+
+
+            const title =
+                document.createElement("div");
+
+            title.className =
+                "mobile-search-suggestion-title";
+
+            title.textContent =
+                item.title;
+
+
+            const subtitle =
+                document.createElement("div");
+
+            subtitle.className =
+                "mobile-search-suggestion-subtitle";
+
+            subtitle.textContent =
+                item.subtitle;
+
+
+            content.appendChild(
+                title
+            );
+
+            content.appendChild(
+                subtitle
+            );
+
+
+            const type =
+                document.createElement("span");
+
+            type.className =
+                "mobile-search-suggestion-type";
+
+            type.textContent =
+                item.type;
+
+
             link.appendChild(
-                makeElement(
-                    "div",
-                    "mobile-search-suggestion-placeholder",
-                    symbols[type] || titleText.charAt(0).toUpperCase() || "⌕"
-                )
+                avatar
             );
+
+            link.appendChild(
+                content
+            );
+
+            link.appendChild(
+                type
+            );
+
+
+            return link;
         }
 
-        const content = makeElement("div", "mobile-search-suggestion-content");
-        content.appendChild(
-            makeElement("div", "mobile-search-suggestion-title", titleText)
-        );
-        content.appendChild(
-            makeElement(
-                "div",
-                "mobile-search-suggestion-subtitle",
-                item.subtitle || ""
-            )
-        );
-        link.appendChild(content);
 
-        const labels = {
-            person: "Person",
-            post: "Post",
-            event: "Event",
-            history: "Recent"
-        };
+        /* =================================================
+           RENDER RESULTS
+        ================================================= */
 
-        link.appendChild(
-            makeElement(
-                "span",
-                "mobile-search-suggestion-type",
-                labels[type] || type
-            )
-        );
+        function renderResults(
+            data,
+            query
+        ) {
 
-        return link;
-    }
+            suggestions.innerHTML = "";
 
-    function renderResults(data, query) {
-        suggestions.replaceChildren();
-        activeIndex = -1;
+            activeIndex = -1;
 
-        const results = Array.isArray(data.results) ? data.results : [];
 
-        if (!results.length) {
-            suggestions.appendChild(
-                makeElement(
-                    "div",
-                    "mobile-search-empty",
-                    "No matching people, posts, events, or recent searches."
-                )
-            );
-        } else {
-            results.forEach(function (item, index) {
-                suggestions.appendChild(createResult(item, index));
-            });
-        }
+            if (
+                !data.results ||
+                data.results.length === 0
+            ) {
 
-        const viewAll = makeElement(
-            "a",
-            "mobile-search-view-all",
-            "View all results →"
-        );
-        viewAll.href = searchUrl + "?q=" + encodeURIComponent(query);
-        suggestions.appendChild(viewAll);
-        suggestions.classList.add("visible");
-    }
+                const empty =
+                    document.createElement("div");
 
-    async function fetchResults(query) {
-        if (currentRequest) currentRequest.abort();
-        currentRequest = new AbortController();
+                empty.className =
+                    "mobile-search-empty";
 
-        try {
-            const response = await fetch(
-                suggestionsUrl + "?q=" + encodeURIComponent(query),
-                {
-                    signal: currentRequest.signal,
-                    headers: { "X-Requested-With": "XMLHttpRequest" },
-                    credentials: "same-origin"
+                empty.textContent =
+                    "No matching people or posts.";
+
+                suggestions.appendChild(
+                    empty
+                );
+
+                suggestions.classList.add(
+                    "visible"
+                );
+
+                return;
+            }
+
+
+            data.results.forEach(
+                function (
+                    item,
+                    index
+                ) {
+
+                    suggestions.appendChild(
+                        createResult(
+                            item,
+                            index
+                        )
+                    );
+
                 }
             );
 
-            if (!response.ok) throw new Error("Search request failed");
 
-            const data = await response.json();
+            const viewAll =
+                document.createElement(
+                    "a"
+                );
 
-            if (input.value.trim() === query) {
-                renderResults(data, query);
+            viewAll.className =
+                "mobile-search-view-all";
+
+            viewAll.href =
+                "{% url 'search' %}?q="
+                +
+                encodeURIComponent(
+                    query
+                );
+
+            viewAll.textContent =
+                "View all results →";
+
+
+            suggestions.appendChild(
+                viewAll
+            );
+
+
+            suggestions.classList.add(
+                "visible"
+            );
+        }
+
+
+        /* =================================================
+           FETCH RESULTS
+        ================================================= */
+
+        async function fetchResults(
+            query
+        ) {
+
+            if (currentRequest) {
+
+                currentRequest.abort();
             }
-        } catch (error) {
-            if (error.name !== "AbortError") {
-                suggestions.replaceChildren();
-                suggestions.classList.remove("visible");
-                console.error("Mobile search suggestions error:", error);
+
+
+            currentRequest =
+                new AbortController();
+
+
+            try {
+
+                const response =
+                    await fetch(
+
+                        "{% url 'search_suggestions' %}?q="
+                        +
+                        encodeURIComponent(
+                            query
+                        ),
+
+                        {
+                            signal:
+                                currentRequest.signal
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Search request failed"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    input.value.trim()
+                    === query
+                ) {
+
+                    renderResults(
+                        data,
+                        query
+                    );
+                }
+
+            } catch (error) {
+
+                if (
+                    error.name
+                    !== "AbortError"
+                ) {
+
+                    suggestions.innerHTML = "";
+
+                    suggestions.classList.remove(
+                        "visible"
+                    );
+                }
+
             }
         }
-    }
 
-    input.addEventListener("input", function () {
-        const query = input.value.trim();
-        clearTimeout(debounceTimer);
 
-        if (query.length < 2) {
-            suggestions.replaceChildren();
-            suggestions.classList.remove("visible");
-            activeIndex = -1;
-            if (currentRequest) currentRequest.abort();
-            return;
-        }
+        /* =================================================
+           INPUT
+        ================================================= */
 
-        debounceTimer = setTimeout(function () {
-            fetchResults(query);
-        }, 250);
-    });
+        input.addEventListener(
+            "input",
+            function () {
 
-    input.addEventListener("keydown", function (event) {
-        const items = Array.from(
-            suggestions.querySelectorAll(".mobile-search-suggestion")
+                const query =
+                    input.value.trim();
+
+
+                clearTimeout(
+                    debounceTimer
+                );
+
+
+                if (
+                    query.length < 2
+                ) {
+
+                    suggestions.innerHTML = "";
+
+                    suggestions.classList.remove(
+                        "visible"
+                    );
+
+                    activeIndex = -1;
+
+                    return;
+                }
+
+
+                debounceTimer =
+                    setTimeout(
+                        function () {
+
+                            fetchResults(
+                                query
+                            );
+
+                        },
+                        250
+                    );
+            }
         );
 
-        if (event.key === "Escape") {
-            closeSearch();
-            return;
-        }
 
-        if (!items.length) return;
+        /* =================================================
+           KEYBOARD NAVIGATION
+        ================================================= */
 
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-            activeIndex = (activeIndex + 1) % items.length;
-        } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            activeIndex = activeIndex <= 0 ? items.length - 1 : activeIndex - 1;
-        } else if (event.key === "Enter" && activeIndex >= 0) {
-            event.preventDefault();
-            window.location.href = items[activeIndex].href;
-            return;
-        } else {
-            return;
-        }
+        input.addEventListener(
+            "keydown",
+            function (event) {
 
-        items.forEach(function (item, index) {
-            item.classList.toggle("active", index === activeIndex);
-        });
+                const items =
+                    suggestions.querySelectorAll(
+                        ".mobile-search-suggestion"
+                    );
 
-        items[activeIndex].scrollIntoView({ block: "nearest" });
-    });
 
-    form.addEventListener("submit", function (event) {
-        if (!input.value.trim()) {
-            event.preventDefault();
-            input.focus();
-            return;
-        }
-        closeSearch();
-    });
+                if (
+                    event.key
+                    === "ArrowDown"
+                ) {
 
-    trigger.addEventListener("click", openSearch);
-    backButton.addEventListener("click", closeSearch);
-    closeButton.addEventListener("click", closeSearch);
+                    event.preventDefault();
 
-    document.addEventListener("keydown", function (event) {
-        if (
-            event.key === "Escape" &&
-            overlay.classList.contains("visible")
-        ) {
-            closeSearch();
-        }
-    });
-});
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        (
+                            activeIndex + 1
+                        )
+                        %
+                        items.length;
+                }
+
+
+                if (
+                    event.key
+                    === "ArrowUp"
+                ) {
+
+                    event.preventDefault();
+
+
+                    if (
+                        items.length === 0
+                    ) {
+                        return;
+                    }
+
+
+                    activeIndex =
+                        activeIndex <= 0
+                            ? items.length - 1
+                            : activeIndex - 1;
+                }
+
+
+                if (
+                    event.key
+                    === "Escape"
+                ) {
+
+                    event.preventDefault();
+
+                    closeSearch();
+
+                    return;
+                }
+
+
+                items.forEach(
+                    function (
+                        item,
+                        index
+                    ) {
+
+                        item.classList.toggle(
+                            "active",
+                            index === activeIndex
+                        );
+
+                    }
+                );
+
+
+                if (
+                    (
+                        event.key
+                        === "ArrowDown"
+                        ||
+                        event.key
+                        === "ArrowUp"
+                    )
+                    &&
+                    activeIndex >= 0
+                ) {
+
+                    items[
+                        activeIndex
+                    ].scrollIntoView({
+                        block: "nearest"
+                    });
+                }
+
+
+                if (
+                    event.key
+                    === "Enter"
+                    &&
+                    activeIndex >= 0
+                    &&
+                    items[activeIndex]
+                ) {
+
+                    event.preventDefault();
+
+                    window.location.href =
+                        items[
+                            activeIndex
+                        ].href;
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           FORM SUBMIT
+        ================================================= */
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                const query =
+                    input.value.trim();
+
+
+                if (!query) {
+
+                    event.preventDefault();
+
+                    input.focus();
+
+                    return;
+                }
+
+
+                closeSearch();
+            }
+        );
+
+
+        /* =================================================
+           OPEN / CLOSE BUTTONS
+        ================================================= */
+
+        trigger.addEventListener(
+            "click",
+            openSearch
+        );
+
+
+        backButton.addEventListener(
+            "click",
+            closeSearch
+        );
+
+
+        closeButton.addEventListener(
+            "click",
+            closeSearch
+        );
+
+
+        /* =================================================
+           GLOBAL ESCAPE
+        ================================================= */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                    &&
+                    overlay.classList.contains(
+                        "visible"
+                    )
+                ) {
+
+                    closeSearch();
+                }
+
+            }
+        );
+
+    }
+);
+
 </script>
 
 
