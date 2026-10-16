@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}
@@ -29,14 +30,17 @@
 
     .search-query {
         color: #4da3ff;
+        overflow-wrap: anywhere;
     }
 
     .search-tabs {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
         padding: 6px;
         margin-bottom: 28px;
         width: fit-content;
+        max-width: 100%;
         background: #0d1320;
         border: 1px solid #1d2638;
         border-radius: 14px;
@@ -70,6 +74,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 12px;
         margin-bottom: 14px;
     }
 
@@ -81,6 +86,7 @@
     .result-count {
         color: #7f879b;
         font-size: 13px;
+        white-space: nowrap;
     }
 
     .people-grid {
@@ -138,12 +144,14 @@
         margin: 0 0 4px;
         font-size: 16px;
         font-weight: 600;
+        overflow-wrap: anywhere;
     }
 
     .person-username {
         margin: 0 0 5px;
         color: #4da3ff;
         font-size: 13px;
+        overflow-wrap: anywhere;
     }
 
     .person-meta {
@@ -155,7 +163,8 @@
         white-space: nowrap;
     }
 
-    .posts-list {
+    .posts-list,
+    .events-list {
         display: flex;
         flex-direction: column;
         gap: 14px;
@@ -211,7 +220,7 @@
         color: #e6e9ef;
         line-height: 1.65;
         white-space: pre-wrap;
-        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
     .post-image {
@@ -227,6 +236,143 @@
         margin-top: 14px;
         color: #727b90;
         font-size: 12px;
+    }
+
+    /* Event cards */
+
+    .event-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 18px;
+        color: inherit;
+        text-decoration: none;
+        background: #101522;
+        border: 1px solid #1d2638;
+        border-radius: 16px;
+        transition: 0.2s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-2px);
+        border-color: #348fff;
+    }
+
+    .event-image,
+    .event-image-placeholder {
+        width: 100px;
+        height: 100px;
+        flex-shrink: 0;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #172033;
+    }
+
+    .event-image-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4da3ff;
+        font-size: 28px;
+    }
+
+    .event-info {
+        min-width: 0;
+    }
+
+    .event-title {
+        margin: 0 0 8px;
+        font-size: 17px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .event-meta {
+        margin: 5px 0;
+        color: #8b93a7;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    /* Recent search history */
+
+    .recent-searches {
+        margin-bottom: 28px;
+        padding: 18px;
+        background: #101522;
+        border: 1px solid #1d2638;
+        border-radius: 16px;
+    }
+
+    .recent-searches-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .recent-searches-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .recent-search-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .recent-search-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        max-width: 100%;
+        padding: 8px 12px;
+        background: #172033;
+        border: 1px solid #293449;
+        border-radius: 10px;
+        color: #e6e9ef;
+        font-size: 13px;
+    }
+
+    .recent-search-link {
+        color: inherit;
+        text-decoration: none;
+        overflow-wrap: anywhere;
+    }
+
+    .recent-search-link:hover {
+        color: #4da3ff;
+    }
+
+    .history-action {
+        padding: 7px 10px;
+        border: 1px solid #293449;
+        border-radius: 8px;
+        background: transparent;
+        color: #aab3c5;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    .history-action:hover {
+        color: #ffffff;
+        border-color: #348fff;
+    }
+
+    .history-remove {
+        padding: 0 2px;
+        border: 0;
+        background: transparent;
+        color: #8b93a7;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    .history-remove:hover {
+        color: #ff7b7b;
     }
 
     .empty-state {
@@ -255,6 +401,7 @@
         .search-tabs {
             width: 100%;
             overflow-x: auto;
+            flex-wrap: nowrap;
         }
 
         .search-tab {
@@ -270,10 +417,63 @@
         .post-card {
             padding: 16px;
         }
+
+        .event-card {
+            gap: 12px;
+            padding: 13px;
+        }
+
+        .event-image,
+        .event-image-placeholder {
+            width: 76px;
+            height: 76px;
+        }
+
+        .recent-searches {
+            padding: 14px;
+        }
     }
 </style>
 
 <div class="search-page">
+
+    <!-- RECENT SEARCHES -->
+
+    
+<div class="recent-search-list" id="recent-search-list">
+
+    {% for item in recent_searches %}
+        <div
+            class="recent-search-item"
+            data-query="{{ item.query }}"
+        >
+            <a
+                class="recent-search-link"
+                href="{% url 'search' %}?q={{ item.query|urlencode }}"
+            >
+                {{ item.query }}
+            </a>
+
+            <button
+                type="button"
+                class="history-remove"
+                aria-label="Remove search {{ item.query }}"
+                title="Remove search"
+            >
+                ×
+            </button>
+        </div>
+    {% empty %}
+        <p style="color: #ff7b7b;">
+            DEBUG: No recent searches were passed to this template.
+        </p>
+    {% endfor %}
+
+</div>
+
+
+
+    <!-- SEARCH HEADER -->
 
     <div class="search-header">
 
@@ -288,7 +488,7 @@
             <h1>Search BitsXBytes</h1>
 
             <p>
-                Find people and posts across the BxB community.
+                Find people, posts, and events across the BxB community.
             </p>
         {% endif %}
 
@@ -322,6 +522,13 @@
                 Posts
             </a>
 
+            <a
+                href="{% url 'search' %}?q={{ query|urlencode }}&type=events"
+                class="search-tab {% if search_type == 'events' %}active{% endif %}"
+            >
+                Events
+            </a>
+
         </div>
 
 
@@ -332,14 +539,12 @@
             <section class="search-section">
 
                 <div class="search-section-header">
-
                     <h2>People</h2>
 
                     <span class="result-count">
                         {{ people|length }}
                         result{{ people|length|pluralize }}
                     </span>
-
                 </div>
 
                 {% if people %}
@@ -369,17 +574,14 @@
 
                                 {% endif %}
 
-
                                 <div class="person-info">
 
                                     <p class="person-name">
-
                                         {% if person.get_full_name %}
                                             {{ person.get_full_name }}
                                         {% else %}
                                             {{ person.username }}
                                         {% endif %}
-
                                     </p>
 
                                     <p class="person-username">
@@ -412,7 +614,6 @@
 
                     <div class="empty-state">
                         <h3>No people found</h3>
-
                         <p>
                             Try a username, name, college, skill, or interest.
                         </p>
@@ -432,14 +633,12 @@
             <section class="search-section">
 
                 <div class="search-section-header">
-
                     <h2>Posts</h2>
 
                     <span class="result-count">
                         {{ posts|length }}
                         result{{ posts|length|pluralize }}
                     </span>
-
                 </div>
 
                 {% if posts %}
@@ -471,17 +670,14 @@
 
                                     {% endif %}
 
-
                                     <div>
 
                                         <div class="post-author-name">
-
                                             {% if post.author.get_full_name %}
                                                 {{ post.author.get_full_name }}
                                             {% else %}
                                                 {{ post.author.username }}
                                             {% endif %}
-
                                         </div>
 
                                         <div class="post-author-username">
@@ -492,11 +688,7 @@
 
                                 </a>
 
-
-                                <div class="post-content">
-                                    {{ post.content }}
-                                </div>
-
+                                <div class="post-content">{{ post.content }}</div>
 
                                 {% if post.image %}
 
@@ -507,7 +699,6 @@
                                     >
 
                                 {% endif %}
-
 
                                 <div class="post-date">
                                     {{ post.created_at|date:"M d, Y · g:i A" }}
@@ -523,9 +714,98 @@
 
                     <div class="empty-state">
                         <h3>No posts found</h3>
+                        <p>Try searching for another keyword.</p>
+                    </div>
 
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- EVENTS -->
+
+        {% if search_type == "all" or search_type == "events" %}
+
+            <section class="search-section">
+
+                <div class="search-section-header">
+                    <h2>Events</h2>
+
+                    <span class="result-count">
+                        {{ events|length }}
+                        result{{ events|length|pluralize }}
+                    </span>
+                </div>
+
+                {% if events %}
+
+                    <div class="events-list">
+
+                        {% for event in events %}
+
+                            <a
+                                href="{% url 'events:event_detail' slug=event.slug %}"
+                                class="event-card"
+                            >
+
+                                {% if event.banner %}
+
+                                    <img
+                                        src="{{ event.banner.url }}"
+                                        alt="{{ event.title }}"
+                                        class="event-image"
+                                    >
+
+                                {% elif event.image %}
+
+                                    <img
+                                        src="{{ event.image }}"
+                                        alt="{{ event.title }}"
+                                        class="event-image"
+                                    >
+
+                                {% else %}
+
+                                    <div class="event-image-placeholder">
+                                        ✦
+                                    </div>
+
+                                {% endif %}
+
+                                <div class="event-info">
+
+                                    <h3 class="event-title">
+                                        {{ event.title }}
+                                    </h3>
+
+                                    <p class="event-meta">
+                                        Organizer: {{ event.organizer }}
+                                    </p>
+
+                                    <p class="event-meta">
+                                        Date: {{ event.start_date|date:"M d, Y · g:i A" }}
+                                    </p>
+
+                                    <p class="event-meta">
+                                        Venue: {{ event.venue|default:"Online / venue TBA" }}
+                                    </p>
+
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+                        <h3>No events found</h3>
                         <p>
-                            Try searching for another keyword.
+                            Try another keyword to discover community events.
                         </p>
                     </div>
 
@@ -538,18 +818,120 @@
     {% else %}
 
         <div class="empty-state">
-
             <h3>Start searching</h3>
 
             <p>
                 Search for a username, person, skill, college,
-                interest, or something posted by the community.
+                interest, event, or something posted by the community.
             </p>
-
         </div>
 
     {% endif %}
 
 </div>
+
+
+<!-- SEARCH HISTORY ACTIONS -->
+
+{% if user.is_authenticated %}
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const historyList = document.getElementById("recent-search-list");
+        const clearButton = document.getElementById("clear-search-history");
+
+        function getCookie(name) {
+            const cookies = document.cookie
+                ? document.cookie.split(";")
+                : [];
+
+            for (const cookie of cookies) {
+                const item = cookie.trim();
+
+                if (item.startsWith(name + "=")) {
+                    return decodeURIComponent(
+                        item.substring(name.length + 1)
+                    );
+                }
+            }
+
+            return "";
+        }
+
+        async function sendHistoryRequest(url, query) {
+            const body = new URLSearchParams();
+
+            if (query !== null) {
+                body.set("query", query);
+            }
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: body.toString(),
+                credentials: "same-origin"
+            });
+
+            if (!response.ok) {
+                throw new Error("Unable to update search history.");
+            }
+
+            return response.json();
+        }
+
+        if (historyList) {
+            historyList.addEventListener("click", async function (event) {
+                const button = event.target.closest(".history-remove");
+
+                if (!button) return;
+
+                const item = button.closest(".recent-search-item");
+                const query = item.dataset.query;
+
+                button.disabled = true;
+
+                try {
+                    await sendHistoryRequest(
+                        "{% url 'delete_search_history_item' %}",
+                        query
+                    );
+
+                    item.remove();
+
+                    if (!historyList.children.length) {
+                        historyList.closest(".recent-searches").remove();
+                    }
+                } catch (error) {
+                    button.disabled = false;
+                    alert("Could not remove this search. Please try again.");
+                }
+            });
+        }
+
+        if (clearButton) {
+            clearButton.addEventListener("click", async function () {
+                clearButton.disabled = true;
+
+                try {
+                    await sendHistoryRequest(
+                        "{% url 'clear_search_history' %}",
+                        null
+                    );
+
+                    clearButton.closest(".recent-searches").remove();
+                } catch (error) {
+                    clearButton.disabled = false;
+                    alert("Could not clear search history. Please try again.");
+                }
+            });
+        }
+    });
+    </script>
+
+{% endif %}
 
 {% endblock %}

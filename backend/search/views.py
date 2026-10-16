@@ -3,8 +3,9 @@ from urllib.parse import urlencode
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Case, IntegerField, Q, Value, When
-from django.http import JsonResponse
+from django.http import JsonResponse, request
 from django.shortcuts import render
+from django.template import context
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
@@ -13,6 +14,7 @@ from posts.models import Post
 from users.models import User
 
 from .models import SearchHistory
+
 
 
 def search(request):
@@ -27,13 +29,14 @@ def search(request):
     events = Event.objects.none()
 
     if query:
-        # Save this query only for authenticated users.
+        # Save this query for authenticated users.
         if request.user.is_authenticated:
             SearchHistory.objects.create(
                 user=request.user,
                 query=query,
             )
 
+        # Search people.
         if search_type in ("all", "people"):
             people = (
                 User.objects
@@ -62,6 +65,7 @@ def search(request):
                 .order_by("relevance", "username")
             )
 
+        # Search posts.
         if search_type in ("all", "posts"):
             posts = (
                 Post.objects
@@ -81,6 +85,7 @@ def search(request):
                 .order_by("relevance", "-created_at")
             )
 
+        # Search published events.
         if search_type in ("all", "events"):
             events = (
                 Event.objects
@@ -94,7 +99,9 @@ def search(request):
                 .order_by("start_date", "title")
             )
 
-    recent_searches = []
+    # Retrieve the current user's latest ten searches.
+    recent_searches = SearchHistory.objects.none()
+
     if request.user.is_authenticated:
         recent_searches = (
             SearchHistory.objects
@@ -111,14 +118,65 @@ def search(request):
         "recent_searches": recent_searches,
     }
 
+    # Temporary debugging: inspect the data passed to the template.
+    print("Logged-in user:", request.user.username)
+    print(
+        "History passed to template:",
+        list(
+            context["recent_searches"].values_list(
+                "query",
+                flat=True,
+            )
+        ),
+    )
+
+    print("Logged-in user:", request.user)
+    print("Is authenticated:", request.user.is_authenticated)
+    print(
+    "History passed to template:",
+    list(
+        context["recent_searches"].values_list(
+            "query",
+            flat=True,
+        )
+    ),
+)
+
     return render(request, "search/results.html", context)
+
 
 
 def search_suggestions(request):
     query = request.GET.get("q", "").strip()[:200]
+    results = []
 
+    # Show recent searches when the search box is empty.
+    if request.user.is_authenticated and len(query) < 2:
+        history = (
+            SearchHistory.objects
+            .filter(user=request.user)
+            .order_by("-created_at")
+            .values_list("query", flat=True)[:5]
+        )
+
+        for previous_query in history:
+            results.append({
+                "type": "history",
+                "title": previous_query,
+                "subtitle": "Recent search",
+                "url": (
+                    f"{reverse('search')}?"
+                    f"{urlencode({'q': previous_query})}"
+                ),
+                "avatar": "",
+            })
+
+        if not query:
+            return JsonResponse({"results": results})
+
+    # Don't run content suggestions for a one-character query.
     if len(query) < 2:
-        return JsonResponse({"results": []})
+        return JsonResponse({"results": results})
 
     people = (
         User.objects
@@ -158,25 +216,22 @@ def search_suggestions(request):
         .order_by("start_date", "title")[:5]
     )
 
-    results = []
-
     for person in people:
+        profile = getattr(person, "profile", None)
         title = person.get_full_name() or person.username
-        subtitle = (
-            f"@{person.username} · {person.profile.college}"
-            if person.profile.college
-            else f"@{person.username}"
-        )
+        college = profile.college if profile else ""
 
         results.append({
             "type": "person",
             "title": title,
-            "subtitle": subtitle,
+            "subtitle": (
+                f"@{person.username} · {college}"
+                if college else f"@{person.username}"
+            ),
             "url": f"/profile/u/{person.username}/",
             "avatar": (
-                person.profile.avatar.url
-                if person.profile.avatar
-                else ""
+                profile.avatar.url
+                if profile and profile.avatar else ""
             ),
         })
 
@@ -190,14 +245,13 @@ def search_suggestions(request):
             "title": f"@{post.author.username}",
             "subtitle": content,
             "url": (
-                 f"{reverse('search')}?"
-                 f"{urlencode({'q': query, 'type': 'posts'})}"
-),
+                f"{reverse('search')}?"
+                f"{urlencode({'q': query, 'type': 'posts'})}"
+            ),
             "avatar": (
                 post.author.profile.avatar.url
                 if hasattr(post.author, "profile")
-                and post.author.profile.avatar
-                else ""
+                and post.author.profile.avatar else ""
             ),
         })
 
@@ -205,16 +259,28 @@ def search_suggestions(request):
         results.append({
             "type": "event",
             "title": event.title,
-            "subtitle": f"{event.organizer} · {event.venue or 'Online / venue TBA'}",
-            "url": reverse("events:event_detail", kwargs={"slug": event.slug}),
-            "avatar": event.banner.url if event.banner else event.image or "",
+            "subtitle": (
+                f"{event.organizer} · "
+                f"{event.venue or 'Online / venue TBA'}"
+            ),
+            "url": reverse(
+                "events:event_detail",
+                kwargs={"slug": event.slug},
+            ),
+            "avatar": (
+                event.banner.url
+                if event.banner else event.image or ""
+            ),
         })
 
-    # Include the user's own recent searches in autocomplete.
+    # Include matching recent searches while typing.
     if request.user.is_authenticated:
         history = (
             SearchHistory.objects
-            .filter(user=request.user, query__icontains=query)
+            .filter(
+                user=request.user,
+                query__icontains=query,
+            )
             .order_by("-created_at")
             .values_list("query", flat=True)
             .distinct()[:3]

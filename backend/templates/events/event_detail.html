@@ -1,588 +1,211 @@
+
 {% extends "base.html" %}
 
 {% block title %}{{ event.title }} | BitsXBytes Events{% endblock %}
 
 {% block content %}
-
-{% endblock %}
-
-
 <style>
-    /* Theme Variables: Defaults to Dark, overridden when [data-theme="light"] is present on <html> or <body> */
-    :root {
-        --ev-bg-page-start: #10192b;
-        --ev-bg-page-end: #0b1120;
-        --ev-text-primary: #e8eefc;
-        --ev-text-secondary: #94a3b8;
-        --ev-text-muted: #8291a9;
-        --ev-back-link: #91a7d7;
-        --ev-back-link-hover: #60a5fa;
-        
-        --ev-card-bg: linear-gradient(145deg, #10192b, #0b1120);
-        --ev-card-border: #24334d;
-        --ev-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        
-        --ev-input-bg: #080e1b;
-        --ev-input-text: #f1f5f9;
-        --ev-input-border: #293953;
-        --ev-input-focus-border: #3b82f6;
-        --ev-input-focus-shadow: rgba(59, 130, 246, 0.13);
-        
-        --ev-upload-card-bg: rgba(8, 14, 27, 0.7);
-        --ev-upload-btn-bg: #1d3154;
-        --ev-upload-btn-border: #365582;
-        --ev-upload-btn-text: #dbeafe;
-        
-        --ev-cancel-bg: #172236;
-        --ev-cancel-border: #2b3a53;
-        --ev-cancel-text: #cbd5e1;
-        --ev-cancel-hover: #202e45;
-        
-        --ev-divider: #24334d;
-    }
-
-    /* Light Theme Overrides (adjust selector if your base uses .light, body.light-mode, etc.) */
-    [data-theme="light"], .light-theme {
-        --ev-bg-page-start: #f8fafc;
-        --ev-bg-page-end: #f1f5f9;
-        --ev-text-primary: #0f172a;
-        --ev-text-secondary: #475569;
-        --ev-text-muted: #64748b;
-        --ev-back-link: #2563eb;
-        --ev-back-link-hover: #1d4ed8;
-        
-        --ev-card-bg: linear-gradient(145deg, #ffffff, #f8fafc);
-        --ev-card-border: #cbd5e1;
-        --ev-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-        
-        --ev-input-bg: #ffffff;
-        --ev-input-text: #0f172a;
-        --ev-input-border: #cbd5e1;
-        --ev-input-focus-border: #2563eb;
-        --ev-input-focus-shadow: rgba(37, 99, 235, 0.15);
-        
-        --ev-upload-card-bg: rgba(241, 245, 249, 0.7);
-        --ev-upload-btn-bg: #e2e8f0;
-        --ev-upload-btn-border: #cbd5e1;
-        --ev-upload-btn-text: #1e293b;
-        
-        --ev-cancel-bg: #e2e8f0;
-        --ev-cancel-border: #cbd5e1;
-        --ev-cancel-text: #334155;
-        --ev-cancel-hover: #cbd5e1;
-        
-        --ev-divider: #e2e8f0;
-    }
-
-    .create-event-page {
-        max-width: 1000px;
+    .event-detail-page {
+        max-width: 1100px;
         margin: 0 auto;
         padding: 28px 20px 60px;
-        color: var(--ev-text-primary);
+        color: var(--text-primary, #e8eefc);
     }
 
     .event-back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 24px;
-        color: var(--ev-back-link);
+        display: inline-block;
+        margin-bottom: 22px;
+        color: #60a5fa;
         text-decoration: none;
-        font-size: 14px;
     }
 
-    .event-back-link:hover { color: var(--ev-back-link-hover); }
-
-    .create-event-heading { margin-bottom: 26px; }
-
-    .create-event-heading h1 {
-        margin: 0 0 10px;
-        font-size: clamp(28px, 4vw, 38px);
-        font-weight: 800;
-        letter-spacing: -1px;
-        color: var(--ev-text-primary);
+    .event-detail-hero,
+    .event-detail-card {
+        background: var(--card-bg, #10192b);
+        border: 1px solid var(--border-color, #24334d);
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 20px;
     }
 
-    .create-event-heading p {
-        margin: 0;
-        color: var(--ev-text-secondary);
-        line-height: 1.7;
+    .event-detail-hero h1 {
+        font-size: clamp(28px, 4vw, 42px);
+        margin: 12px 0;
     }
 
-    .event-form-card {
-        padding: clamp(20px, 4vw, 36px);
-        background: var(--ev-card-bg);
-        border: 1px solid var(--ev-card-border);
-        border-radius: 22px;
-        box-shadow: var(--ev-card-shadow);
+    .event-detail-label {
+        display: inline-block;
+        color: #93c5fd;
+        background: rgba(59, 130, 246, .12);
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 12px;
     }
 
-    .event-form-section { margin-bottom: 30px; }
-
-    .event-form-section h2 {
-        margin: 0 0 6px;
-        font-size: 18px;
-        font-weight: 750;
-        color: var(--ev-text-primary);
+    .event-detail-banner img {
+        width: 100%;
+        max-height: 420px;
+        object-fit: cover;
+        border-radius: 14px;
+        margin-top: 18px;
     }
 
-    .event-form-section > p {
-        margin: 0 0 20px;
-        color: var(--ev-text-muted);
-        font-size: 13px;
+    .event-detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+        gap: 20px;
+        align-items: start;
+    }
+
+    .event-detail-card h2 {
+        font-size: 19px;
+        margin: 0 0 18px;
+    }
+
+    .event-info-list {
+        display: grid;
+        gap: 18px;
+    }
+
+    .event-info-item {
+        display: flex;
+        gap: 13px;
+        align-items: flex-start;
+    }
+
+    .event-info-icon {
+        font-size: 21px;
+    }
+
+    .event-info-label {
+        color: var(--text-secondary, #94a3b8);
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .event-info-value {
+        overflow-wrap: anywhere;
+        line-height: 1.5;
+    }
+
+    .event-action-btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 16px;
+        margin-top: 10px;
+        border: 0;
+        border-radius: 10px;
+        color: white;
+        background: #2563eb;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .event-action-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .event-action-secondary {
+        color: var(--text-primary, #e8eefc);
+        background: transparent;
+        border: 1px solid var(--border-color, #334155);
+    }
+
+    .event-action-secondary:hover {
+        background: rgba(148, 163, 184, .12);
+    }
+
+    .event-action-danger {
+        background: #991b1b;
+    }
+
+    .event-action-note {
+        color: var(--text-secondary, #94a3b8);
         line-height: 1.6;
     }
 
-    .event-form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
+    .event-status-message {
+        padding: 12px;
+        border-radius: 10px;
+        background: rgba(34, 197, 94, .12);
+        margin-bottom: 12px;
+        line-height: 1.6;
     }
 
-    .event-form-field {
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+    .event-alert {
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: rgba(245, 158, 11, .12);
+        margin-bottom: 14px;
+        line-height: 1.5;
     }
 
-    .event-form-field.full-width { grid-column: 1 / -1; }
+    .event-inline-form {
+        margin-top: 18px;
+    }
 
-    .event-form-field label {
-        color: var(--ev-text-primary);
+    .event-form-label {
+        display: block;
+        margin-bottom: 8px;
         font-size: 13px;
         font-weight: 650;
     }
 
-    .event-form-field input,
-    .event-form-field select,
-    .event-form-field textarea {
+    .event-form-input {
         width: 100%;
-        min-width: 0;
         box-sizing: border-box;
-        padding: 12px 14px;
-        color: var(--ev-input-text);
-        background: var(--ev-input-bg);
-        border: 1px solid var(--ev-input-border);
-        border-radius: 10px;
-        outline: none;
-        font: inherit;
-        font-size: 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        padding: 12px;
+        border-radius: 9px;
+        border: 1px solid var(--border-color, #334155);
+        background: var(--input-bg, #080e1b);
+        color: var(--text-primary, #e8eefc);
     }
 
-    .event-form-field input:focus,
-    .event-form-field select:focus,
-    .event-form-field textarea:focus {
-        border-color: var(--ev-input-focus-border);
-        box-shadow: 0 0 0 3px var(--ev-input-focus-shadow);
-    }
-
-    .event-form-field input[type="datetime-local"] {
-        color-scheme: light dark;
-    }
-
-    .event-form-field textarea {
-        resize: vertical;
-        min-height: 130px;
-    }
-
-    .event-form-field select option {
-        background: var(--ev-input-bg);
-        color: var(--ev-input-text);
-    }
-
-    .event-form-field input[type="file"] {
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    .event-form-field input[type="file"]::file-selector-button {
-        margin-right: 12px;
-        padding: 8px 12px;
-        color: var(--ev-upload-btn-text);
-        background: var(--ev-upload-btn-bg);
-        border: 1px solid var(--ev-upload-btn-border);
-        border-radius: 7px;
-        cursor: pointer;
-    }
-
-    .field-help {
-        color: var(--ev-text-muted);
-        font-size: 12px;
-        line-height: 1.5;
-    }
-
-    .field-error {
-        color: #fca5a5;
-        font-size: 12px;
-        line-height: 1.5;
-    }
-
-    .field-error ul,
-    .form-error-summary ul {
-        margin: 0;
-        padding-left: 18px;
-    }
-
-    .form-error-summary {
-        margin-bottom: 24px;
-        padding: 15px 18px;
-        color: #fecaca;
-        background: rgba(127, 29, 29, 0.2);
-        border: 1px solid rgba(248, 113, 113, 0.35);
-        border-radius: 12px;
-        font-size: 13px;
-    }
-
-    .form-error-summary strong {
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    .event-form-divider {
-        height: 1px;
-        margin: 28px 0;
-        background: var(--ev-divider);
-        border: 0;
-    }
-
-    .upload-grid {
+    .event-team-list {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 20px;
-    }
-
-    .upload-card {
-        min-width: 0;
-        padding: 20px;
-        background: var(--ev-upload-card-bg);
-        border: 1px solid var(--ev-input-border);
-        border-radius: 14px;
-    }
-
-    .upload-card h3 {
-        margin: 0 0 8px;
-        color: var(--ev-text-primary);
-        font-size: 15px;
-    }
-
-    .upload-card > p {
-        margin: 0 0 16px;
-        color: var(--ev-text-muted);
-        font-size: 12px;
-        line-height: 1.6;
-    }
-
-    .event-form-actions {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        flex-wrap: wrap;
         gap: 12px;
-        margin-top: 10px;
     }
 
-    .event-cancel-button,
-    .event-publish-button {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 44px;
-        padding: 0 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 700;
-        text-decoration: none;
-        cursor: pointer;
-        transition: transform 0.2s, background 0.2s;
+    .event-team-item {
+        padding: 16px;
+        border: 1px solid var(--border-color, #334155);
+        border-radius: 12px;
     }
 
-    .event-cancel-button {
-        color: var(--ev-cancel-text);
-        background: var(--ev-cancel-bg);
-        border: 1px solid var(--ev-cancel-border);
+    .event-team-item h3 {
+        margin-top: 0;
     }
 
-    .event-cancel-button:hover { background: var(--ev-cancel-hover); }
-
-    .event-publish-button {
-        color: white;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        border: 0;
-        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.22);
+    .event-external-link {
+        color: #60a5fa;
+        overflow-wrap: anywhere;
     }
 
-    .event-publish-button:hover {
-        transform: translateY(-1px);
-        background: linear-gradient(135deg, #1d4ed8, #4338ca);
-    }
+    @media (max-width: 760px) {
+        .event-detail-page {
+            padding: 18px 12px 40px;
+        }
 
-    @media (max-width: 650px) {
-        .create-event-page { padding: 20px 12px 40px; }
-
-        .event-form-grid,
-        .upload-grid {
+        .event-detail-layout {
             grid-template-columns: minmax(0, 1fr);
         }
 
-        .event-form-field.full-width { grid-column: auto; }
-
-        .event-form-actions {
-            flex-direction: column-reverse;
-            align-items: stretch;
-        }
-
-        .event-cancel-button,
-        .event-publish-button {
-            width: 100%;
-            box-sizing: border-box;
+        .event-detail-hero,
+        .event-detail-card {
+            padding: 18px;
         }
     }
 </style>
 
-<div class="create-event-page">
-
+<div class="event-detail-page">
     <a href="{% url 'events:event_list' %}" class="event-back-link">
         &#8592; Back to Events
-    </a>
-
-    <div class="create-event-heading">
-        <h1>Create an Event</h1>
-        <p>
-            Organising a hackathon, workshop, competition, or campus meetup?
-            Share it with the BitsXBytes community.
-        </p>
-    </div>
-
-    <div class="event-form-card">
-
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-                <div class="form-error-summary">
-                    <strong>Please fix the following errors:</strong>
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            {% if form.errors %}
-                <div class="form-error-summary">
-                    <strong>Some fields need your attention.</strong>
-                    Please review the highlighted fields below.
-                </div>
-            {% endif %}
-
-            <section class="event-form-section">
-                <h2>Event Information</h2>
-                <p>Tell students what your event is about.</p>
-
-                <div class="event-form-grid">
-                    {% for field in form %}
-                        {% if field.name == "title" or field.name == "description" or field.name == "organizer" or field.name == "venue" %}
-                            <div class="event-form-field {% if field.name == 'description' %}full-width{% endif %}">
-                                <label for="{{ field.id_for_label }}">
-                                    {{ field.label }}
-                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
-                                </label>
-
-                                {{ field }}
-
-                                {% if field.help_text %}
-                                    <div class="field-help">{{ field.help_text }}</div>
-                                {% endif %}
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </section>
-
-            <hr class="event-form-divider">
-
-            <section class="event-form-section">
-                <h2>Schedule & Registration</h2>
-                <p>Set the event timings and when registrations close.</p>
-
-                <div class="event-form-grid">
-                    {% for field in form %}
-                        {% if field.name == "start_date" or field.name == "end_date" or field.name == "registration_deadline" or field.name == "participation_type" or field.name == "max_participants" %}
-                            <div class="event-form-field">
-                                <label for="{{ field.id_for_label }}">
-                                    {{ field.label }}
-                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
-                                </label>
-
-                                {{ field }}
-
-                                {% if field.help_text %}
-                                    <div class="field-help">{{ field.help_text }}</div>
-                                {% endif %}
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </section>
-
-            <hr class="event-form-divider">
-
-            <section class="event-form-section">
-                <h2>Team Settings</h2>
-                <p>Configure team sizes if your event supports team participation.</p>
-
-                <div class="event-form-grid">
-                    {% for field in form %}
-                        {% if field.name == "min_team_size" or field.name == "max_team_size" %}
-                            <div class="event-form-field">
-                                <label for="{{ field.id_for_label }}">
-                                    {{ field.label }}
-                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
-                                </label>
-
-                                {{ field }}
-
-                                {% if field.help_text %}
-                                    <div class="field-help">{{ field.help_text }}</div>
-                                {% endif %}
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </section>
-
-            <hr class="event-form-divider">
-
-            <section class="event-form-section">
-                <h2>Event Visuals</h2>
-                <p>
-                    Give your event a professional look with a banner and a
-                    promotional poster. Both uploads are optional.
-                </p>
-
-                <div class="upload-grid">
-
-                    <div class="upload-card">
-                        <h3>Event Banner</h3>
-                        <p>
-                            Best for wide images displayed at the top of event
-                            pages and on event cards.
-                        </p>
-
-                        {% with field=form.banner %}
-                            <div class="event-form-field">
-                                <label for="{{ field.id_for_label }}">
-                                    Upload banner image
-                                </label>
-
-                                {{ field }}
-
-                                <div class="field-help">
-                                    Choose an image from your device.
-                                </div>
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endwith %}
-                    </div>
-
-                    <div class="upload-card">
-                        <h3>Event Poster</h3>
-                        <p>
-                            Best for promotional artwork, event announcements,
-                            and detailed poster designs.
-                        </p>
-
-                        {% with field=form.poster %}
-                            <div class="event-form-field">
-                                <label for="{{ field.id_for_label }}">
-                                    Upload poster image
-                                </label>
-
-                                {{ field }}
-
-                                <div class="field-help">
-                                    Choose your event poster from your device.
-                                </div>
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endwith %}
-                    </div>
-
-                </div>
-            </section>
-
-            <hr class="event-form-divider">
-
-            <section class="event-form-section">
-                <h2>External Links</h2>
-                <p>Add a public image URL for compatibility with older events or an external registration page.</p>
-
-                <div class="event-form-grid">
-                    {% for field in form %}
-                        {% if field.name == "image" or field.name == "registration_link" %}
-                            <div class="event-form-field full-width">
-                                <label for="{{ field.id_for_label }}">
-                                    {{ field.label }}
-                                    {% if field.field.required %}<span aria-hidden="true">*</span>{% endif %}
-                                </label>
-
-                                {{ field }}
-
-                                {% if field.name == "image" %}
-                                    <div class="field-help">
-                                        Optional legacy image URL. You can leave it blank when uploading a banner above.
-                                    </div>
-                                {% elif field.name == "registration_link" %}
-                                    <div class="field-help">
-                                        Optional. Add an external registration page if needed.
-                                    </div>
-                                {% endif %}
-
-                                {% if field.errors %}
-                                    <div class="field-error">{{ field.errors }}</div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </section>
-
-            <div class="event-form-actions">
-                <a href="{% url 'events:event_list' %}" class="event-cancel-button">
-                    Cancel
-                </a>
-
-                <button type="submit" class="event-publish-button">
-                    Publish Event &#8594;
-                </button>
-            </div>
-
-        </form>
-    </div>
-</div>
-
-
-<div class="event-detail-page">
-
-    <a href="{% url 'events:event_list' %}" class="event-back-link">
-        ← Back to Events
     </a>
 
     {% if messages %}
@@ -592,10 +215,7 @@
     {% endif %}
 
     <section class="event-detail-hero">
-        <span class="event-detail-label">
-            {{ event.get_status_display }}
-        </span>
-
+        <span class="event-detail-label">{{ event.get_status_display }}</span>
         <h1>{{ event.title }}</h1>
 
         <p>
@@ -604,45 +224,51 @@
             in this campus opportunity.
         </p>
 
-        {% if event.image %}
+        {% if event.banner %}
             <div class="event-detail-banner">
-                <img src="{{ event.image }}"
-                     alt="{{ event.title }}"
-                     loading="lazy">
+                <img src="{{ event.banner.url }}" alt="{{ event.title }}">
+            </div>
+        {% elif event.image %}
+            <div class="event-detail-banner">
+                <img src="{{ event.image }}" alt="{{ event.title }}">
             </div>
         {% endif %}
     </section>
 
     <div class="event-detail-layout">
-
         <div>
-
             <section class="event-detail-card">
                 <h2>About this event</h2>
-
-                <div class="event-description-full">
-                    {{ event.description|linebreaks }}
-                </div>
+                <div>{{ event.description|linebreaks }}</div>
 
                 {% if event.registration_link %}
-                    <p style="margin-top: 22px;">
+                    <p>
                         <a class="event-external-link"
                            href="{{ event.registration_link }}"
                            target="_blank"
                            rel="noopener noreferrer">
-                            Open external registration page ↗
+                            Open external registration page &#8599;
                         </a>
                     </p>
                 {% endif %}
             </section>
 
+            {% if event.poster %}
+                <section class="event-detail-card">
+                    <h2>Event Poster</h2>
+                    <div class="event-detail-banner">
+                        <img src="{{ event.poster.url }}"
+                             alt="{{ event.title }} poster">
+                    </div>
+                </section>
+            {% endif %}
+
             <section class="event-detail-card">
-                <h2>Event information</h2>
+                <h2>Event Information</h2>
 
                 <div class="event-info-list">
-
                     <div class="event-info-item">
-                        <div class="event-info-icon">📅</div>
+                        <span class="event-info-icon">📅</span>
                         <div>
                             <div class="event-info-label">STARTS</div>
                             <div class="event-info-value">
@@ -652,7 +278,7 @@
                     </div>
 
                     <div class="event-info-item">
-                        <div class="event-info-icon">🏁</div>
+                        <span class="event-info-icon">🏁</span>
                         <div>
                             <div class="event-info-label">ENDS</div>
                             <div class="event-info-value">
@@ -662,7 +288,7 @@
                     </div>
 
                     <div class="event-info-item">
-                        <div class="event-info-icon">📍</div>
+                        <span class="event-info-icon">📍</span>
                         <div>
                             <div class="event-info-label">VENUE</div>
                             <div class="event-info-value">
@@ -672,7 +298,7 @@
                     </div>
 
                     <div class="event-info-item">
-                        <div class="event-info-icon">👥</div>
+                        <span class="event-info-icon">👥</span>
                         <div>
                             <div class="event-info-label">PARTICIPATION</div>
                             <div class="event-info-value">
@@ -682,30 +308,28 @@
                     </div>
 
                     <div class="event-info-item">
-                        <div class="event-info-icon">⏳</div>
+                        <span class="event-info-icon">⏳</span>
                         <div>
                             <div class="event-info-label">REGISTRATION DEADLINE</div>
                             <div class="event-info-value">
-                                {{ event.registration_deadline|date:"d M Y · h:i A" }}
+                                {{ event.registration_deadline|date:"d M Y · h:i A"|default:"Not specified" }}
                             </div>
                         </div>
                     </div>
 
                     {% if event.max_participants %}
                         <div class="event-info-item">
-                            <div class="event-info-icon">🎟️</div>
+                            <span class="event-info-icon">🎟️</span>
                             <div>
                                 <div class="event-info-label">MAXIMUM PARTICIPANTS</div>
-                                <div class="event-info-value">
-                                    {{ event.max_participants }}
-                                </div>
+                                <div class="event-info-value">{{ event.max_participants }}</div>
                             </div>
                         </div>
                     {% endif %}
 
                     {% if event.participation_type != "individual" %}
                         <div class="event-info-item">
-                            <div class="event-info-icon">🤝</div>
+                            <span class="event-info-icon">🤝</span>
                             <div>
                                 <div class="event-info-label">TEAM SIZE</div>
                                 <div class="event-info-value">
@@ -714,23 +338,20 @@
                             </div>
                         </div>
                     {% endif %}
-
                 </div>
             </section>
 
             {% if event.participation_type != "individual" %}
                 <section class="event-detail-card">
-                    <h2>Find your team</h2>
+                    <h2>Find Your Team</h2>
 
                     {% if teams %}
                         <div class="event-team-list">
                             {% for team in teams %}
                                 <div class="event-team-item">
                                     <h3>{{ team.name }}</h3>
-
                                     <p>
-                                        Team leader: {{ team.leader }}
-                                        <br>
+                                        Team leader: {{ team.leader }}<br>
                                         Members: {{ team.member_count }}/{{ event.max_team_size }}
                                     </p>
 
@@ -743,7 +364,7 @@
                                               action="{% url 'events:join_team' event.slug team.id %}">
                                             {% csrf_token %}
                                             <button type="submit" class="event-action-btn">
-                                                Join this team
+                                                Join This Team
                                             </button>
                                         </form>
                                     {% elif team.member_count >= event.max_team_size %}
@@ -755,23 +376,19 @@
                     {% else %}
                         <p class="event-action-note">
                             No teams have been created for this event yet.
-                            You can start the first one if registration is open.
                         </p>
                     {% endif %}
-
                 </section>
             {% endif %}
-
         </div>
 
         <aside>
-
             <section class="event-detail-card">
                 <h2>Participation</h2>
 
                 {% if registration %}
                     <div class="event-status-message">
-                        ✓ You are registered for this event.
+                        You are registered for this event.
                         {% if registration.registration_type == "team" %}
                             <br>Your registration is for team participation.
                         {% else %}
@@ -789,8 +406,7 @@
                           action="{% url 'events:cancel_registration' event.slug %}"
                           onsubmit="return confirm('Are you sure you want to cancel your registration?');">
                         {% csrf_token %}
-                        <button type="submit"
-                                class="event-action-btn event-action-danger">
+                        <button type="submit" class="event-action-btn event-action-danger">
                             Cancel Registration
                         </button>
                     </form>
@@ -801,15 +417,14 @@
                     </div>
 
                 {% elif event.participation_type == "individual" %}
-                    <p class="event-action-note" style="margin-bottom: 15px;">
+                    <p class="event-action-note">
                         Register individually to participate in this event.
                     </p>
-
                     <form method="post"
                           action="{% url 'events:register_event' event.slug %}">
                         {% csrf_token %}
                         <button type="submit" class="event-action-btn">
-                            Register Now →
+                            Register Now &#8594;
                         </button>
                     </form>
 
@@ -817,36 +432,29 @@
                     <p class="event-action-note">
                         Create a team or join an existing one to participate.
                     </p>
-
                     <form method="post"
                           action="{% url 'events:create_team' event.slug %}"
                           class="event-inline-form">
                         {% csrf_token %}
-
                         <label class="event-form-label" for="team_name">
                             Create a team
                         </label>
-
-                        <input
-                            class="event-form-input"
-                            type="text"
-                            id="team_name"
-                            name="team_name"
-                            maxlength="100"
-                            placeholder="Enter your team name"
-                            required
-                        >
-
+                        <input class="event-form-input"
+                               type="text"
+                               id="team_name"
+                               name="team_name"
+                               maxlength="100"
+                               placeholder="Enter your team name"
+                               required>
                         <button type="submit" class="event-action-btn">
-                            Create Team →
+                            Create Team
                         </button>
                     </form>
 
                 {% else %}
-                    <p class="event-action-note" style="margin-bottom: 15px;">
+                    <p class="event-action-note">
                         Choose how you want to participate.
                     </p>
-
                     <form method="post"
                           action="{% url 'events:register_event' event.slug %}">
                         {% csrf_token %}
@@ -859,39 +467,29 @@
                           action="{% url 'events:create_team' event.slug %}"
                           class="event-inline-form">
                         {% csrf_token %}
-
                         <label class="event-form-label" for="team_name">
                             Or create a team
                         </label>
-
-                        <input
-                            class="event-form-input"
-                            type="text"
-                            id="team_name"
-                            name="team_name"
-                            maxlength="100"
-                            placeholder="Enter your team name"
-                            required
-                        >
-
+                        <input class="event-form-input"
+                               type="text"
+                               id="team_name"
+                               name="team_name"
+                               maxlength="100"
+                               placeholder="Enter your team name"
+                               required>
                         <button type="submit"
                                 class="event-action-btn event-action-secondary">
                             Create Team
                         </button>
                     </form>
-
                 {% endif %}
 
                 <a href="{% url 'events:my_events' %}"
-                   class="event-action-btn event-action-secondary"
-                   style="margin-top: 13px;">
+                   class="event-action-btn event-action-secondary">
                     View My Events
                 </a>
-
             </section>
-
         </aside>
-
     </div>
-
 </div>
+{% endblock %}
