@@ -559,6 +559,32 @@
                     {% endif %}
                 </div>
 
+                
+{% if request.user.is_authenticated and request.user.pk != vibe.author_id and vibe.is_public %}
+    <form
+        method="post"
+        action="{% url 'vibespace:follow' vibe.pk %}"
+        style="margin-top: 14px;"
+    >
+        {% csrf_token %}
+        <button
+            type="submit"
+            class="vibe-detail-button vibe-social-button"
+        >
+            {% if is_following %}
+                ✓ Following · Unfollow
+            {% else %}
+                + Follow creator
+            {% endif %}
+        </button>
+    </form>
+{% elif not request.user.is_authenticated %}
+    <p class="vibe-detail-note" style="margin-top: 12px;">
+        Log in to follow this creator.
+    </p>
+{% endif %}
+
+
                 <div>
                     <div class="vibe-author-name">
                         {{ vibe.author.get_full_name|default:vibe.author.username }}
