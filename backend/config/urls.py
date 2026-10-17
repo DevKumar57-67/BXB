@@ -23,6 +23,7 @@ urlpatterns = [
         "vibespace/",
         include("vibespace.urls"),
     ),
+    path("profile/", include("profiles.urls", namespace="profiles")),
     
 
     

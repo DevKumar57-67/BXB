@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-
+from django.db.models import Count
 from profiles.models import Follow
 
 from .forms import VibeCreateForm
@@ -34,7 +34,7 @@ def create_vibe(request):
         {"form": form},
     )
 
-
+'''
 def explore_vibes(request):
     vibes = (
         Vibe.objects
@@ -62,7 +62,35 @@ def explore_vibes(request):
             "selected_tag": tag_slug,
         },
     )
+'''
 
+
+def explore_vibes(request):
+    vibes = (
+        Vibe.objects
+        .filter(is_public=True)
+        .select_related("author", "author__profile")
+        .prefetch_related("tags")
+        .annotate(
+            like_count=Count("likes", distinct=True),
+            comment_count=Count("comments", distinct=True),
+        )
+        .order_by("-created_at")
+    )
+
+    tag_slug = request.GET.get("tag", "").strip()
+
+    if tag_slug:
+        vibes = vibes.filter(tags__slug=tag_slug)
+
+    return render(
+        request,
+        "vibespace/explore.html",
+        {
+            "vibes": vibes,
+            "selected_tag": tag_slug,
+        },
+    )
 
 @login_required
 def my_vibes(request):

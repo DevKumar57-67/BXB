@@ -2920,7 +2920,7 @@
                 {% if user.is_authenticated %}
 
                 <a
-                    href="{% url 'my_profile' %}"
+                    href="{% url 'profiles:my_profile' %}"
                     class="
                         nav-item
                         {% if request.resolver_match.url_name == 'my_profile' %}
@@ -3079,7 +3079,7 @@ href="{% url 'vibespace:explore' %}"
 
 
             <a
-                href="{% url 'my_profile' %}"
+                href="{% url 'profiles:my_profile' %}"
                 class="sidebar-user"
             >
 
@@ -3327,7 +3327,7 @@ href="{% url 'vibespace:explore' %}"
                 <!-- Profile -->
 
                 <a
-                    href="{% url 'my_profile' %}"
+                    href="{% url 'profiles:my_profile' %}"
                     class="topbar-profile"
                     title="Profile"
                 >

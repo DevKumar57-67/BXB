@@ -72,6 +72,7 @@ urlpatterns = [
 '''
 
 
+
 from django.urls import path
 
 from .views import (
@@ -85,6 +86,8 @@ from .views import (
     connections_list,
     user_posts,
 )
+
+app_name = "profiles"
 
 urlpatterns = [
     path("", my_profile, name="my_profile"),
