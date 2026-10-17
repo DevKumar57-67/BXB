@@ -1,379 +1,236 @@
+
 {% extends "base.html" %}
 
 {% block title %}Create a Vibe | BxB{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* ==========================================================================
-       Theme Variables (Light / Dark)
-       ========================================================================== */
-    :root {
-        --vibe-page-text: #0f172a;
-        --vibe-eyebrow: #2563eb;
-        
-        --vibe-panel-bg: #ffffff;
-        --vibe-panel-border: #cbd5e1;
-        --vibe-panel-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-        
-        --vibe-muted: #64748b;
-        
-        --vibe-dropzone-bg: rgba(37, 99, 235, 0.04);
-        --vibe-dropzone-border: rgba(37, 99, 235, 0.35);
-        --vibe-dropzone-border-hover: #2563eb;
-        --vibe-dropzone-bg-hover: rgba(37, 99, 235, 0.08);
-        
-        --vibe-upload-icon-bg: rgba(37, 99, 235, 0.1);
-        --vibe-upload-icon-color: #2563eb;
-        
-        --vibe-input-bg: #f8fafc;
-        --vibe-input-text: #0f172a;
-        --vibe-input-border: #cbd5e1;
-        --vibe-input-focus: #2563eb;
-        
-        --vibe-preview-bg: #f1f5f9;
-        --vibe-tip-icon-bg: rgba(37, 99, 235, 0.1);
-        --vibe-tip-icon-color: #2563eb;
-        
-        --vibe-divider: #e2e8f0;
-    }
-
-    /* Dark Mode Overrides */
-    [data-theme="dark"] {
-        --vibe-page-text: #e8eefc;
-        --vibe-eyebrow: #60a5fa;
-        
-        --vibe-panel-bg: #101521;
-        --vibe-panel-border: rgba(255, 255, 255, 0.09);
-        --vibe-panel-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        
-        --vibe-muted: #94a3b8;
-        
-        --vibe-dropzone-bg: rgba(59, 130, 246, 0.045);
-        --vibe-dropzone-border: rgba(96, 165, 250, 0.5);
-        --vibe-dropzone-border-hover: #60a5fa;
-        --vibe-dropzone-bg-hover: rgba(59, 130, 246, 0.14);
-        
-        --vibe-upload-icon-bg: rgba(59, 130, 246, 0.14);
-        --vibe-upload-icon-color: #60a5fa;
-        
-        --vibe-input-bg: #0b0f19;
-        --vibe-input-text: #f8fafc;
-        --vibe-input-border: rgba(255, 255, 255, 0.12);
-        --vibe-input-focus: #3b82f6;
-        
-        --vibe-preview-bg: #070a12;
-        --vibe-tip-icon-bg: rgba(59, 130, 246, 0.12);
-        --vibe-tip-icon-color: #60a5fa;
-        
-        --vibe-divider: rgba(255, 255, 255, 0.08);
-    }
-
-    .vibe-create-page {
-        width: 100%;
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 32px 24px 60px;
-        color: var(--vibe-page-text);
-        box-sizing: border-box;
-        transition: color 0.3s ease;
-    }
-
-    .vibe-create-header {
-        margin-bottom: 28px;
-    }
-
-    .vibe-eyebrow {
-        color: var(--vibe-eyebrow);
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-    }
-
-    .vibe-create-header h1 {
-        margin-top: 10px;
-        font-size: clamp(28px, 4vw, 40px);
-        letter-spacing: -1.5px;
-        color: var(--vibe-page-text);
-    }
-
-    .vibe-create-header p {
-        margin-top: 10px;
-        color: var(--vibe-muted);
-        line-height: 1.7;
-    }
-
-    .vibe-create-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr);
-        gap: 22px;
-        align-items: start;
-    }
-
-    .vibe-panel {
-        min-width: 0;
-        padding: 22px;
-        background: var(--vibe-panel-bg);
-        border: 1px solid var(--vibe-panel-border);
-        border-radius: 20px;
-        box-shadow: var(--vibe-panel-shadow);
-        box-sizing: border-box;
-        transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .vibe-panel h2 {
-        margin-bottom: 8px;
-        font-size: 17px;
-        color: var(--vibe-page-text);
-    }
-
-    .vibe-muted {
-        color: var(--vibe-muted);
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    .vibe-dropzone {
-        min-height: 310px;
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 24px;
-        text-align: center;
-        border: 1.5px dashed var(--vibe-dropzone-border);
-        border-radius: 16px;
-        background: var(--vibe-dropzone-bg);
-        box-sizing: border-box;
-        transition: border-color .2s, background .2s;
-    }
-
-    .vibe-dropzone.dragging {
-        border-color: var(--vibe-dropzone-border-hover);
-        background: var(--vibe-dropzone-bg-hover);
-    }
-
-    .vibe-upload-icon {
-        width: 62px;
-        height: 62px;
-        display: grid;
-        place-items: center;
-        border-radius: 18px;
-        background: var(--vibe-upload-icon-bg);
-        color: var(--vibe-upload-icon-color);
-        font-size: 29px;
-    }
-
-    .vibe-dropzone strong {
-        font-size: 16px;
-        color: var(--vibe-page-text);
-    }
-
-    .vibe-select-button,
-    .vibe-publish-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-height: 45px;
-        padding: 0 19px;
-        border-radius: 11px;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        color: #fff;
-        font-weight: 700;
-        cursor: pointer;
-        text-decoration: none;
-        transition: transform .2s, opacity .2s;
-    }
-
-    .vibe-select-button:hover,
-    .vibe-publish-button:hover {
-        transform: translateY(-1px);
-    }
-
-    .vibe-file-input {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-    }
-
-    .vibe-file-name {
-        color: var(--vibe-eyebrow);
-        font-size: 12px;
-        overflow-wrap: anywhere;
-    }
-
-    .vibe-preview {
-        width: 100%;
-        max-height: 440px;
-        margin-top: 18px;
-        overflow: hidden;
-        border-radius: 14px;
-        background: var(--vibe-preview-bg);
-        box-sizing: border-box;
-    }
-
-    .vibe-preview img,
-    .vibe-preview video {
-        display: block;
-        width: 100%;
-        max-height: 440px;
-        object-fit: contain;
-    }
-
-    .vibe-preview[hidden] {
-        display: none;
-    }
-
-    .vibe-caption-label {
-        display: block;
-        margin: 22px 0 9px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--vibe-page-text);
-    }
-
-    .vibe-caption-input {
-        display: block;
-        width: 100%;
-        min-height: 125px;
-        padding: 14px;
-        resize: vertical;
-        color: var(--vibe-input-text);
-        background: var(--vibe-input-bg);
-        border: 1px solid var(--vibe-input-border);
-        border-radius: 12px;
-        outline: none;
-        line-height: 1.6;
-        box-sizing: border-box;
-        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease;
-    }
-
-    .vibe-caption-input:focus {
-        border-color: var(--vibe-input-focus);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
-
-    .vibe-caption-input::placeholder {
-        color: var(--vibe-muted);
-    }
-
-    .vibe-caption-meta {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-top: 8px;
-        color: var(--vibe-muted);
-        font-size: 11px;
-    }
-
-    .vibe-error {
-        margin-top: 10px;
-        color: #fca5a5;
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    .vibe-field-errors {
-        margin-top: 8px;
-        color: #fca5a5;
-        font-size: 12px;
-    }
-
-    .vibe-publish-button {
-        width: 100%;
-        margin-top: 22px;
-        border: 0;
-        font-size: 14px;
-        box-sizing: border-box;
-    }
-
-    .vibe-publish-button:disabled {
-        opacity: .45;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    .vibe-privacy-note {
-        margin-top: 14px;
-        color: var(--vibe-muted);
-        font-size: 11px;
-        line-height: 1.7;
-        text-align: center;
-    }
-
-    .vibe-tips {
-        display: grid;
-        gap: 16px;
-        margin-top: 22px;
-    }
-
-    .vibe-tip {
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-    }
-
-    .vibe-tip-icon {
-        flex: 0 0 38px;
-        width: 38px;
-        height: 38px;
-        display: grid;
-        place-items: center;
-        border-radius: 11px;
-        background: var(--vibe-tip-icon-bg);
-        color: var(--vibe-tip-icon-color);
-    }
-
-    .vibe-tip strong {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 13px;
-        color: var(--vibe-page-text);
-    }
-
-    .vibe-tip p {
-        color: var(--vibe-muted);
-        font-size: 12px;
-        line-height: 1.6;
-    }
-
-    /* Mobile App & Small Viewport Adaptability */
-    @media (max-width: 760px) {
-        .vibe-create-page {
-            padding: 16px 12px 50px;
-        }
-
-        .vibe-create-layout {
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-
-        .vibe-panel {
-            padding: 16px;
-            border-radius: 16px;
-        }
-
-        .vibe-dropzone {
-            min-height: 230px;
-            padding: 18px 12px;
-        }
-
-        .vibe-upload-icon {
-            width: 52px;
-            height: 52px;
-            font-size: 24px;
-            border-radius: 14px;
-        }
-
-        .vibe-create-header h1 {
-            font-size: 26px;
-        }
-    }
+:root {
+    --vibe-text: #0f172a;
+    --vibe-accent: #2563eb;
+    --vibe-panel: #ffffff;
+    --vibe-border: #cbd5e1;
+    --vibe-muted: #64748b;
+    --vibe-input: #f8fafc;
+    --vibe-input-text: #0f172a;
+}
+[data-theme="dark"] {
+    --vibe-text: #e8eefc;
+    --vibe-accent: #60a5fa;
+    --vibe-panel: #101521;
+    --vibe-border: rgba(255,255,255,.12);
+    --vibe-muted: #94a3b8;
+    --vibe-input: #0b0f19;
+    --vibe-input-text: #f8fafc;
+}
+.vibe-create-page {
+    max-width: 1000px;
+    margin: auto;
+    padding: 32px 24px 60px;
+    color: var(--vibe-text);
+    box-sizing: border-box;
+}
+.vibe-create-header { margin-bottom: 28px; }
+.vibe-eyebrow {
+    color: var(--vibe-accent);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.vibe-create-header h1 {
+    margin-top: 10px;
+    font-size: clamp(28px,4vw,40px);
+    letter-spacing: -1.5px;
+}
+.vibe-create-header p {
+    margin-top: 10px;
+    color: var(--vibe-muted);
+    line-height: 1.7;
+}
+.vibe-create-layout {
+    display: grid;
+    grid-template-columns: minmax(0,1.1fr) minmax(280px,.9fr);
+    gap: 22px;
+    align-items: start;
+}
+.vibe-panel {
+    min-width: 0;
+    padding: 22px;
+    background: var(--vibe-panel);
+    border: 1px solid var(--vibe-border);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.08);
+    box-sizing: border-box;
+}
+.vibe-panel h2 { margin-bottom: 8px; font-size: 17px; }
+.vibe-muted {
+    color: var(--vibe-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+.vibe-dropzone {
+    min-height: 260px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+    text-align: center;
+    border: 1.5px dashed var(--vibe-border);
+    border-radius: 16px;
+    background: rgba(59,130,246,.04);
+    box-sizing: border-box;
+}
+.vibe-dropzone.dragging {
+    border-color: var(--vibe-accent);
+    background: rgba(59,130,246,.12);
+}
+.vibe-upload-icon {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    background: rgba(59,130,246,.12);
+    color: var(--vibe-accent);
+    font-size: 28px;
+}
+.vibe-select-button, .vibe-publish-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 45px;
+    padding: 0 19px;
+    border: 0;
+    border-radius: 11px;
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+}
+.vibe-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+}
+.vibe-file-name {
+    color: var(--vibe-accent);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+.vibe-preview {
+    width: 100%;
+    max-height: 440px;
+    margin-top: 18px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: rgba(100,116,139,.12);
+}
+.vibe-preview img, .vibe-preview video {
+    display: block;
+    width: 100%;
+    max-height: 440px;
+    object-fit: contain;
+}
+.vibe-preview[hidden] { display: none; }
+.vibe-field { margin-top: 20px; }
+.vibe-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+.vibe-field input:not([type="checkbox"]),
+.vibe-field textarea,
+.vibe-field select {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
+    color: var(--vibe-input-text);
+    background: var(--vibe-input);
+    border: 1px solid var(--vibe-border);
+    border-radius: 11px;
+    outline: none;
+    box-sizing: border-box;
+    font: inherit;
+}
+.vibe-field textarea {
+    min-height: 115px;
+    resize: vertical;
+    line-height: 1.6;
+}
+.vibe-field input:focus,
+.vibe-field textarea:focus,
+.vibe-field select:focus {
+    border-color: var(--vibe-accent);
+    box-shadow: 0 0 0 3px rgba(59,130,246,.14);
+}
+.vibe-field input::placeholder,
+.vibe-field textarea::placeholder {
+    color: var(--vibe-muted);
+}
+.vibe-help {
+    margin-top: 6px;
+    color: var(--vibe-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+.vibe-check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.vibe-check-row input {
+    margin-top: 4px;
+    accent-color: var(--vibe-accent);
+}
+.vibe-error {
+    margin-top: 7px;
+    color: #ef4444;
+    font-size: 12px;
+    line-height: 1.6;
+}
+.vibe-publish-button {
+    width: 100%;
+    margin-top: 24px;
+    font-size: 14px;
+}
+.vibe-publish-button:disabled { opacity: .5; cursor: not-allowed; }
+.vibe-privacy-note {
+    margin-top: 14px;
+    color: var(--vibe-muted);
+    font-size: 11px;
+    line-height: 1.7;
+    text-align: center;
+}
+.vibe-tips { display: grid; gap: 16px; margin-top: 22px; }
+.vibe-tip { display: flex; gap: 12px; align-items: flex-start; }
+.vibe-tip-icon {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: rgba(59,130,246,.12);
+    color: var(--vibe-accent);
+}
+.vibe-tip strong { display: block; margin-bottom: 5px; font-size: 13px; }
+.vibe-tip p { color: var(--vibe-muted); font-size: 12px; line-height: 1.6; }
+@media (max-width:760px) {
+    .vibe-create-page { padding: 16px 12px 50px; }
+    .vibe-create-layout { grid-template-columns: 1fr; gap: 16px; }
+    .vibe-panel { padding: 16px; border-radius: 16px; }
+    .vibe-dropzone { min-height: 220px; padding: 18px 12px; }
+}
 </style>
 {% endblock %}
 
@@ -382,108 +239,90 @@
     <header class="vibe-create-header">
         <span class="vibe-eyebrow">BxB · VibeSpace</span>
         <h1>Share your vibe<span style="color:#60a5fa">.</span></h1>
-        <p>
-            A moment, a meme, a creation or something worth sharing.
-            Make it yours.
-        </p>
+        <p>A moment, a meme, a creation or something worth sharing. Make it yours.</p>
     </header>
 
     <div class="vibe-create-layout">
         <section class="vibe-panel">
             <h2>Create a Vibe</h2>
-            <p class="vibe-muted">
-                Choose an image, GIF or short video to get started.
-            </p>
+            <p class="vibe-muted">Upload your media and tell the community about it.</p>
 
-            <form
-                method="post"
-                enctype="multipart/form-data"
-                id="vibe-create-form"
-            >
+            <form method="post" enctype="multipart/form-data" id="vibe-create-form">
                 {% csrf_token %}
 
-                <div
-                    class="vibe-dropzone"
-                    id="vibe-dropzone"
-                    role="group"
-                    aria-label="Select media for your Vibe"
-                >
+                {% if form.non_field_errors %}
+                    <div class="vibe-error">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="vibe-dropzone" id="vibe-dropzone">
                     <div class="vibe-upload-icon" aria-hidden="true">↥</div>
-
                     <strong>Drop your media here</strong>
+                    <p class="vibe-muted">Or select a file from your device</p>
 
-                    <p class="vibe-muted">
-                        Or select a file from your device
-                    </p>
-
-                    <label
-                        for="{{ form.media.id_for_label }}"
-                        class="vibe-select-button"
-                    >
+                    <label for="{{ form.media.id_for_label }}" class="vibe-select-button">
                         + Choose media
                     </label>
-
                     {{ form.media }}
 
-                    <span class="vibe-muted">
-                        Images/GIFs up to 10 MB · Videos up to 200 MB
-                    </span>
-
-                    <span
-                        class="vibe-file-name"
-                        id="vibe-file-name"
-                    ></span>
+                    <span class="vibe-muted">Images/GIFs up to 10 MB · Videos up to 200 MB</span>
+                    <span class="vibe-file-name" id="vibe-file-name"></span>
                 </div>
 
                 {% if form.media.errors %}
-                    <div class="vibe-field-errors">
-                        {{ form.media.errors }}
-                    </div>
+                    <div class="vibe-error">{{ form.media.errors }}</div>
                 {% endif %}
 
                 <div class="vibe-preview" id="vibe-preview" hidden>
                     <img id="vibe-preview-image" alt="Selected Vibe preview" hidden>
-                    <video
-                        id="vibe-preview-video"
-                        controls
-                        playsinline
-                        preload="metadata"
-                        hidden
-                    ></video>
+                    <video id="vibe-preview-video" controls playsinline preload="metadata" hidden></video>
                 </div>
 
-                <label
-                    for="{{ form.caption.id_for_label }}"
-                    class="vibe-caption-label"
-                >
-                    Caption
-                </label>
-
-                {{ form.caption }}
-
-                {% if form.caption.errors %}
-                    <div class="vibe-field-errors">
-                        {{ form.caption.errors }}
-                    </div>
-                {% endif %}
-
-                <div class="vibe-caption-meta">
-                    <span>Keep it real. Keep it you.</span>
-                    <span><span id="caption-count">0</span>/500</span>
+                <div class="vibe-field">
+                    <label for="{{ form.caption.id_for_label }}">Caption (optional)</label>
+                    {{ form.caption }}
+                    {% if form.caption.errors %}<div class="vibe-error">{{ form.caption.errors }}</div>{% endif %}
+                    <div class="vibe-help"><span id="caption-count">0</span>/500 characters</div>
                 </div>
 
-                {% if form.non_field_errors %}
-                    <div class="vibe-error">
-                        {{ form.non_field_errors }}
-                    </div>
-                {% endif %}
+                <div class="vibe-field">
+                    <label for="{{ form.description.id_for_label }}">Describe your Vibe *</label>
+                    {{ form.description }}
+                    <p class="vibe-help">Tell people what's happening, what you made, or why this moment matters.</p>
+                    {% if form.description.errors %}<div class="vibe-error">{{ form.description.errors }}</div>{% endif %}
+                </div>
 
-                <button
-                    type="submit"
-                    class="vibe-publish-button"
-                    id="vibe-publish-button"
-                    disabled
-                >
+                <div class="vibe-field">
+                    <label for="{{ form.tag_names.id_for_label }}">Tags</label>
+                    {{ form.tag_names }}
+                    <p class="vibe-help">Separate tags with commas, e.g. coding, hackathon, collegefest. Tags help people find your Vibe.</p>
+                    {% if form.tag_names.errors %}<div class="vibe-error">{{ form.tag_names.errors }}</div>{% endif %}
+                </div>
+
+                <div class="vibe-field">
+                    <div class="vibe-check-row">
+                        {{ form.is_campus_event }}
+                        <div>
+                            <label for="{{ form.is_campus_event.id_for_label }}">Related to a campus event?</label>
+                            <p class="vibe-help">Enable this if the Vibe is about a college fest, hackathon, club activity, or campus event.</p>
+                        </div>
+                    </div>
+                    {% if form.is_campus_event.errors %}<div class="vibe-error">{{ form.is_campus_event.errors }}</div>{% endif %}
+                </div>
+
+                <div class="vibe-field" id="campus-event-name-wrapper" hidden>
+                    <label for="{{ form.campus_event_name.id_for_label }}">Campus event name *</label>
+                    {{ form.campus_event_name }}
+                    {% if form.campus_event_name.errors %}<div class="vibe-error">{{ form.campus_event_name.errors }}</div>{% endif %}
+                </div>
+
+                <div class="vibe-field">
+                    <label for="{{ form.target_audience.id_for_label }}">Target audience</label>
+                    {{ form.target_audience }}
+                    <p class="vibe-help">Choose the audience most relevant to your Vibe.</p>
+                    {% if form.target_audience.errors %}<div class="vibe-error">{{ form.target_audience.errors }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="vibe-publish-button" id="vibe-publish-button" disabled>
                     Publish Vibe ↗
                 </button>
 
@@ -496,41 +335,25 @@
 
         <aside class="vibe-panel">
             <h2>Your space. Your vibe.</h2>
-            <p class="vibe-muted">
-                Share what you're creating, enjoying or discovering.
-            </p>
+            <p class="vibe-muted">Help the right people discover what you're sharing.</p>
 
             <div class="vibe-tips">
                 <div class="vibe-tip">
                     <div class="vibe-tip-icon">▧</div>
-                    <div>
-                        <strong>Memes & images</strong>
-                        <p>Share a moment, a visual idea or something funny.</p>
-                    </div>
+                    <div><strong>Share the story</strong><p>A useful description gives people context beyond the caption.</p></div>
                 </div>
-
                 <div class="vibe-tip">
-                    <div class="vibe-tip-icon">▷</div>
-                    <div>
-                        <strong>Short videos</strong>
-                        <p>Show a demo, a highlight or a quick behind-the-scenes clip.</p>
-                    </div>
+                    <div class="vibe-tip-icon">#</div>
+                    <div><strong>Add relevant tags</strong><p>Use specific tags people might search for. Avoid unrelated tags.</p></div>
                 </div>
-
                 <div class="vibe-tip">
-                    <div class="vibe-tip-icon">✦</div>
-                    <div>
-                        <strong>Make it yours</strong>
-                        <p>Add a caption that gives your Vibe its personality.</p>
-                    </div>
+                    <div class="vibe-tip-icon">◎</div>
+                    <div><strong>Reach your audience</strong><p>Classify campus-event content and select the most relevant audience.</p></div>
                 </div>
             </div>
 
-            <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--vibe-divider)">
-                <a
-                    href="{% url 'vibespace:explore' %}"
-                    style="color:var(--vibe-eyebrow);font-size:13px;font-weight:700;text-decoration:none;"
-                >
+            <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--vibe-border)">
+                <a href="{% url 'vibespace:explore' %}" style="color:var(--vibe-accent);font-size:13px;font-weight:700;text-decoration:none">
                     Explore community Vibes →
                 </a>
             </div>
@@ -547,6 +370,9 @@
 
     const fileInput = document.getElementById("{{ form.media.id_for_label }}");
     const captionInput = document.getElementById("{{ form.caption.id_for_label }}");
+    const eventCheckbox = document.getElementById("{{ form.is_campus_event.id_for_label }}");
+    const eventName = document.getElementById("{{ form.campus_event_name.id_for_label }}");
+    const eventWrapper = document.getElementById("campus-event-name-wrapper");
     const fileName = document.getElementById("vibe-file-name");
     const preview = document.getElementById("vibe-preview");
     const previewImage = document.getElementById("vibe-preview-image");
@@ -558,11 +384,8 @@
     let previewUrl = null;
 
     function clearPreview() {
-        if (previewUrl) {
-            URL.revokeObjectURL(previewUrl);
-            previewUrl = null;
-        }
-
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = null;
         previewImage.removeAttribute("src");
         previewVideo.removeAttribute("src");
         previewImage.hidden = true;
@@ -570,15 +393,10 @@
         preview.hidden = true;
     }
 
-    function updateCaptionCount() {
-        captionCount.textContent = captionInput.value.length;
-    }
-
     function showFile(file) {
         clearPreview();
         fileName.textContent = "";
         publishButton.disabled = true;
-
         if (!file) return;
 
         const extension = file.name.split(".").pop().toLowerCase();
@@ -586,9 +404,6 @@
         const videoExtensions = ["mp4", "webm", "mov", "m4v"];
         const isImage = imageExtensions.includes(extension);
         const isVideo = videoExtensions.includes(extension);
-        const maxSize = isVideo
-    ? 200 * 1024 * 1024
-    : 10 * 1024 * 1024;
 
         if (!isImage && !isVideo) {
             fileName.textContent = "Unsupported file type.";
@@ -596,6 +411,7 @@
             return;
         }
 
+        const maxSize = isVideo ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
         if (file.size > maxSize) {
             fileName.textContent = isVideo
                 ? "Video exceeds the 200 MB limit."
@@ -615,25 +431,35 @@
             previewVideo.src = previewUrl;
             previewVideo.hidden = false;
         }
-
         publishButton.disabled = false;
+    }
+
+    function updateEventFields() {
+        const enabled = eventCheckbox.checked;
+        eventWrapper.hidden = !enabled;
+        eventName.required = enabled;
+        if (!enabled) eventName.value = "";
     }
 
     fileInput.addEventListener("change", function () {
         showFile(fileInput.files[0]);
     });
 
-    captionInput.addEventListener("input", updateCaptionCount);
+    captionInput.addEventListener("input", function () {
+        captionCount.textContent = captionInput.value.length;
+    });
 
-    ["dragenter", "dragover"].forEach(function (eventName) {
-        dropzone.addEventListener(eventName, function (event) {
+    eventCheckbox.addEventListener("change", updateEventFields);
+
+    ["dragenter", "dragover"].forEach(function (name) {
+        dropzone.addEventListener(name, function (event) {
             event.preventDefault();
             dropzone.classList.add("dragging");
         });
     });
 
-    ["dragleave", "drop"].forEach(function (eventName) {
-        dropzone.addEventListener(eventName, function (event) {
+    ["dragleave", "drop"].forEach(function (name) {
+        dropzone.addEventListener(name, function (event) {
             event.preventDefault();
             dropzone.classList.remove("dragging");
         });
@@ -642,15 +468,13 @@
     dropzone.addEventListener("drop", function (event) {
         const files = event.dataTransfer.files;
         if (!files.length) return;
-
         try {
             const transfer = new DataTransfer();
             transfer.items.add(files[0]);
             fileInput.files = transfer.files;
             showFile(files[0]);
         } catch (error) {
-            fileName.textContent =
-                "Please use Choose media to select your file.";
+            fileName.textContent = "Please use Choose media to select your file.";
         }
     });
 
@@ -660,15 +484,18 @@
             fileName.textContent = "Choose a file before publishing.";
             return;
         }
-
+        if (eventCheckbox.checked && !eventName.value.trim()) {
+            event.preventDefault();
+            eventName.focus();
+            return;
+        }
         publishButton.disabled = true;
         publishButton.textContent = "Publishing…";
     });
 
-    updateCaptionCount();
-    if (fileInput.files.length) {
-        showFile(fileInput.files[0]);
-    }
+    captionCount.textContent = captionInput.value.length;
+    updateEventFields();
+    if (fileInput.files.length) showFile(fileInput.files[0]);
 
     window.addEventListener("beforeunload", clearPreview);
 })();
