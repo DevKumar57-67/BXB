@@ -85,6 +85,7 @@ def my_vibes(request):
     )
 
 
+
 def vibe_detail(request, pk):
     vibe = get_object_or_404(
         Vibe.objects
@@ -102,9 +103,10 @@ def vibe_detail(request, pk):
         if not request.user.is_authenticated:
             raise Http404("Vibe not found.")
 
-        if vibe.author_id != request.user.id:
+        if vibe.author_id != request.user.pk:
             raise Http404("Vibe not found.")
 
+    # Fetch comments and their authors.
     comments = (
         VibeComment.objects
         .filter(vibe=vibe)
@@ -116,11 +118,13 @@ def vibe_detail(request, pk):
     is_following = False
 
     if request.user.is_authenticated:
+        # Check whether the current user liked this Vibe.
         liked = VibeLike.objects.filter(
             vibe=vibe,
             user=request.user,
         ).exists()
 
+        # Check whether the current user follows the creator.
         if request.user.pk != vibe.author_id:
             is_following = Follow.objects.filter(
                 follower=request.user,
