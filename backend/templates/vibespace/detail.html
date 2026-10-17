@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block title %}Vibe by {{ vibe.author.username }} | BxB{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ==========================================================================
+       Theme Variables (Light / Dark)
+       ========================================================================== */
+    :root {
+        --vd-page-text: #0f172a;
+        --vd-eyebrow: #2563eb;
+        --vd-back-link: #2563eb;
+        --vd-back-link-hover: #1d4ed8;
+        
+        --vd-card-bg: #ffffff;
+        --vd-card-border: #cbd5e1;
+        --vd-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        
+        --vd-media-bg: #f1f5f9;
+        --vd-caption-text: #334155;
+        --vd-caption-empty: #64748b;
+        
+        --vd-author-name: #0f172a;
+        --vd-author-handle: #64748b;
+        
+        --vd-divider: #e2e8f0;
+        --vd-meta-label: #64748b;
+        --vd-date-text: #334155;
+        --vd-note-text: #475569;
+        
+        --vd-btn-bg: transparent;
+        --vd-btn-border: #cbd5e1;
+        --vd-btn-text: #0f172a;
+        --vd-btn-hover-bg: rgba(37, 99, 235, 0.08);
+    }
+
+    /* Dark Mode Overrides */
+    [data-theme="dark"] {
+        --vd-page-text: #e8eefc;
+        --vd-eyebrow: #60a5fa;
+        --vd-back-link: #93c5fd;
+        --vd-back-link-hover: #fff;
+        
+        --vd-card-bg: #101521;
+        --vd-card-border: rgba(255, 255, 255, 0.09);
+        --vd-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        
+        --vd-media-bg: #070a12;
+        --vd-caption-text: #e2e8f0;
+        --vd-caption-empty: #64748b;
+        
+        --vd-author-name: #f8fafc;
+        --vd-author-handle: #94a3b8;
+        
+        --vd-divider: rgba(255, 255, 255, 0.09);
+        --vd-meta-label: #64748b;
+        --vd-date-text: #cbd5e1;
+        --vd-note-text: #94a3b8;
+        
+        --vd-btn-bg: transparent;
+        --vd-btn-border: rgba(255, 255, 255, 0.12);
+        --vd-btn-text: #e2e8f0;
+        --vd-btn-hover-bg: rgba(59, 130, 246, 0.12);
+    }
+
+    .vibe-detail-page {
+        width: 100%;
+        max-width: 1050px;
+        margin: 0 auto;
+        padding: 30px 22px 60px;
+        color: var(--vd-page-text);
+        box-sizing: border-box;
+        transition: color 0.3s ease;
+    }
+
+    .vibe-detail-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .vibe-back-link {
+        color: var(--vd-back-link);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: color 0.2s;
+    }
+
+    .vibe-back-link:hover {
+        color: var(--vd-back-link-hover);
+    }
+
+    .vibe-detail-label {
+        color: var(--vd-eyebrow);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .vibe-detail-heading {
+        margin-top: 8px;
+        font-size: clamp(25px, 4vw, 36px);
+        letter-spacing: -1px;
+        overflow-wrap: anywhere;
+        color: var(--vd-page-text);
+    }
+
+    .vibe-detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(260px, .6fr);
+        gap: 22px;
+        align-items: start;
+        margin-top: 25px;
+    }
+
+    .vibe-detail-card {
+        min-width: 0;
+        overflow: hidden;
+        background: var(--vd-card-bg);
+        border: 1px solid var(--vd-card-border);
+        border-radius: 20px;
+        box-shadow: var(--vd-card-shadow);
+        box-sizing: border-box;
+        transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .vibe-detail-media {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 260px;
+        max-height: 720px;
+        background: var(--vd-media-bg);
+    }
+
+    .vibe-detail-media img,
+    .vibe-detail-media video {
+        display: block;
+        width: 100%;
+        max-height: 720px;
+        object-fit: contain;
+    }
+
+    .vibe-detail-caption {
+        padding: 20px;
+        color: var(--vd-caption-text);
+        font-size: 15px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+    }
+
+    .vibe-detail-caption-empty {
+        color: var(--vd-caption-empty);
+        font-style: italic;
+    }
+
+    .vibe-detail-sidebar {
+        padding: 22px;
+    }
+
+    .vibe-author-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .vibe-author-avatar {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .vibe-author-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .vibe-author-name {
+        color: var(--vd-author-name);
+        font-size: 14px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .vibe-author-handle {
+        margin-top: 4px;
+        color: var(--vd-author-handle);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
+    .vibe-detail-divider {
+        height: 1px;
+        margin: 22px 0;
+        background: var(--vd-divider);
+        transition: background 0.3s ease;
+    }
+
+    .vibe-detail-meta-label {
+        color: var(--vd-meta-label);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .vibe-detail-date {
+        margin-top: 7px;
+        color: var(--vd-date-text);
+        font-size: 13px;
+    }
+
+    .vibe-detail-note {
+        color: var(--vd-note-text);
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .vibe-detail-actions {
+        display: grid;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .vibe-detail-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 14px;
+        border: 1px solid var(--vd-btn-border);
+        border-radius: 11px;
+        color: var(--vd-btn-text);
+        background: var(--vd-btn-bg);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        box-sizing: border-box;
+        transition: background .2s, transform .2s, border-color .2s;
+    }
+
+    .vibe-detail-button:hover {
+        background: var(--vd-btn-hover-bg);
+        transform: translateY(-1px);
+    }
+
+    .vibe-detail-button-primary {
+        border: none;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: #fff;
+    }
+
+    .vibe-detail-button-primary:hover {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    }
+
+    /* Mobile App & Small Viewport Adaptability */
+    @media (max-width: 760px) {
+        .vibe-detail-page {
+            padding: 16px 12px 40px;
+        }
+
+        .vibe-detail-layout {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .vibe-detail-sidebar {
+            padding: 16px;
+            border-radius: 16px;
+        }
+
+        .vibe-detail-card {
+            border-radius: 16px;
+        }
+
+        .vibe-detail-media {
+            min-height: 200px;
+        }
+
+        .vibe-detail-caption {
+            padding: 16px;
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="vibe-detail-page">
+
+    <div class="vibe-detail-top">
+        <a href="{% url 'vibespace:explore' %}" class="vibe-back-link">
+            ← Back to Explore
+        </a>
+
+        {% if request.user.is_authenticated and request.user.pk == vibe.author_id %}
+            <a href="{% url 'vibespace:my_vibes' %}" class="vibe-back-link">
+                My Vibes →
+            </a>
+        {% endif %}
+    </div>
+
+    <header>
+        <span class="vibe-detail-label">BxB · VibeSpace</span>
+        <h1 class="vibe-detail-heading">A vibe worth sharing<span style="color:#60a5fa">.</span></h1>
+    </header>
+
+    <div class="vibe-detail-layout">
+
+        <article class="vibe-detail-card">
+            <div class="vibe-detail-media">
+                {% if vibe.is_video %}
+                    <video controls playsinline preload="metadata">
+                        <source src="{{ vibe.media.url }}">
+                        Your browser does not support video playback.
+                    </video>
+                {% else %}
+                    <img
+                        src="{{ vibe.media.url }}"
+                        alt="Vibe shared by {{ vibe.author.username }}"
+                    >
+                {% endif %}
+            </div>
+
+            <div class="vibe-detail-caption">
+                {% if vibe.caption %}
+                    {{ vibe.caption }}
+                {% else %}
+                    <span class="vibe-detail-caption-empty">
+                        No caption — just the vibe.
+                    </span>
+                {% endif %}
+            </div>
+        </article>
+
+        <aside class="vibe-detail-card vibe-detail-sidebar">
+
+            <div class="vibe-author-row">
+                <div class="vibe-author-avatar">
+                    {% if vibe.author.profile.avatar %}
+                        <img
+                            src="{{ vibe.author.profile.avatar.url }}"
+                            alt="{{ vibe.author.username }}'s profile picture"
+                        >
+                    {% else %}
+                        {{ vibe.author.username|first|upper }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    <div class="vibe-author-name">
+                        {{ vibe.author.get_full_name|default:vibe.author.username }}
+                    </div>
+                    <div class="vibe-author-handle">
+                        @{{ vibe.author.username }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="vibe-detail-divider"></div>
+
+            <div>
+                <div class="vibe-detail-meta-label">Published</div>
+                <div class="vibe-detail-date">
+                    {{ vibe.created_at|date:"M j, Y · g:i A" }}
+                </div>
+            </div>
+
+            <div class="vibe-detail-divider"></div>
+
+            <p class="vibe-detail-note">
+                Every Vibe is a little piece of its creator.
+                Discover what people are sharing across BxB.
+            </p>
+
+            <div class="vibe-detail-actions">
+                <a href="{% url 'vibespace:explore' %}"
+                   class="vibe-detail-button vibe-detail-button-primary">
+                    Explore more Vibes ↗
+                </a>
+
+                {% if request.user.is_authenticated and request.user.pk == vibe.author_id %}
+                    <a href="{% url 'vibespace:create' %}"
+                       class="vibe-detail-button">
+                        + Create another Vibe
+                    </a>
+                {% endif %}
+
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'vibespace:my_vibes' %}"
+                       class="vibe-detail-button">
+                        View my Vibes
+                    </a>
+                {% endif %}
+            </div>
+
+        </aside>
+    </div>
+</main>
+{% endblock %}

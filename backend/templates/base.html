@@ -3015,7 +3015,9 @@
 
 
                 <a
-                    href="#"
+                    
+href="{% url 'vibespace:explore' %}"
+
                     class="nav-item"
                 >
 
@@ -3527,16 +3529,16 @@
             </a>
 
 
-            <a
-                href="#"
-                class="mobile-create-button"
-            >
+            
+<a
+    href="{% url 'vibespace:create' %}"
+    class="mobile-create-button"
+    aria-label="Create a Vibe"
+    title="Create a Vibe"
+>
+    <span>+</span>
+</a>
 
-                <span>
-                    +
-                </span>
-
-            </a>
 
 
             <!-- Mobile Notifications -->

@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -17,6 +19,14 @@ urlpatterns = [
     path("ai-studio/", include("ai_studio.urls")),
     path("events/", include("events.urls")),
     path("publish/", include("publish.urls")),
+    path(
+        "vibespace/",
+        include("vibespace.urls"),
+    ),
+    
+
+    
+
 ]
 
 if settings.DEBUG:
