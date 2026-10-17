@@ -1,63 +1,50 @@
+
 {% extends "base.html" %}
 
 {% block title %}Vibe by {{ vibe.author.username }} | BxB{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* ==========================================================================
-       Theme Variables (Light / Dark)
-       ========================================================================== */
     :root {
         --vd-page-text: #0f172a;
         --vd-eyebrow: #2563eb;
         --vd-back-link: #2563eb;
         --vd-back-link-hover: #1d4ed8;
-        
         --vd-card-bg: #ffffff;
         --vd-card-border: #cbd5e1;
         --vd-card-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-        
         --vd-media-bg: #f1f5f9;
         --vd-caption-text: #334155;
         --vd-caption-empty: #64748b;
-        
         --vd-author-name: #0f172a;
         --vd-author-handle: #64748b;
-        
         --vd-divider: #e2e8f0;
         --vd-meta-label: #64748b;
         --vd-date-text: #334155;
         --vd-note-text: #475569;
-        
         --vd-btn-bg: transparent;
         --vd-btn-border: #cbd5e1;
         --vd-btn-text: #0f172a;
         --vd-btn-hover-bg: rgba(37, 99, 235, 0.08);
     }
 
-    /* Dark Mode Overrides */
     [data-theme="dark"] {
         --vd-page-text: #e8eefc;
         --vd-eyebrow: #60a5fa;
         --vd-back-link: #93c5fd;
-        --vd-back-link-hover: #fff;
-        
+        --vd-back-link-hover: #ffffff;
         --vd-card-bg: #101521;
         --vd-card-border: rgba(255, 255, 255, 0.09);
         --vd-card-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        
         --vd-media-bg: #070a12;
         --vd-caption-text: #e2e8f0;
         --vd-caption-empty: #64748b;
-        
         --vd-author-name: #f8fafc;
         --vd-author-handle: #94a3b8;
-        
         --vd-divider: rgba(255, 255, 255, 0.09);
         --vd-meta-label: #64748b;
         --vd-date-text: #cbd5e1;
         --vd-note-text: #94a3b8;
-        
         --vd-btn-bg: transparent;
         --vd-btn-border: rgba(255, 255, 255, 0.12);
         --vd-btn-text: #e2e8f0;
@@ -127,7 +114,8 @@
         border-radius: 20px;
         box-shadow: var(--vd-card-shadow);
         box-sizing: border-box;
-        transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        transition: background 0.3s ease, border-color 0.3s ease,
+                    box-shadow 0.3s ease;
     }
 
     .vibe-detail-media {
@@ -148,7 +136,7 @@
     }
 
     .vibe-detail-caption {
-        padding: 20px;
+        padding: 20px 20px 8px;
         color: var(--vd-caption-text);
         font-size: 15px;
         line-height: 1.8;
@@ -159,6 +147,50 @@
     .vibe-detail-caption-empty {
         color: var(--vd-caption-empty);
         font-style: italic;
+    }
+
+    .vibe-extra-content {
+        padding: 0 20px 20px;
+        color: var(--vd-caption-text);
+        overflow-wrap: anywhere;
+    }
+
+    .vibe-description {
+        margin: 8px 0 16px;
+        font-size: 14px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+    }
+
+    .vibe-tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 12px 0;
+    }
+
+    .vibe-tag {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(59, 130, 246, 0.12);
+        color: var(--vd-back-link);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .vibe-tag:hover {
+        background: rgba(59, 130, 246, 0.2);
+    }
+
+    .vibe-event-badge {
+        padding: 12px;
+        margin-top: 14px;
+        border: 1px solid var(--vd-card-border);
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.7;
     }
 
     .vibe-detail-sidebar {
@@ -206,11 +238,19 @@
         overflow-wrap: anywhere;
     }
 
+    .vibe-author-profile-link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .vibe-author-profile-link:hover {
+        text-decoration: underline;
+    }
+
     .vibe-detail-divider {
         height: 1px;
         margin: 22px 0;
         background: var(--vd-divider);
-        transition: background 0.3s ease;
     }
 
     .vibe-detail-meta-label {
@@ -272,7 +312,108 @@
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
     }
 
-    /* Mobile App & Small Viewport Adaptability */
+    .vibe-social-section {
+        margin-top: 22px;
+        padding-top: 20px;
+        border-top: 1px solid var(--vd-divider);
+    }
+
+    .vibe-social-count {
+        margin-bottom: 14px;
+        color: var(--vd-note-text);
+        font-size: 13px;
+    }
+
+    .vibe-inline-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .vibe-inline-actions form {
+        min-width: 0;
+    }
+
+    .vibe-social-button {
+        width: 100%;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .vibe-social-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .vibe-social-heading {
+        margin: 0 0 14px;
+        color: var(--vd-page-text);
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .vibe-comment {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--vd-divider);
+    }
+
+    .vibe-comment-author {
+        color: var(--vd-author-name);
+        font-size: 13px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+    }
+
+    .vibe-comment-date {
+        display: block;
+        margin-top: 4px;
+        color: var(--vd-author-handle);
+        font-size: 11px;
+        font-weight: 400;
+    }
+
+    .vibe-comment-text {
+        margin-top: 6px;
+        color: var(--vd-caption-text);
+        font-size: 13px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+    }
+
+    .vibe-comment-form {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .vibe-comment-input {
+        width: 100%;
+        min-height: 90px;
+        box-sizing: border-box;
+        resize: vertical;
+        padding: 12px;
+        border: 1px solid var(--vd-btn-border);
+        border-radius: 10px;
+        background: var(--vd-media-bg);
+        color: var(--vd-page-text);
+        font: inherit;
+    }
+
+    .vibe-comment-input:focus {
+        outline: 2px solid #3b82f6;
+        outline-offset: 1px;
+    }
+
+    .vibe-feedback {
+        padding: 10px 12px;
+        margin: 12px 0;
+        border-radius: 10px;
+        background: var(--vd-btn-hover-bg);
+        color: var(--vd-page-text);
+        font-size: 13px;
+    }
+
     @media (max-width: 760px) {
         .vibe-detail-page {
             padding: 16px 12px 40px;
@@ -297,12 +438,23 @@
         }
 
         .vibe-detail-caption {
-            padding: 16px;
+            padding: 16px 16px 8px;
             font-size: 14px;
+        }
+
+        .vibe-extra-content {
+            padding: 0 16px 16px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .vibe-inline-actions {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 {% endblock %}
+
 
 {% block content %}
 <main class="vibe-detail-page">
@@ -321,12 +473,17 @@
 
     <header>
         <span class="vibe-detail-label">BxB · VibeSpace</span>
-        <h1 class="vibe-detail-heading">A vibe worth sharing<span style="color:#60a5fa">.</span></h1>
+        <h1 class="vibe-detail-heading">
+            {{ vibe.caption|default:"A vibe worth sharing" }}
+            <span style="color:#60a5fa">.</span>
+        </h1>
     </header>
 
     <div class="vibe-detail-layout">
 
+        <!-- Main Vibe media and content -->
         <article class="vibe-detail-card">
+
             <div class="vibe-detail-media">
                 {% if vibe.is_video %}
                     <video controls playsinline preload="metadata">
@@ -350,8 +507,44 @@
                     </span>
                 {% endif %}
             </div>
+
+            <div class="vibe-extra-content">
+                {% if vibe.description %}
+                    <p class="vibe-description">{{ vibe.description }}</p>
+                {% endif %}
+
+                {% if vibe.tags.exists %}
+                    <div class="vibe-tag-list">
+                        {% for tag in vibe.tags.all %}
+                            <a
+                                class="vibe-tag"
+                                href="{% url 'vibespace:explore' %}?tag={{ tag.slug|urlencode }}"
+                            >#{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if vibe.is_campus_event %}
+                    <div class="vibe-event-badge">
+                        <strong>🎓 Campus event</strong>
+                        {% if vibe.campus_event_name %}
+                            <div>{{ vibe.campus_event_name }}</div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if vibe.target_audience != "everyone" %}
+                    <div class="vibe-event-badge">
+                        <strong>Target audience:</strong>
+                        {{ vibe.get_target_audience_display }}
+                    </div>
+                {% endif %}
+            </div>
+
         </article>
 
+
+        <!-- Creator sidebar and social interactions -->
         <aside class="vibe-detail-card vibe-detail-sidebar">
 
             <div class="vibe-author-row">
@@ -385,6 +578,103 @@
                 </div>
             </div>
 
+            <!-- Like and share -->
+            <div class="vibe-social-section">
+                <div class="vibe-social-count">
+                    ❤️ {{ vibe.like_count|default:0 }} likes
+                    <span> · </span>
+                    💬 {{ vibe.comment_count|default:comments.count }} comments
+                </div>
+
+                <div class="vibe-inline-actions">
+                    {% if request.user.is_authenticated and vibe.is_public %}
+                        <form
+                            method="post"
+                            action="{% url 'vibespace:like' vibe.pk %}"
+                        >
+                            {% csrf_token %}
+                            <button
+                                type="submit"
+                                class="vibe-detail-button vibe-social-button"
+                            >
+                                {% if liked %}
+                                    ❤️ Unlike
+                                {% else %}
+                                    🤍 Like
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% elif not request.user.is_authenticated %}
+                        <a
+                            href="{% url 'vibespace:detail' vibe.pk %}"
+                            class="vibe-detail-button"
+                        >Log in to like</a>
+                    {% else %}
+                        <span class="vibe-detail-note">
+                            This Vibe is private.
+                        </span>
+                    {% endif %}
+
+                    <button
+                        type="button"
+                        class="vibe-detail-button vibe-social-button"
+                        onclick="shareVibe()"
+                    >↗ Share Vibe</button>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="vibe-social-section">
+                <h2 class="vibe-social-heading">
+                    Comments ({{ comments.count }})
+                </h2>
+
+                {% for comment in comments %}
+                    <div class="vibe-comment">
+                        <div class="vibe-comment-author">
+                            {{ comment.user.get_full_name|default:comment.user.username }}
+                            <span class="vibe-comment-date">
+                                {{ comment.created_at|date:"M j, Y · g:i A" }}
+                            </span>
+                        </div>
+
+                        <div class="vibe-comment-text">{{ comment.text }}</div>
+                    </div>
+                {% empty %}
+                    <p class="vibe-detail-note">
+                        No comments yet. Start the conversation!
+                    </p>
+                {% endfor %}
+
+                {% if request.user.is_authenticated and vibe.is_public %}
+                    <form
+                        method="post"
+                        action="{% url 'vibespace:comment' vibe.pk %}"
+                        class="vibe-comment-form"
+                    >
+                        {% csrf_token %}
+
+                        <textarea
+                            name="text"
+                            class="vibe-comment-input"
+                            maxlength="1000"
+                            placeholder="Write a thoughtful comment..."
+                            aria-label="Write a comment"
+                            required
+                        ></textarea>
+
+                        <button
+                            type="submit"
+                            class="vibe-detail-button vibe-detail-button-primary vibe-social-button"
+                        >Post comment</button>
+                    </form>
+                {% elif not request.user.is_authenticated %}
+                    <p class="vibe-detail-note">
+                        Log in to join the conversation.
+                    </p>
+                {% endif %}
+            </div>
+
             <div class="vibe-detail-divider"></div>
 
             <p class="vibe-detail-note">
@@ -393,27 +683,55 @@
             </p>
 
             <div class="vibe-detail-actions">
-                <a href="{% url 'vibespace:explore' %}"
-                   class="vibe-detail-button vibe-detail-button-primary">
-                    Explore more Vibes ↗
-                </a>
+                <a
+                    href="{% url 'vibespace:explore' %}"
+                    class="vibe-detail-button vibe-detail-button-primary"
+                >Explore more Vibes ↗</a>
 
                 {% if request.user.is_authenticated and request.user.pk == vibe.author_id %}
-                    <a href="{% url 'vibespace:create' %}"
-                       class="vibe-detail-button">
-                        + Create another Vibe
-                    </a>
+                    <a
+                        href="{% url 'vibespace:create' %}"
+                        class="vibe-detail-button"
+                    >+ Create another Vibe</a>
                 {% endif %}
 
                 {% if request.user.is_authenticated %}
-                    <a href="{% url 'vibespace:my_vibes' %}"
-                       class="vibe-detail-button">
-                        View my Vibes
-                    </a>
+                    <a
+                        href="{% url 'vibespace:my_vibes' %}"
+                        class="vibe-detail-button"
+                    >View my Vibes</a>
                 {% endif %}
             </div>
 
         </aside>
     </div>
 </main>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+async function shareVibe() {
+    const shareData = {
+        title: document.title,
+        text: "Check out this Vibe on BxB!",
+        url: window.location.href
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+        } else if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(shareData.url);
+            alert("Vibe link copied!");
+        } else {
+            window.prompt("Copy this Vibe link:", shareData.url);
+        }
+    } catch (error) {
+        if (error.name !== "AbortError") {
+            window.prompt("Copy this Vibe link:", shareData.url);
+        }
+    }
+}
+</script>
 {% endblock %}
