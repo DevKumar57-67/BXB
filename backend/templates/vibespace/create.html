@@ -426,7 +426,7 @@
                     {{ form.media }}
 
                     <span class="vibe-muted">
-                        Images/GIFs up to 10 MB · Videos up to 50 MB
+                        Images/GIFs up to 10 MB · Videos up to 200 MB
                     </span>
 
                     <span
@@ -586,7 +586,9 @@
         const videoExtensions = ["mp4", "webm", "mov", "m4v"];
         const isImage = imageExtensions.includes(extension);
         const isVideo = videoExtensions.includes(extension);
-        const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+        const maxSize = isVideo
+    ? 200 * 1024 * 1024
+    : 10 * 1024 * 1024;
 
         if (!isImage && !isVideo) {
             fileName.textContent = "Unsupported file type.";
@@ -596,7 +598,7 @@
 
         if (file.size > maxSize) {
             fileName.textContent = isVideo
-                ? "Video exceeds the 50 MB limit."
+                ? "Video exceeds the 200 MB limit."
                 : "Image/GIF exceeds the 10 MB limit.";
             fileInput.value = "";
             return;
